@@ -3,8 +3,8 @@
  */
 
 /**
- * <p>Encapsulates behavior and environment for communication 
- * with bootloader in STM32 microcontroller using UART.</p>
+ * <p>Encapsulates behavior and environment for communication with 
+ * bootloader in STM32 microcontroller using UART.</p>
  * 
  * @author Rishi Gupta
  */
