@@ -13,15 +13,20 @@ import com.serialpundit.serial.SerialComManager.FLOWCONTROL;
 import com.serialpundit.serial.SerialComManager.PARITY;
 import com.serialpundit.serial.SerialComManager.STOPBITS;
 
+import flash.stm32.uart.internal.SystemProperties;
+
 public final class UARTCMDExecutor {
 	
     private long handle;
-    private SerialComManager scm;
+    private final SerialComManager scm;
+    private final SystemProperties sprop;
     
     public UARTCMDExecutor() throws IOException {
     	
-        // get serial communication manager instance
-    	scm = new SerialComManager();
+    	sprop = new SystemProperties();
+    	String tmpDir = sprop.getJavaIOTmpDir();
+    	
+    	scm = new SerialComManager("stmuartfwqkj", tmpDir, true, false);
     	
     }
     
