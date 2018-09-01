@@ -4,6 +4,8 @@
 
 package flash.stm32.uart;
 
+import java.io.IOException;
+
 import com.serialpundit.serial.SerialComManager;
 import com.serialpundit.serial.SerialComManager.BAUDRATE;
 import com.serialpundit.serial.SerialComManager.DATABITS;
@@ -16,15 +18,11 @@ public final class UARTCMDExecutor {
     private long handle;
     private SerialComManager scm;
     
-    public SerialComManager() throws IOException {
+    public UARTCMDExecutor() throws IOException {
     	
         // get serial communication manager instance
-        try {
-            scm = new SerialComManager();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return;
-        }
+    	scm = new SerialComManager();
+    	
     }
     
 
