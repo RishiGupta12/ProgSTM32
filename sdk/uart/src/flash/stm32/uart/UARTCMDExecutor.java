@@ -27,6 +27,7 @@ public final class UARTCMDExecutor {
     private long comPortHandle;
     private final SerialComManager scm;
     private final SystemProperties sprop;
+    private int supportedCmds;
 
     public UARTCMDExecutor() throws IOException {
 
@@ -58,7 +59,7 @@ public final class UARTCMDExecutor {
         scm.closeComPort(comPortHandle);
     }
     
-    private boolean sendCommand(byte[] cmd) throws SerialComException {
+    private int sendCommand(byte[] cmd) throws SerialComException {
         
         int x;
         byte[] buf = new byte[2];
@@ -69,52 +70,115 @@ public final class UARTCMDExecutor {
         x = scm.readBytes(comPortHandle, buf, 0, 1, -1, null);
         
         if ((x == 1) && (buf[0] == ACK)) {
-            return true;
+            return 0;
         }
         
-        return false;
+        return -1;
+    }
+    
+    /*
+     * @return number of bytes read including length of data, ACK at end.
+     */
+    private int receiveResponse(byte[] res) throws SerialComException {
+        
+        int x;
+        int index = 0;
+        int numBytes = res.length;
+        
+        //TODO add total op timeout, consider lenth of response
+        while(true) {
+            x = scm.readBytes(comPortHandle, res, index, numBytes, -1, null);
+            if (x > 0) {
+                if (res[x - 1] == ACK) {
+                    break;
+                }
+                index = index + x;
+                numBytes = numBytes - x;
+            }
+        }
+        
+        return index;
     }
     
     /**
      * 
-     * @return 0 if operation fails or bit mask of commands supported by given bootloader
+     * @return 0 if operation fails or bit mask of commands supported by given bootloader.
      * @throws SerialComException
      */
     public int getAllowedCommands() throws SerialComException {
-        
+
         int x;
-        int index;
-        int numBytes;
-        boolean result;
+        int res;
         byte[] buf = new byte[64];
         
-        result = sendCommand(CMD_GET_ALLOWED_CMDS);
-        if (result == false) {
+        res = sendCommand(CMD_GET_ALLOWED_CMDS);
+        if (res == -1) {
             return 0;
         }
         
+        res = receiveResponse(buf);
+        if (res == -1) {
+            return 0;
+        }
+        
+        x = 1;
+        while((buf[x] != ACK) && (x < res)) {
+            switch (buf[x]) {
             
-            buf[0] = 0x00;
-            index = 0;
-            numBytes = 64;
-            
-            //TODO add total op timeout
-            while(true) {
-                x = scm.readBytes(comPortHandle, buf, index, numBytes, -1, null);
-                if (x > 0) {
-                    if (buf[x - 1] == ACK) {
-                        break;
-                    }
-                    index = index + x;
-                    numBytes = numBytes - x;
-                }
+            case 0x00:
+                supportedCmds = supportedCmds | BLCMDS.GET;
+                break;
+                
+            case 0x01:
+                supportedCmds = supportedCmds | BLCMDS.GET_VRPS;
+                break;
+                
+            case 0x02:
+                supportedCmds = supportedCmds | BLCMDS.GET_ID;
+                break;
+                
+            case 0x11:
+                supportedCmds = supportedCmds | BLCMDS.READ_MEMORY;
+                break;
+                
+            case 0x21:
+                supportedCmds = supportedCmds | BLCMDS.GO;
+                break;
+                
+            case 0x31:
+                supportedCmds = supportedCmds | BLCMDS.WRITE_MEMORY;
+                break;
+                
+            case 0x43:
+                supportedCmds = supportedCmds | BLCMDS.ERASE;
+                break;
+                
+            case 0x44:
+                supportedCmds = supportedCmds | BLCMDS.EXTENDED_ERASE;
+                break;
+                
+            case 0x63:
+                supportedCmds = supportedCmds | BLCMDS.WRITE_PROTECT;
+                break;
+                
+            case 0x73:
+                supportedCmds = supportedCmds | BLCMDS.WRITE_UNPROTECT;
+                break;
+                
+            case (byte)0x82:
+                supportedCmds = supportedCmds | BLCMDS.READOUT_PROTECT;
+                break;
+                
+            case (byte)0x92:
+                supportedCmds = supportedCmds | BLCMDS.READOUT_UNPROTECT;
+                break;                
             }
             
-          
+            x++;
+        }
         
-        return 0;
+        return supportedCmds;
     }
-
 }
 
 
