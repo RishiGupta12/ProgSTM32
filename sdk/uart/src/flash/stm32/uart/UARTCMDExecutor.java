@@ -17,6 +17,9 @@ public final class UARTCMDExecutor {
      * <p>Production release version of this UART STM32 flasher sdk.</p>
      */
     public static final String STM32UARTSDK_VERSION = "1.0";
+    
+    private final byte ACK = 0x79;
+    private final byte NACK = 0x1F;
 
     private final byte[] CMD_GET_ALLOWED_CMDS = new byte[] { (byte)0x00, (byte)0xFF };
 
@@ -49,7 +52,7 @@ public final class UARTCMDExecutor {
     }
 
     public void closeComPort() throws SerialComException {
-
+        
         scm.closeComPort(comPortHandle);
     }
     
@@ -59,6 +62,7 @@ public final class UARTCMDExecutor {
         
         scm.writeBytes(comPortHandle, CMD_GET_ALLOWED_CMDS);
         
+        //TODO parity error handling
         scm.readBytes(comPortHandle, buf, 0, 1, -1, null);
         
 
