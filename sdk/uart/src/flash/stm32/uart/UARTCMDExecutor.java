@@ -56,7 +56,12 @@ public final class UARTCMDExecutor {
         scm.closeComPort(comPortHandle);
     }
     
-    public void getAllowedCommands() throws SerialComException {
+    /**
+     * 
+     * @return 0 if operation fails or bit mask of commands supported by given bootloader
+     * @throws SerialComException
+     */
+    public int getAllowedCommands() throws SerialComException {
         
         byte[] buf = new byte[64];        
         
@@ -64,9 +69,11 @@ public final class UARTCMDExecutor {
         
         //TODO parity error handling
         scm.readBytes(comPortHandle, buf, 0, 1, -1, null);
+        if(buf[0] == ACK) {
+            return 0;
+        }
         
-
-        
+        return 0;
     }
 
 }
