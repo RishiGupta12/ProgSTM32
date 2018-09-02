@@ -23,5 +23,12 @@ public final class BLCMDS {
      * </p>
      */
     public static final int GET_VRPS = 0x02;
-
+    
+    /**
+     * <p>
+     * This command corresponds to Get ID (0x02) of default STM32 Bootloader. This 
+     * command gets the chip ID.
+     * </p>
+     */
+    public static final int GET_ID = 0x04;
 }
