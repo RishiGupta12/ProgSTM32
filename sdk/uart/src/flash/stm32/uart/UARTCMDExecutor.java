@@ -21,7 +21,7 @@ public final class UARTCMDExecutor {
     public static final String UART_LIB_VERSION = "1.0";
     
     /** <p>Pre-defined enum constants for baud rates supported by STM32 bootloader. </p>*/
-    public enum BAUDRATE { 
+    public enum BR { 
         B1200(1200), B1800(1800), B2400(2400), B4800(4800), B9600(9600), B14400(14400), B19200(19200), 
         B28800(28800), B38400(38400), B56000(56000), B57600(57600), B115200(115200);
         private int value;
