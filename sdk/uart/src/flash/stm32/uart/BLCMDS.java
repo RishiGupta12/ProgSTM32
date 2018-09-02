@@ -74,7 +74,23 @@ public final class BLCMDS {
      * (available only for v3.0 usart bootloader versions and above).
      * </p>
      */
-    public static final int EXTENDED_ERASE = 0x10;
+    public static final int EXTENDED_ERASE = 0x20;
+    
+    /**
+     * <p>
+     * This command corresponds to 'write protect' (0x63) command of default STM32 bootloader.
+     * This command enables the write protection for some sectors.
+     * </p>
+     */
+    public static final int WRITE_PROTECT = 0x20;
+    
+    /**
+     * <p>
+     * This command corresponds to 'write unprotect' (0x73) command of default STM32 bootloader.
+     * This command disables the write protection for all Flash memory sectors.
+     * </p>
+     */
+    public static final int WRITE_UNPROTECT = 0x20;
 }
 
 
