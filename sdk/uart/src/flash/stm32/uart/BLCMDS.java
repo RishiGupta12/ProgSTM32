@@ -26,9 +26,18 @@ public final class BLCMDS {
     
     /**
      * <p>
-     * This command corresponds to Get ID (0x02) of default STM32 Bootloader. This 
-     * command gets the chip ID.
+     * This command corresponds to Get ID (0x02) command of default STM32 Bootloader. 
+     * This command gets the chip ID.
      * </p>
      */
     public static final int GET_ID = 0x04;
+    
+    /**
+     * <p>
+     * This command corresponds to Read memory (0x11) command of default STM32 Bootloader. 
+     * This command reads up to 256 bytes of memory starting from an address specified by 
+     * the application.
+     * </p>
+     */
+    public static final int READ_MEMORY = 0x08;
 }
