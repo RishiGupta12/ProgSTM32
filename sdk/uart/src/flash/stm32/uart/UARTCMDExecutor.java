@@ -58,6 +58,23 @@ public final class UARTCMDExecutor {
         scm.closeComPort(comPortHandle);
     }
     
+    private boolean sendCommand(byte[] cmd) throws SerialComException {
+        
+        int x;
+        byte[] buf = new byte[2];
+        
+        scm.writeBytes(comPortHandle, cmd);
+        
+        //TODO parity error handling
+        x = scm.readBytes(comPortHandle, buf, 0, 1, -1, null);
+        
+        if ((x == 1) && (buf[0] == ACK)) {
+            return true;
+        }
+        
+        return false;
+    }
+    
     /**
      * 
      * @return 0 if operation fails or bit mask of commands supported by given bootloader
@@ -65,15 +82,35 @@ public final class UARTCMDExecutor {
      */
     public int getAllowedCommands() throws SerialComException {
         
-        byte[] buf = new byte[64];        
+        int x;
+        int index;
+        int numBytes;
+        boolean result;
+        byte[] buf = new byte[64];
         
-        scm.writeBytes(comPortHandle, CMD_GET_ALLOWED_CMDS);
-        
-        //TODO parity error handling
-        scm.readBytes(comPortHandle, buf, 0, 1, -1, null);
-        if(buf[0] == ACK) {
+        result = sendCommand(CMD_GET_ALLOWED_CMDS);
+        if (result == false) {
             return 0;
         }
+        
+            
+            buf[0] = 0x00;
+            index = 0;
+            numBytes = 64;
+            
+            //TODO add total op timeout
+            while(true) {
+                x = scm.readBytes(comPortHandle, buf, index, numBytes, -1, null);
+                if (x > 0) {
+                    if (buf[x - 1] == ACK) {
+                        break;
+                    }
+                    index = index + x;
+                    numBytes = numBytes - x;
+                }
+            }
+            
+          
         
         return 0;
     }
