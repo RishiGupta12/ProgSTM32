@@ -66,6 +66,15 @@ public final class BLCMDS {
      * </p>
      */
     public static final int ERASE = 0x10;
+    
+    /**
+     * <p>
+     * This command corresponds to 'extended erase' (0x44) command of default STM32 bootloader.
+     * This command erases from one to all the flash memory pages using two byte addressing mode 
+     * (available only for v3.0 usart bootloader versions and above).
+     * </p>
+     */
+    public static final int EXTENDED_ERASE = 0x10;
 }
 
 
