@@ -51,6 +51,23 @@ public final class UARTCMDExecutor {
             return this.value;
         }
     }
+    
+    /** <p>Pre-defined enum constants for number of stop bits in a given serial frame. </p>*/
+    public enum SB {
+        /** <p>Number of stop bits in one frame is 1. </p>*/
+        SB1(1),
+        /** <p>Number of stop bits in one frame is 1.5. </p>*/
+        SB15(4),
+        /** <p>Number of stop bits in one frame is 2. </p>*/
+        SB2(2);
+        private int value;
+        private SB(int value) {
+            this.value = value;	
+        }
+        public int getValue() {
+            return this.value;
+        }
+    }
 	
     private long comPortHandle;
     private final SerialComManager scm;
