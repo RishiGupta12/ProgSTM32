@@ -8,11 +8,6 @@ import java.io.IOException;
 
 import com.serialpundit.core.SerialComException;
 import com.serialpundit.serial.SerialComManager;
-import com.serialpundit.serial.SerialComManager.BAUDRATE;
-import com.serialpundit.serial.SerialComManager.DATABITS;
-import com.serialpundit.serial.SerialComManager.FLOWCONTROL;
-import com.serialpundit.serial.SerialComManager.PARITY;
-import com.serialpundit.serial.SerialComManager.STOPBITS;
 
 import flash.stm32.uart.internal.SystemProperties;
 
