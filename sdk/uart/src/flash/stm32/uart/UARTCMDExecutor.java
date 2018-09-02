@@ -28,6 +28,7 @@ public final class UARTCMDExecutor {
     private final SerialComManager scm;
     private final SystemProperties sprop;
     private int supportedCmds;
+    private String bootloaderVersion;
 
     public UARTCMDExecutor() throws IOException {
 
@@ -121,7 +122,19 @@ public final class UARTCMDExecutor {
             return 0;
         }
         
-        x = 1;
+        if (bootloaderVersion == null) {
+            if (buf[1] == 0x31) {
+                bootloaderVersion = new String("3.1");
+            }
+            if (buf[1] == 0x30) {
+                bootloaderVersion = new String("3.0");
+            }
+            if (buf[1] == 0x22) {
+                bootloaderVersion = new String("2.2");
+            }
+        }
+        
+        x = 2;
         while((buf[x] != ACK) && (x < res)) {
             switch (buf[x]) {
             
@@ -178,6 +191,15 @@ public final class UARTCMDExecutor {
         }
         
         return supportedCmds;
+    }
+    
+    /**
+     * 
+     * @return 
+     * @throws SerialComException
+     */
+    public String getBootloaderVersion() throws SerialComException {
+        
     }
 }
 
