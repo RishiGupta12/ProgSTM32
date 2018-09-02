@@ -126,12 +126,13 @@ public final class UARTCMDExecutor {
             if (buf[1] == 0x31) {
                 bootloaderVersion = new String("3.1");
             }
-            if (buf[1] == 0x30) {
+            else if (buf[1] == 0x30) {
                 bootloaderVersion = new String("3.0");
             }
-            if (buf[1] == 0x22) {
+            else if (buf[1] == 0x22) {
                 bootloaderVersion = new String("2.2");
             }
+            else { }
         }
         
         x = 2;
@@ -200,6 +201,11 @@ public final class UARTCMDExecutor {
      */
     public String getBootloaderVersion() throws SerialComException {
         
+        if (bootloaderVersion == null) {
+            this.getAllowedCommands();
+        }
+        
+        return bootloaderVersion;
     }
 }
 
