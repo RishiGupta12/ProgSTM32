@@ -49,4 +49,49 @@ public final class BLCMDS {
      * </p>
      */
     public static final int GO = 0x08;
+    
+    /**
+     * <p>
+     * This command corresponds to 'write memory' (0x31) command of default STM32 bootloader.
+     * This command make writes up to 256 bytes to the RAM or flash memory starting from an 
+     * address specified by the application.
+     * </p>
+     */
+    public static final int WRITE_MEMORY = 0x10;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
