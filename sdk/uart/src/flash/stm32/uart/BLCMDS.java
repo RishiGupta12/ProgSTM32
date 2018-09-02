@@ -58,6 +58,14 @@ public final class BLCMDS {
      * </p>
      */
     public static final int WRITE_MEMORY = 0x10;
+    
+    /**
+     * <p>
+     * This command corresponds to 'erase' (0x43) command of default STM32 bootloader.
+     * This command erases from one to all the flash memory pages.
+     * </p>
+     */
+    public static final int ERASE = 0x10;
 }
 
 
