@@ -22,6 +22,7 @@ public final class UARTCMDExecutor {
     private final byte NACK = 0x1F;
 
     private final byte[] CMD_GET_ALLOWED_CMDS = new byte[] { (byte)0x00, (byte)0xFF };
+    private final byte[] CMD_GET_ID = new byte[] { (byte)0x02, (byte)0xFD };
 
 
     private long comPortHandle;
@@ -201,11 +202,41 @@ public final class UARTCMDExecutor {
      */
     public String getBootloaderVersion() throws SerialComException {
         
+        //TODO handle what if getallowed returns 0
         if (bootloaderVersion == null) {
             this.getAllowedCommands();
         }
         
         return bootloaderVersion;
+    }
+    
+    /**
+     * STM32 product codes are defined in AN2606 application note.
+     * 
+     * @return 
+     * @throws SerialComException
+     */
+    public int getChipID() throws SerialComException {
+        
+        int x;
+        int res;
+        byte[] buf = new byte[16];
+        
+        res = sendCommand(CMD_GET_ID);
+        if (res == -1) {
+            return 0;
+        }
+        
+        res = receiveResponse(buf);
+        if (res == -1) {
+            return 0;
+        }
+        
+        res = 0;
+        res = res | (buf[1] << 8);
+        res = res | buf[2];
+        
+        return res;
     }
 }
 
