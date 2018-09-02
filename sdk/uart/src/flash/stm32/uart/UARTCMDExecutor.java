@@ -107,6 +107,29 @@ public final class UARTCMDExecutor {
         }
     }
 	
+    /** <p>Pre-defined enum constants for controlling data flow between DTE and DCE or two serial devices.</p>*/
+    public enum FLOWCTRL {
+        /** <p>No flow control; application is responsible to manage data buffers. Application can 
+         * assert or de-assert RTS/CTS or DTR/DSR signals explicitly. </p>*/
+        NONE(1),
+        /** <p>Operating system (or driver) will assert or de-assert RTS/CTS lines as per the amount of 
+         * data in input buffers. </p>*/
+        RTS_CTS(2),
+        /** <p>Operating system (or driver) will assert or de-assert DTR/DSR lines as per the amount of 
+         * data in input buffers. </p>*/
+        DTR_DSR(3),
+        /** <p>Operating system (or driver) will send XON or XOFF characters as per the amount of data 
+         * in input buffers. Upon reception of XOFF system will stop transmitting data and vice-versa. </p>*/
+        XON_XOFF(4);
+        private int value;
+        private FLOWCTRL(int value) {
+            this.value = value;	
+        }
+        public int getValue() {
+            return this.value;
+        }
+    }
+    
     private long comPortHandle;
     private final SerialComManager scm;
     private final SystemProperties sprop;
