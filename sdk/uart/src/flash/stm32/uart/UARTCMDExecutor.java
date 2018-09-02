@@ -32,6 +32,25 @@ public final class UARTCMDExecutor {
             return this.value;
         }
     }
+    
+    /** <p>Pre-defined enum constants for number of data bits in a given serial frame. </p>*/
+    public enum DB {
+        /** <p>Serial frame will contain 5 data bits. </p>*/
+        DB5(5),
+        /** <p>Serial frame will contain 6 data bits. </p>*/
+        DB6(6),
+        /** <p>Serial frame will contain 7 data bits. </p>*/
+        DB7(7),
+        /** <p>Serial frame will contain 8 data bits. </p>*/
+        DB8(8);
+        private int value;
+        private DB(int value) {
+            this.value = value;	
+        }
+        public int getValue() {
+            return this.value;
+        }
+    }
 	
     private long comPortHandle;
     private final SerialComManager scm;
