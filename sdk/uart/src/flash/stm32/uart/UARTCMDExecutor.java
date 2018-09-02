@@ -19,7 +19,7 @@ import flash.stm32.uart.internal.SystemProperties;
 public final class UARTCMDExecutor {
 	
     /**<p>Production release version of this UART STM32 flasher sdk. </p>*/
-    public static final String UARTSDK_VERSION = "1.0";
+    public static final String STM32UARTSDK_VERSION = "1.0";
     
     private long comPortHandle;
     private final SerialComManager scm;
