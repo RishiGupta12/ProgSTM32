@@ -91,6 +91,14 @@ public final class BLCMDS {
      * </p>
      */
     public static final int WRITE_UNPROTECT = 0x20;
+    
+    /**
+     * <p>
+     * This command corresponds to 'readout protect' (0x82) command of default STM32 bootloader.
+     * This command enables read protection.
+     * </p>
+     */
+    public static final int READOUT_PROTECT = 0x20;
 }
 
 
