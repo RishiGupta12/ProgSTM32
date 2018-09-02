@@ -17,7 +17,10 @@ import flash.stm32.uart.internal.SystemProperties;
 
 public final class UARTCMDExecutor {
 	
-    private long handle;
+    /**<p>Production release version of this UART STM32 flasher sdk. </p>*/
+    public static final String UART_LIB_VERSION = "1.0";
+	
+    private long comPortHandle;
     private final SerialComManager scm;
     private final SystemProperties sprop;
     
@@ -27,6 +30,10 @@ public final class UARTCMDExecutor {
     	String tmpDir = sprop.getJavaIOTmpDir();
     	
     	scm = new SerialComManager("stmuartfwqkj", tmpDir, true, false);
+    	
+    }
+    
+    public void openComPort( ) {
     	
     }
     
