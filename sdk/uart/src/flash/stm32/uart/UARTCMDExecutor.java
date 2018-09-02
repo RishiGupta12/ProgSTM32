@@ -22,6 +22,7 @@ public final class UARTCMDExecutor {
     private final byte NACK = 0x1F;
 
     private final byte[] CMD_GET_ALLOWED_CMDS = new byte[] { (byte)0x00, (byte)0xFF };
+    private final byte[] CMD_GET_VRPS = new byte[] { (byte)0x01, (byte)0xFE };
     private final byte[] CMD_GET_ID = new byte[] { (byte)0x02, (byte)0xFD };
 
 
@@ -218,7 +219,6 @@ public final class UARTCMDExecutor {
      */
     public int getChipID() throws SerialComException {
         
-        int x;
         int res;
         byte[] buf = new byte[16];
         
