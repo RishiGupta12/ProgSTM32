@@ -49,6 +49,8 @@ public final class UARTCMDExecutor {
 
         // 500 milliseconds timeout or serial port read
         scm.fineTuneReadBehaviour(comPortHandle, 0, 5, 100, 5, 200);
+        
+        scm.clearPortIOBuffers(comPortHandle, true, true);
     }
 
     public void closeComPort() throws SerialComException {
