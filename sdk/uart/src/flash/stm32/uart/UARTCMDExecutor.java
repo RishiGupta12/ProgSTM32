@@ -19,6 +19,19 @@ public final class UARTCMDExecutor {
 	
     /**<p>Production release version of this UART STM32 flasher sdk. </p>*/
     public static final String UART_LIB_VERSION = "1.0";
+    
+    /** <p>Pre-defined enum constants for baud rates supported by STM32 bootloader. </p>*/
+    public enum BAUDRATE { 
+        B1200(1200), B1800(1800), B2400(2400), B4800(4800), B9600(9600), B14400(14400), B19200(19200), 
+        B28800(28800), B38400(38400), B56000(56000), B57600(57600), B115200(115200);
+        private int value;
+        private BAUDRATE(int value) {
+            this.value = value;	
+        }
+        public int getValue() {
+            return this.value;
+        }
+    }
 	
     private long comPortHandle;
     private final SerialComManager scm;
