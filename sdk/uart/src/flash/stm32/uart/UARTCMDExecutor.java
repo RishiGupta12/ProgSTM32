@@ -39,5 +39,10 @@ public final class UARTCMDExecutor {
         
         scm.configureComPortControl(comPortHandle, flowCtrl, 'x', 'x', false, false);
     }
+    
+    public void closeComPort() throws SerialComException {
+    	
+    	scm.closeComPort(comPortHandle);
+    }
 
 }
