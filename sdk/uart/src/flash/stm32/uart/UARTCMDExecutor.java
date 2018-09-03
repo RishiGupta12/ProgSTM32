@@ -293,11 +293,11 @@ public final class UARTCMDExecutor {
         byte[] addrbuf = new byte[5];
         byte[] numbuf = new byte[2];
         
-        if ((numBytesToRead > 256) || (numBytesToRead <= 0)) {
-            throw new IllegalArgumentException("numBytesToRead must be between 1 to 256");
-        }
         if(data == null) {
             throw new IllegalArgumentException("data buffer can't be null");
+        }
+        if ((numBytesToRead > 256) || (numBytesToRead <= 0)) {
+            throw new IllegalArgumentException("numBytesToRead must be between 1 to 256");
         }
         if (numBytesToRead > data.length) {
             throw new IllegalArgumentException("data buffer is small");
@@ -388,6 +388,37 @@ public final class UARTCMDExecutor {
                 }
             }
         }
+    }
+    
+    /**
+     * 
+     * To address 32 bit address range, only 4 LSB bytes are used by this API, 
+     * upper 4 bytes are discarded.
+     * 
+     * @return 
+     * @throws SerialComException
+     */
+    public int writeMemory(byte[] data, long startAddr, ) throws SerialComException {
+        
+        int x;
+        int res;
+        int numBytesToWrite = data.length;
+        byte[] addrbuf = new byte[5];
+        byte[] numbuf = new byte[2];
+        
+        if(data == null) {
+            throw new IllegalArgumentException("data buffer can't be null");
+        }
+        if ((numBytesToWrite > 256) || (numBytesToWrite == 0)) {
+            throw new IllegalArgumentException("inappropriate data buffer size");
+        }
+        
+        res = sendCommand(CMD_WRITE_MEMORY);
+        if (res == -1) {
+            return 0;
+        }
+        
+        return 0;
     }
 
 }
