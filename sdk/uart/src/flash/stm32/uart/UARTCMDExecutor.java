@@ -395,6 +395,7 @@ public final class UARTCMDExecutor {
      * To address 32 bit address range, only 4 LSB bytes are used by this API, 
      * upper 4 bytes are discarded.
      * 
+     * TODO handle two NACK
      * @return 
      * @throws SerialComException
      */
