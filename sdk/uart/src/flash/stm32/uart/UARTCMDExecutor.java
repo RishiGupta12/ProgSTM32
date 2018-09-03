@@ -398,22 +398,35 @@ public final class UARTCMDExecutor {
      * @return 
      * @throws SerialComException
      */
-    public int writeMemory(byte[] data, long startAddr, ) throws SerialComException {
+    public int writeMemory(byte[] data, long startAddr) throws SerialComException {
         
-        int x;
         int res;
-        int numBytesToWrite = data.length;
+        int numBytesToWrite;
         byte[] addrbuf = new byte[5];
-        byte[] numbuf = new byte[2];
-        
-        if(data == null) {
+
+        if (data == null) {
             throw new IllegalArgumentException("data buffer can't be null");
         }
+        
+        numBytesToWrite = data.length;
         if ((numBytesToWrite > 256) || (numBytesToWrite == 0)) {
             throw new IllegalArgumentException("inappropriate data buffer size");
         }
         
         res = sendCommand(CMD_WRITE_MEMORY);
+        if (res == -1) {
+            return 0;
+        }
+        
+        startAddr = startAddr & 0xFFFFFFFF;
+        
+        addrbuf[0] = (byte) ((startAddr >> 24) & 0xFF);
+        addrbuf[1] = (byte) ((startAddr >> 16) & 0xFF);
+        addrbuf[2] = (byte) ((startAddr >> 8) & 0xFF);
+        addrbuf[3] = (byte) ( startAddr & 0xFF);
+        addrbuf[4] = (byte) (addrbuf[0] ^ addrbuf[1] ^ addrbuf[2] ^ addrbuf[3]);
+        
+        res = sendCommand(addrbuf);
         if (res == -1) {
             return 0;
         }
