@@ -399,7 +399,7 @@ public final class UARTCMDExecutor {
      * @return 
      * @throws SerialComException
      */
-    public int writeMemory(byte[] data, long startAddr) throws SerialComException {
+    public int writeMemory(final byte[] data, long startAddr) throws SerialComException {
         
         int res;
         int numBytesToWrite;
@@ -431,6 +431,8 @@ public final class UARTCMDExecutor {
         if (res == -1) {
             return 0;
         }
+        
+        scm.writeSingleByte(comPortHandle, (byte) numBytesToWrite);
         
         return 0;
     }
