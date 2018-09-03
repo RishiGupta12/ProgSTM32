@@ -329,6 +329,7 @@ public final class UARTCMDExecutor {
             return 0;
         }
         
+        //TODO timeout
         while(true) {
             x = scm.readBytes(comPortHandle, data, index, numBytesToRead, -1, null);
             if (x > 0) {
@@ -342,7 +343,55 @@ public final class UARTCMDExecutor {
         
         return 0;
     }
+    
+    /**
+     * The host should send the base address where the application to jump to is programmed.
+     * 
+     * To address 32 bit address range, only 4 LSB bytes are used by this API, 
+     * upper 4 bytes are discarded.
+     * 
+     * @return 
+     * @throws SerialComException
+     */
+    public int goJump(long addrToJumpTo) throws SerialComException {
+        
+        int res;
+        byte[] addrbuf = new byte[5];
+        
+        res = sendCommand(CMD_GO);
+        if (res == -1) {
+            return 0;
+        }
+        
+        addrToJumpTo = addrToJumpTo & 0xFFFFFFFF;
+        
+        addrbuf[0] = (byte) ((addrToJumpTo >> 24) & 0xFF);
+        addrbuf[1] = (byte) ((addrToJumpTo >> 16) & 0xFF);
+        addrbuf[2] = (byte) ((addrToJumpTo>> 8) & 0xFF);
+        addrbuf[3] = (byte) ( addrToJumpTo & 0xFF);
+        addrbuf[4] = (byte) (addrbuf[0] ^ addrbuf[1] ^ addrbuf[2] ^ addrbuf[3]);
+        
+        res = sendCommand(addrbuf);
+        if (res == -1) {
+            return 0;
+        }
+        
+        //TODO timeout
+        while(true) {
+            res = scm.readBytes(comPortHandle, addrbuf, 0, 1, -1, null);
+            if (res > 0) {
+                if (addrbuf[0] == ACK) {
+                    return 0;
+                }
+                if (addrbuf[0] == NACK) {
+                    return -1;
+                }
+            }
+        }
+    }
+
 }
+
 
 
 
