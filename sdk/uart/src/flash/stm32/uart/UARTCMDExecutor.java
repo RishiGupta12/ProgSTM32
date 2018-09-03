@@ -111,7 +111,7 @@ public final class UARTCMDExecutor {
         int x;
         int res;
         int supportedCmds;
-        byte[] buf = new byte[64];
+        byte[] buf = new byte[32];
         
         res = sendCommand(CMD_GET_ALLOWED_CMDS);
         if (res == -1) {
@@ -192,7 +192,7 @@ public final class UARTCMDExecutor {
         
         int res;
         String bootloaderVersion = null;
-        byte[] buf = new byte[64];
+        byte[] buf = new byte[32];
         
         res = sendCommand(CMD_GET_ALLOWED_CMDS);
         if (res == -1) {
@@ -240,6 +240,34 @@ public final class UARTCMDExecutor {
         res = 0;
         res = res | (buf[1] << 8);
         res = res | buf[2];
+        
+        return res;
+    }
+    
+    /**
+     * 
+     * @return 0 on failure, 1 if enabled, 2 if disabled.
+     * @throws SerialComException
+     */
+    public int getReadProtectionStatus() throws SerialComException {
+        
+        int res;
+        byte[] buf = new byte[16];
+        
+        res = sendCommand(CMD_GET_VRPS);
+        if (res == -1) {
+            return 0;
+        }
+        
+        res = receiveResponse(buf);
+        if (res == -1) {
+            return 0;
+        }
+        
+        //TODO exact purpose of byte1,2
+        buf[1]
+        buf[2]
+
         
         return res;
     }
