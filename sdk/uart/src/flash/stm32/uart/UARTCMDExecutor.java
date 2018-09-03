@@ -4,6 +4,7 @@
 
 package flash.stm32.uart;
 
+import java.io.File;
 import java.io.IOException;
 
 import com.serialpundit.core.SerialComException;
@@ -24,6 +25,7 @@ public final class UARTCMDExecutor {
     private final byte[] CMD_GET_ALLOWED_CMDS = new byte[] { (byte)0x00, (byte)0xFF };
     private final byte[] CMD_GET_VRPS = new byte[] { (byte)0x01, (byte)0xFE };
     private final byte[] CMD_GET_ID = new byte[] { (byte)0x02, (byte)0xFD };
+    private final byte[] CMD_READ_MEMORY = new byte[] { (byte)0x11, (byte)0xEE };
 
 
     private long comPortHandle;
@@ -265,14 +267,82 @@ public final class UARTCMDExecutor {
         }
         
         //TODO exact purpose of byte1,2
-        buf[1]
-        buf[2]
+        //buf[1]
+        //buf[2]
 
         
         return res;
     }
+    
+    /**
+     * This API read data from any valid memory address in RAM, Flash memory 
+     * and the information block (system memory or option byte areas). It may 
+     * be used by GUI programs where input address is taken from user.
+     * 
+     * To address 32 bit address range, only 4 LSB bytes are used by this API, 
+     * upper 4 bytes are discarded.
+     * 
+     * @return 
+     * @throws SerialComException
+     */
+    public int readMemory(byte[] data, long startAddr, int numBytesToRead) throws SerialComException {
+        
+        int x;
+        int res;
+        int index = 0;
+        byte[] addrbuf = new byte[5];
+        byte[] numbuf = new byte[2];
+        
+        if ((numBytesToRead > 256) || (numBytesToRead <= 0)) {
+            throw new IllegalArgumentException("numBytesToRead must be between 1 to 256");
+        }
+        if(data == null) {
+            throw new IllegalArgumentException("data buffer can't be null");
+        }
+        if (numBytesToRead > data.length) {
+            throw new IllegalArgumentException("data buffer is small");
+        }
+        
+        res = sendCommand(CMD_READ_MEMORY);
+        if (res == -1) {
+            return 0;
+        }
+        
+        startAddr = startAddr & 0xFFFFFFFF;
+        
+        addrbuf[0] = (byte) ((startAddr >> 24) & 0xFF);
+        addrbuf[1] = (byte) ((startAddr >> 16) & 0xFF);
+        addrbuf[2] = (byte) ((startAddr >> 8) & 0xFF);
+        addrbuf[3] = (byte) ( startAddr & 0xFF);
+        addrbuf[4] = (byte) (addrbuf[0] ^ addrbuf[1] ^ addrbuf[2] ^ addrbuf[3]);
+        
+        res = sendCommand(addrbuf);
+        if (res == -1) {
+            return 0;
+        }
+        
+        numbuf[0] = (byte) numBytesToRead;
+        numbuf[1] = (byte) (numBytesToRead ^ 0xFF);
+        
+        res = sendCommand(numbuf);
+        if (res == -1) {
+            return 0;
+        }
+        
+        while(true) {
+            x = scm.readBytes(comPortHandle, data, index, numBytesToRead, -1, null);
+            if (x > 0) {
+                index = index + x;
+                numBytesToRead = numBytesToRead - x;
+            }
+            if (numBytesToRead == 0) {
+                break;
+            }
+        }
+        
+        return 0;
+    }
 }
-
 
 
 
