@@ -29,8 +29,6 @@ public final class UARTCMDExecutor {
     private long comPortHandle;
     private final SerialComManager scm;
     private final SystemProperties sprop;
-    private int supportedCmds;
-    private String bootloaderVersion;
 
     public UARTCMDExecutor() throws IOException {
 
@@ -112,6 +110,7 @@ public final class UARTCMDExecutor {
 
         int x;
         int res;
+        int supportedCmds;
         byte[] buf = new byte[64];
         
         res = sendCommand(CMD_GET_ALLOWED_CMDS);
@@ -124,19 +123,7 @@ public final class UARTCMDExecutor {
             return 0;
         }
         
-        if (bootloaderVersion == null) {
-            if (buf[1] == 0x31) {
-                bootloaderVersion = new String("3.1");
-            }
-            else if (buf[1] == 0x30) {
-                bootloaderVersion = new String("3.0");
-            }
-            else if (buf[1] == 0x22) {
-                bootloaderVersion = new String("2.2");
-            }
-            else { }
-        }
-        
+        supportedCmds = 0;
         x = 2;
         while((buf[x] != ACK) && (x < res)) {
             switch (buf[x]) {
@@ -203,9 +190,27 @@ public final class UARTCMDExecutor {
      */
     public String getBootloaderVersion() throws SerialComException {
         
-        //TODO handle what if getallowed returns 0
-        if (bootloaderVersion == null) {
-            this.getAllowedCommands();
+        int res;
+        String bootloaderVersion = null;
+        byte[] buf = new byte[64];
+        
+        res = sendCommand(CMD_GET_ALLOWED_CMDS);
+        if (res == -1) {
+            return null;
+        }
+        
+        res = receiveResponse(buf);
+        if (res == -1) {
+            return null;
+        }
+        
+        if (buf[1] == 0x31) {
+            bootloaderVersion = new String("3.1");
+        } else if (buf[1] == 0x30) {
+            bootloaderVersion = new String("3.0");
+        } else if (buf[1] == 0x22) {
+            bootloaderVersion = new String("2.2");
+        } else {
         }
         
         return bootloaderVersion;
