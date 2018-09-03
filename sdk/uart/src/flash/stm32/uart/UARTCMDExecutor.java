@@ -402,6 +402,7 @@ public final class UARTCMDExecutor {
     public int writeMemory(final byte[] data, long startAddr) throws SerialComException {
         
         int res;
+        int checksum;
         int numBytesToWrite;
         byte[] addrbuf = new byte[5];
 
@@ -433,6 +434,15 @@ public final class UARTCMDExecutor {
         }
         
         scm.writeSingleByte(comPortHandle, (byte) numBytesToWrite);
+        
+        scm.writeBytes(comPortHandle, data);
+        
+        checksum = 0;
+        for (res=0; res < numBytesToWrite; res++) {
+            checksum = (byte) ((byte)checksum ^ data[res]);
+        }
+        
+        scm.writeSingleByte(comPortHandle, (byte) checksum);
         
         return 0;
     }
