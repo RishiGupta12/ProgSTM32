@@ -4,7 +4,6 @@
 
 package flash.stm32.uart;
 
-import java.io.File;
 import java.io.IOException;
 
 import com.serialpundit.core.SerialComException;
@@ -26,6 +25,7 @@ public final class UARTCMDExecutor {
     private final byte[] CMD_GET_VRPS = new byte[] { (byte)0x01, (byte)0xFE };
     private final byte[] CMD_GET_ID = new byte[] { (byte)0x02, (byte)0xFD };
     private final byte[] CMD_READ_MEMORY = new byte[] { (byte)0x11, (byte)0xEE };
+    private final byte[] CMD_GO = new byte[] { (byte)0x21, (byte)0xDE };
 
 
     private long comPortHandle;
