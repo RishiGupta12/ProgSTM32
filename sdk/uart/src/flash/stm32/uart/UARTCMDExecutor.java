@@ -32,12 +32,12 @@ public final class UARTCMDExecutor {
     private final SerialComManager scm;
     private final SystemProperties sprop;
 
-    public UARTCMDExecutor() throws IOException {
+    public UARTCMDExecutor(String libName) throws IOException {
 
         sprop = new SystemProperties();
         String tmpDir = sprop.getJavaIOTmpDir();
 
-        scm = new SerialComManager("stmuartfwqkj", tmpDir, true, false);
+        scm = new SerialComManager(libName, tmpDir, true, false);
 
     }
 
