@@ -436,10 +436,6 @@ public final class UARTCMDExecutor {
             return 0;
         }
         
-        scm.writeSingleByte(comPortHandle, (byte) numBytesToWrite);
-        
-        scm.writeBytes(comPortHandle, data);
-        
         requiredPad = (numBytesToWrite + 1) % 4;
         
         if (requiredPad  > 0) {
@@ -447,9 +443,8 @@ public final class UARTCMDExecutor {
             paddingData = new byte[requiredPad ];
             x = paddingData.length;
             for (res=0; res < x; res++) {
-                paddingData[res] = 0x00;
+                paddingData[res] = (byte) 0xFF;
             }
-            scm.writeBytes(comPortHandle, paddingData);
         }
         
         checksum = 0;
@@ -461,6 +456,14 @@ public final class UARTCMDExecutor {
             for (res=0; res < x; res++) {
                 checksum = (byte) ((byte)checksum ^ paddingData[res]);
             }
+        }
+        
+        scm.writeSingleByte(comPortHandle, (byte) (numBytesToWrite + requiredPad));
+        
+        scm.writeBytes(comPortHandle, data);
+        
+        if (requiredPad  > 0) {
+            scm.writeBytes(comPortHandle, paddingData);
         }
         
         scm.writeSingleByte(comPortHandle, (byte) checksum);
