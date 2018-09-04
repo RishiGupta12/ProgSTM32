@@ -418,12 +418,16 @@ public final class UARTCMDExecutor {
             throw new IllegalArgumentException("inappropriate data buffer size");
         }
         
+        startAddr = startAddr & 0xFFFFFFFF;
+        
+        if ((startAddr & 0x3) != 0) {
+            throw new IllegalArgumentException("startAddr must be 32 bit aligned");
+        }
+        
         res = sendCommand(CMD_WRITE_MEMORY);
         if (res == -1) {
             return 0;
         }
-        
-        startAddr = startAddr & 0xFFFFFFFF;
         
         addrbuf[0] = (byte) ((startAddr >> 24) & 0xFF);
         addrbuf[1] = (byte) ((startAddr >> 16) & 0xFF);
