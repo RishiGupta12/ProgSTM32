@@ -440,7 +440,7 @@ public final class UARTCMDExecutor {
         
         if (requiredPad  > 0) {
             requiredPad  = 4 - requiredPad ;
-            paddingData = new byte[requiredPad ];
+            paddingData = new byte[requiredPad];
             x = paddingData.length;
             for (res=0; res < x; res++) {
                 paddingData[res] = (byte) 0xFF;
