@@ -468,7 +468,18 @@ public final class UARTCMDExecutor {
         
         scm.writeSingleByte(comPortHandle, (byte) checksum);
         
-        return 0;
+        //TODO timeout
+        while(true) {
+            res = scm.readBytes(comPortHandle, addrbuf, 0, 1, -1, null);
+            if (res > 0) {
+                if (addrbuf[0] == ACK) {
+                    return 0;
+                }
+                if (addrbuf[0] == NACK) {
+                    return -1;
+                }
+            }
+        }
     }
 
 }
