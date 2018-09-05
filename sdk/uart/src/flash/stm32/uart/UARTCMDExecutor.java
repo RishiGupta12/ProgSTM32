@@ -292,13 +292,13 @@ public final class UARTCMDExecutor {
         byte[] numbuf = new byte[2];
         
         if(data == null) {
-            throw new IllegalArgumentException("data buffer can't be null");
+            throw new IllegalArgumentException("Data buffer can't be null");
         }
         if ((numBytesToRead > 256) || (numBytesToRead <= 0)) {
-            throw new IllegalArgumentException("numBytesToRead must be between 1 to 256");
+            throw new IllegalArgumentException("The numBytesToRead must be between 1 to 256");
         }
         if (numBytesToRead > data.length) {
-            throw new IllegalArgumentException("data buffer is small");
+            throw new IllegalArgumentException("Data buffer is small");
         }
         
         res = sendCommand(CMD_READ_MEMORY);
@@ -399,17 +399,17 @@ public final class UARTCMDExecutor {
         byte[] addrbuf = new byte[5];
 
         if (data == null) {
-            throw new IllegalArgumentException("data buffer can't be null");
+            throw new IllegalArgumentException("Data buffer can't be null");
         }
         
         numBytesToWrite = data.length;
         if ((numBytesToWrite > 256) || (numBytesToWrite == 0)) {
-            throw new IllegalArgumentException("inappropriate data buffer size");
+            throw new IllegalArgumentException("Inappropriate data buffer size");
         }
         
         //TODO is this required for all uC
         if ((startAddr & 0x3) != 0) {
-            throw new IllegalArgumentException("startAddr must be 32 bit aligned");
+            throw new IllegalArgumentException("The startAddr must be 32 bit aligned");
         }
         
         res = sendCommand(CMD_WRITE_MEMORY);
@@ -492,13 +492,17 @@ public final class UARTCMDExecutor {
         
         int res;
         
-        res = sendCommand(CMD_ERASE);
-        if (res == -1) {
-            return 0;
+        if (startPageNum < 0) {
+            throw new IllegalArgumentException("Invalid startPageNum");
         }
         
         if ((numOfPages > 254) || (numOfPages < 0)) {
-            throw new IllegalArgumentException("invalid numOfPages");
+            throw new IllegalArgumentException("Invalid numOfPages");
+        }
+        
+        res = sendCommand(CMD_ERASE);
+        if (res == -1) {
+            return 0;
         }
         
         // mass erase case
