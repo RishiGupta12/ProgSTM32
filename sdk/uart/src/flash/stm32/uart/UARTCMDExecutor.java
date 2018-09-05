@@ -27,6 +27,7 @@ public final class UARTCMDExecutor {
     private final byte[] CMD_READ_MEMORY = new byte[] { (byte)0x11, (byte)0xEE };
     private final byte[] CMD_GO = new byte[] { (byte)0x21, (byte)0xDE };
     private final byte[] CMD_WRITE_MEMORY = new byte[] { (byte)0x31, (byte)0xCE };
+    private final byte[] CMD_ERASE = new byte[] { (byte)0x43, (byte)0xBC };
 
     private long comPortHandle;
     private final SerialComManager scm;
@@ -420,6 +421,7 @@ public final class UARTCMDExecutor {
         
         startAddr = startAddr & 0xFFFFFFFF;
         
+        //TODO is this required for all uC
         if ((startAddr & 0x3) != 0) {
             throw new IllegalArgumentException("startAddr must be 32 bit aligned");
         }
@@ -438,19 +440,6 @@ public final class UARTCMDExecutor {
         res = sendCommand(addrbuf);
         if (res == -1) {
             return 0;
-        }
-        
-        //TODO timeout
-        while(true) {
-            res = scm.readBytes(comPortHandle, addrbuf, 0, 1, -1, null);
-            if (res > 0) {
-                if (addrbuf[0] == ACK) {
-                    break;
-                }
-                if (addrbuf[0] == NACK) {
-                    return -1;
-                }
-            }
         }
         
         requiredPad = (numBytesToWrite + 1) % 4;
@@ -499,6 +488,10 @@ public final class UARTCMDExecutor {
         }
     }
 
+
+    public int eraseFlashWholeMemory() throws SerialComException {
+        return 0;
+    }
 }
 
 

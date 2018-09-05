@@ -11,7 +11,7 @@ package flash.stm32.uart;
  * 
  * @author Rishi Gupta
  */
-public final class MEMTYPE {
+public final class REGTYPE {
 
     /**
      * <p>
