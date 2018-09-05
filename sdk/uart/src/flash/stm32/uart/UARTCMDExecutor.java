@@ -348,13 +348,10 @@ public final class UARTCMDExecutor {
     /**
      * The host should send the base address where the application to jump to is programmed.
      * 
-     * To address 32 bit address range, only 4 LSB bytes are used by this API, 
-     * upper 4 bytes are discarded.
-     * 
      * @return 
      * @throws SerialComException
      */
-    public int goJump(long addrToJumpTo) throws SerialComException {
+    public int goJump(int addrToJumpTo) throws SerialComException {
         
         int res;
         byte[] addrbuf = new byte[5];
@@ -363,8 +360,6 @@ public final class UARTCMDExecutor {
         if (res == -1) {
             return 0;
         }
-        
-        addrToJumpTo = addrToJumpTo & 0xFFFFFFFF;
         
         addrbuf[0] = (byte) ((addrToJumpTo >> 24) & 0xFF);
         addrbuf[1] = (byte) ((addrToJumpTo >> 16) & 0xFF);
