@@ -42,4 +42,11 @@ public final class REGTYPE {
      * </p>
      */
     public static final int PAGE1 = 0x08;
+    
+    /**
+     * <p>
+     * Represents page 2 memory region in the flash address space of the given microcontroller.
+     * </p>
+     */
+    public static final int PAGE2 = 0x10;
 }
