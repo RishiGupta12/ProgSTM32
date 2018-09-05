@@ -35,4 +35,11 @@ public final class REGTYPE {
      * </p>
      */
     public static final int OPTIONBYTE = 0x04;
+    
+    /**
+     * <p>
+     * Represents page 1 memory region in the flash address space of the given microcontroller.
+     * </p>
+     */
+    public static final int PAGE1 = 0x08;
 }
