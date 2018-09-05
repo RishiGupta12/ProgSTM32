@@ -490,7 +490,9 @@ public final class UARTCMDExecutor {
     public int eraseMemoryRegion(final int memReg, final int startPageNum, final int numOfPages) 
             throws SerialComException {
         
+        int x;
         int res;
+        byte[] massEraseCmd;
         
         if (startPageNum < 0) {
             throw new IllegalArgumentException("Invalid startPageNum");
@@ -507,7 +509,7 @@ public final class UARTCMDExecutor {
         
         // mass erase case
         if ((memReg & (REGTYPE.MAIN | REGTYPE.SYSTEM)) == (REGTYPE.MAIN | REGTYPE.SYSTEM)) {
-            byte[] massEraseCmd = new byte[2];
+            massEraseCmd = new byte[2];
             massEraseCmd[0] = (byte) 0xFF;
             massEraseCmd[1] = (byte) 0x00;
             //TODO should mass erase ack will take more time than normal commands, if yes then add timeout parameters to sendCommand API
@@ -519,6 +521,17 @@ public final class UARTCMDExecutor {
         }
         
         // non-mass erase case
+        massEraseCmd = new byte[numOfPages + 2];
+        massEraseCmd[0] = (byte) numOfPages;
+        
+        x = startPageNum;
+        for (res=1; res < numOfPages; res++) {
+            massEraseCmd[res] = (byte) x;
+            x++;
+        }
+        
+        x = 0;
+        
         
         return 0;
     }
