@@ -280,13 +280,10 @@ public final class UARTCMDExecutor {
      * and the information block (system memory or option byte areas). It may 
      * be used by GUI programs where input address is taken from user.
      * 
-     * To address 32 bit address range, only 4 LSB bytes are used by this API, 
-     * upper 4 bytes are discarded.
-     * 
      * @return 
      * @throws SerialComException
      */
-    public int readMemory(byte[] data, long startAddr, int numBytesToRead) throws SerialComException {
+    public int readMemory(byte[] data, int startAddr, int numBytesToRead) throws SerialComException {
         
         int x;
         int res;
@@ -308,8 +305,6 @@ public final class UARTCMDExecutor {
         if (res == -1) {
             return 0;
         }
-        
-        startAddr = startAddr & 0xFFFFFFFF;
         
         addrbuf[0] = (byte) ((startAddr >> 24) & 0xFF);
         addrbuf[1] = (byte) ((startAddr >> 16) & 0xFF);
