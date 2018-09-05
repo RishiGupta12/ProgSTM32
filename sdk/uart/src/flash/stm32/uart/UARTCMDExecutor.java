@@ -475,7 +475,7 @@ public final class UARTCMDExecutor {
     }
 
 
-    public int eraseMemoryRegion(int startAddr, int numOfPages) throws SerialComException {
+    public int eraseMemoryRegion(int memReg, int startAddr, int numOfPages) throws SerialComException {
         
         int res;
         
@@ -483,6 +483,8 @@ public final class UARTCMDExecutor {
         if (res == -1) {
             return 0;
         }
+        
+        if (REGTYPE.MAIN | REGTYPE.SYSTEM)
         
         return 0;
     }
