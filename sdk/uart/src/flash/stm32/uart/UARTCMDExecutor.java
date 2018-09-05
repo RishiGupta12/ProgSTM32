@@ -475,7 +475,15 @@ public final class UARTCMDExecutor {
     }
 
 
-    public int eraseFlashWholeMemory() throws SerialComException {
+    public int eraseMemoryRegion(int startAddr, int numOfPages) throws SerialComException {
+        
+        int res;
+        
+        res = sendCommand(CMD_ERASE);
+        if (res == -1) {
+            return 0;
+        }
+        
         return 0;
     }
 }
