@@ -388,14 +388,12 @@ public final class UARTCMDExecutor {
     
     /**
      * 
-     * To address 32 bit address range, only 4 LSB bytes are used by this API, 
-     * upper 4 bytes are discarded.
      * 
      * TODO handle two NACK
      * @return 
      * @throws SerialComException
      */
-    public int writeMemory(final byte[] data, long startAddr) throws SerialComException {
+    public int writeMemory(final byte[] data, int startAddr) throws SerialComException {
         
         int res;
         int x = 0;
@@ -413,8 +411,6 @@ public final class UARTCMDExecutor {
         if ((numBytesToWrite > 256) || (numBytesToWrite == 0)) {
             throw new IllegalArgumentException("inappropriate data buffer size");
         }
-        
-        startAddr = startAddr & 0xFFFFFFFF;
         
         //TODO is this required for all uC
         if ((startAddr & 0x3) != 0) {
