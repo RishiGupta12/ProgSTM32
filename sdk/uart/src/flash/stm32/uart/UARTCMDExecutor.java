@@ -497,7 +497,11 @@ public final class UARTCMDExecutor {
             return 0;
         }
         
-        // mass erase
+        if ((numOfPages > 254) || (numOfPages < 0)) {
+            throw new IllegalArgumentException("invalid numOfPages");
+        }
+        
+        // mass erase case
         if ((memReg & (REGTYPE.MAIN | REGTYPE.SYSTEM)) == (REGTYPE.MAIN | REGTYPE.SYSTEM)) {
             byte[] massEraseCmd = new byte[2];
             massEraseCmd[0] = (byte) 0xFF;
@@ -507,7 +511,10 @@ public final class UARTCMDExecutor {
             if (res == -1) {
                 return 0;
             }
+            return 0;
         }
+        
+        // non-mass erase case
         
         return 0;
     }
