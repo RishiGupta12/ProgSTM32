@@ -475,7 +475,20 @@ public final class UARTCMDExecutor {
     }
 
 
-    public int eraseMemoryRegion(int memReg, int startAddr, int numOfPages) throws SerialComException {
+    /**
+     * <p>
+     * If memReg has REGTYPE.MAIN and REGTYPE.SYSTEM bits set, mass erase is performed. In this 
+     * case remaining arguments are ignored.
+     * </p>
+     * 
+     * @param memReg
+     * @param startPageNum
+     * @param numOfPages
+     * @return
+     * @throws SerialComException
+     */
+    public int eraseMemoryRegion(final int memReg, final int startPageNum, final int numOfPages) 
+            throws SerialComException {
         
         int res;
         
@@ -484,7 +497,17 @@ public final class UARTCMDExecutor {
             return 0;
         }
         
-        if (REGTYPE.MAIN | REGTYPE.SYSTEM)
+        // mass erase
+        if ((memReg & (REGTYPE.MAIN | REGTYPE.SYSTEM)) == (REGTYPE.MAIN | REGTYPE.SYSTEM)) {
+            byte[] massEraseCmd = new byte[2];
+            massEraseCmd[0] = (byte) 0xFF;
+            massEraseCmd[1] = (byte) 0x00;
+            //TODO should mass erase ack will take more time than normal commands, if yes then add timeout parameters to sendCommand API
+            res = sendCommand(massEraseCmd);
+            if (res == -1) {
+                return 0;
+            }
+        }
         
         return 0;
     }
