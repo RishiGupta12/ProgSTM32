@@ -38,15 +38,15 @@ public final class REGTYPE {
     
     /**
      * <p>
-     * Represents page 1 memory region in the flash address space of the given microcontroller.
+     * Represents bank 1 memory region in the flash address space of the given microcontroller.
      * </p>
      */
-    public static final int PAGE1 = 0x08;
+    public static final int BANK1 = 0x08;
     
     /**
      * <p>
-     * Represents page 2 memory region in the flash address space of the given microcontroller.
+     * Represents bank 2 memory region in the flash address space of the given microcontroller.
      * </p>
      */
-    public static final int PAGE2 = 0x10;
+    public static final int BANK2 = 0x10;
 }
