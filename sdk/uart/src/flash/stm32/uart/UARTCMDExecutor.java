@@ -29,6 +29,7 @@ public final class UARTCMDExecutor {
     private final byte[] CMD_WRITE_MEMORY = new byte[] { (byte)0x31, (byte)0xCE };
     private final byte[] CMD_ERASE = new byte[] { (byte)0x43, (byte)0xBC };
     private final byte[] CMD_EXTD_ERASE = new byte[] { (byte)0x44, (byte)0xBB };
+    private final byte[] CMD_WRITE_PROTECT = new byte[] { (byte)0x63, (byte)0x9C };
 
     private long comPortHandle;
     private final SerialComManager scm;
@@ -544,6 +545,7 @@ public final class UARTCMDExecutor {
         if (res == -1) {
             return 0;
         }
+        
         return 0;
     }
     
@@ -653,6 +655,54 @@ public final class UARTCMDExecutor {
         
         res = 0;
         i = 2 + (2 * totalPages);
+        for (x=0; x < i; x++) {
+            res ^= erasePagesInfo[x];
+        }
+        erasePagesInfo[i] = (byte) res;
+        
+        //TODO total timeout
+        res = sendCommand(erasePagesInfo);
+        if (res == -1) {
+            return 0;
+        }
+        
+        return 0;
+    }
+    
+    public int writeProtectMemoryRegion(final int startPageNum, final int numOfPages) 
+            throws SerialComException {
+        
+        int x;
+        int i;
+        int res;
+        byte[] erasePagesInfo;
+        
+        if (startPageNum < 0) {
+            throw new IllegalArgumentException("Invalid startPageNum");
+        }
+        
+        //TODO what is max num pages in extended cmd, product specific it is
+        if ((numOfPages > 254) || (numOfPages < 0)) {
+            throw new IllegalArgumentException("Invalid numOfPages");
+        }
+        
+        res = sendCommand(CMD_WRITE_PROTECT);
+        if (res == -1) {
+            return 0;
+        }
+        
+        //TODO what if numOfPages = 0xFF
+        erasePagesInfo = new byte[1 + numOfPages + 1];
+        erasePagesInfo[0] = (byte) numOfPages;
+        
+        x = startPageNum;
+        for (res=1; res < numOfPages; res++) {
+            erasePagesInfo[res] = (byte) x;
+            x++;
+        }
+        
+        res = 0;
+        i = numOfPages + 1;
         for (x=0; x < i; x++) {
             res ^= erasePagesInfo[x];
         }
