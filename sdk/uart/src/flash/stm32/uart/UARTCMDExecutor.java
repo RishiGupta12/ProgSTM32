@@ -574,6 +574,10 @@ public final class UARTCMDExecutor {
             throw new IllegalArgumentException("Invalid numOfPages");
         }
         
+        if ((memReg & (REGTYPE.BANK1 | REGTYPE.BANK2)) == (REGTYPE.BANK1 | REGTYPE.BANK2)) {
+            throw new IllegalArgumentException("Both bank1 and bank2 bits can't be set");
+        }
+        
         res = sendCommand(CMD_EXTD_ERASE);
         if (res == -1) {
             return 0;
@@ -593,12 +597,26 @@ public final class UARTCMDExecutor {
             return 0;
         }
         
-        // mass erase case
+        // bank1 erase case
         if ((memReg & (REGTYPE.BANK1)) == REGTYPE.BANK1) {
             erasePagesInfo = new byte[3];
             erasePagesInfo[0] = (byte) 0xFF;
             erasePagesInfo[1] = (byte) 0xFE;
             erasePagesInfo[2] = (byte) 0x01;
+            //TODO should mass erase ack will take more time than normal commands, if yes then add timeout parameters to sendCommand API
+            res = sendCommand(erasePagesInfo);
+            if (res == -1) {
+                return 0;
+            }
+            return 0;
+        }
+        
+        // bank2 erase case
+        if ((memReg & (REGTYPE.BANK2)) == REGTYPE.BANK2) {
+            erasePagesInfo = new byte[3];
+            erasePagesInfo[0] = (byte) 0xFF;
+            erasePagesInfo[1] = (byte) 0xFD;
+            erasePagesInfo[2] = (byte) 0x02;
             //TODO should mass erase ack will take more time than normal commands, if yes then add timeout parameters to sendCommand API
             res = sendCommand(erasePagesInfo);
             if (res == -1) {
