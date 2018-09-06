@@ -555,7 +555,8 @@ public final class UARTCMDExecutor {
      * <p>
      * If memReg is set to REGTYPE.BANK1, mass erase of bank 1 is performed. Similarly if memReg is set to 
      * REGTYPE.BANK2, mass erase of bank 2 is performed. Erasing both bank 1 and 2 in one go is not allowed 
-     * i.e. both REGTYPE.BANK1 and REGTYPE.BANK2 bits should be set together.
+     * i.e. both REGTYPE.BANK1 and REGTYPE.BANK2 bits should be set together. Consider using global mass erase 
+     * for this requirement.
      * </p>
      * 
      * @param memReg
@@ -570,6 +571,7 @@ public final class UARTCMDExecutor {
         int x;
         int i;
         int res;
+        int totalPages;
         byte[] erasePagesInfo;
         
         if (startPageNum < 0) {
@@ -589,7 +591,7 @@ public final class UARTCMDExecutor {
             return 0;
         }
         
-        // mass erase case
+        // global mass erase case
         if ((memReg & (REGTYPE.MAIN | REGTYPE.SYSTEM)) == (REGTYPE.MAIN | REGTYPE.SYSTEM)) {
             erasePagesInfo = new byte[3];
             erasePagesInfo[0] = (byte) 0xFF;
@@ -603,7 +605,7 @@ public final class UARTCMDExecutor {
             return 0;
         }
         
-        // bank1 erase case
+        // bank 1 mass erase case
         if ((memReg & (REGTYPE.BANK1)) == REGTYPE.BANK1) {
             erasePagesInfo = new byte[3];
             erasePagesInfo[0] = (byte) 0xFF;
@@ -617,7 +619,7 @@ public final class UARTCMDExecutor {
             return 0;
         }
         
-        // bank2 erase case
+        // bank 2 mass erase case
         if ((memReg & (REGTYPE.BANK2)) == REGTYPE.BANK2) {
             erasePagesInfo = new byte[3];
             erasePagesInfo[0] = (byte) 0xFF;
@@ -629,6 +631,22 @@ public final class UARTCMDExecutor {
                 return 0;
             }
             return 0;
+        }
+        
+        // certain number of pages case
+        totalPages = numOfPages & 0xFFFF;
+        erasePagesInfo = new byte[2 + (2 * totalPages) + 1];
+        
+        erasePagesInfo[0] = (byte) ((totalPages >> 8) & 0xFF);
+        erasePagesInfo[1] = (byte) (totalPages & 0xFF);
+        
+        i = 0;
+        x = startPageNum;
+        for (res=2; i < totalPages; res = res + 2) {
+            erasePagesInfo[res] = (byte) ((x >> 8) & 0xFF);
+            erasePagesInfo[res + 1] = (byte) (x & 0xFF);
+            x++;
+            i++;
         }
         
         return 0;
