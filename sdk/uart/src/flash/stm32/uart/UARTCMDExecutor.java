@@ -30,6 +30,7 @@ public final class UARTCMDExecutor {
     private final byte[] CMD_ERASE = new byte[] { (byte)0x43, (byte)0xBC };
     private final byte[] CMD_EXTD_ERASE = new byte[] { (byte)0x44, (byte)0xBB };
     private final byte[] CMD_WRITE_PROTECT = new byte[] { (byte)0x63, (byte)0x9C };
+    private final byte[] CMD_WRITE_UNPROTECT = new byte[] { (byte)0x73, (byte)0x8C };
 
     private long comPortHandle;
     private final SerialComManager scm;
