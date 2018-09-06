@@ -49,8 +49,9 @@ public final class UARTCMDExecutor {
 
     }
 
-    public void connectToBootloader(String port, SerialComManager.BAUDRATE baudRate, SerialComManager.DATABITS dataBits,
-            SerialComManager.STOPBITS stopBits, SerialComManager.PARITY parity, SerialComManager.FLOWCONTROL flowCtrl)
+    public void connectToBootloader(String port, SerialComManager.BAUDRATE baudRate, 
+            SerialComManager.DATABITS dataBits, SerialComManager.STOPBITS stopBits, 
+            SerialComManager.PARITY parity, SerialComManager.FLOWCONTROL flowCtrl)
             throws SerialComException {
 
         comPortHandle = scm.openComPort(port, true, true, true);
@@ -63,6 +64,11 @@ public final class UARTCMDExecutor {
         scm.fineTuneReadBehaviour(comPortHandle, 0, 5, 100, 5, 200);
         
         scm.clearPortIOBuffers(comPortHandle, true, true);
+        
+        while(true) {
+            scm.writeSingleByte(comPortHandle, (byte) 0x7F);
+            
+        }
     }
 
     public void disconnectFromBootloader() throws SerialComException {
