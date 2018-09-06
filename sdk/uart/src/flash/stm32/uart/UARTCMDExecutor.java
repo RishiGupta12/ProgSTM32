@@ -717,6 +717,11 @@ public final class UARTCMDExecutor {
         
         return 0;
     }
+    
+    public int writeUnprotectMemoryRegion() throws SerialComException {
+        
+        return 0;
+    }
 }
     
 
