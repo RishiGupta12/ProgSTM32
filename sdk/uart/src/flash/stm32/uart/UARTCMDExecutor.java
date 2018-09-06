@@ -552,6 +552,12 @@ public final class UARTCMDExecutor {
      * case remaining arguments are ignored.
      * </p>
      * 
+     * <p>
+     * If memReg is set to REGTYPE.BANK1, mass erase of bank 1 is performed. Similarly if memReg is set to 
+     * REGTYPE.BANK2, mass erase of bank 2 is performed. Erasing both bank 1 and 2 in one go is not allowed 
+     * i.e. both REGTYPE.BANK1 and REGTYPE.BANK2 bits should be set together.
+     * </p>
+     * 
      * @param memReg
      * @param startPageNum
      * @param numOfPages
