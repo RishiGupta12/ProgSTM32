@@ -538,6 +538,7 @@ public final class UARTCMDExecutor {
             res ^= erasePagesInfo[x];
         }
         erasePagesInfo[i] = (byte) res;
+        
         //TODO total timeout
         res = sendCommand(erasePagesInfo);
         if (res == -1) {
@@ -578,6 +579,7 @@ public final class UARTCMDExecutor {
             throw new IllegalArgumentException("Invalid startPageNum");
         }
         
+        //TODO what is max num pages in extended cmd, product specific it is
         if ((numOfPages > 254) || (numOfPages < 0)) {
             throw new IllegalArgumentException("Invalid numOfPages");
         }
@@ -655,6 +657,12 @@ public final class UARTCMDExecutor {
             res ^= erasePagesInfo[x];
         }
         erasePagesInfo[i] = (byte) res;
+        
+        //TODO total timeout
+        res = sendCommand(erasePagesInfo);
+        if (res == -1) {
+            return 0;
+        }
         
         return 0;
     }
