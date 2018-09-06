@@ -741,7 +741,6 @@ public final class UARTCMDExecutor {
                 }
             }
         }
-        
     }
     
     public int readoutprotectMemoryRegion() throws SerialComException {
@@ -749,7 +748,7 @@ public final class UARTCMDExecutor {
         int res;
         byte[] buf = new byte[2];
         
-        res = sendCommand(CMD_WRITE_UNPROTECT);
+        res = sendCommand(CMD_READOUT_PROTECT);
         if (res == -1) {
             return 0;
         }
@@ -766,7 +765,30 @@ public final class UARTCMDExecutor {
                 }
             }
         }
+    }
+    
+    public int readoutUnprotectMemoryRegion() throws SerialComException {
         
+        int res;
+        byte[] buf = new byte[2];
+        
+        res = sendCommand(CMD_READOUT_UNPROTECT);
+        if (res == -1) {
+            return 0;
+        }
+        
+        //TODO timeout
+        while(true) {
+            res = scm.readBytes(comPortHandle, buf, 0, 1, -1, null);
+            if (res > 0) {
+                if (buf[0] == ACK) {
+                    return 0;
+                }
+                if (buf[0] == NACK) {
+                    return -1;
+                }
+            }
+        }
     }
 }
     
