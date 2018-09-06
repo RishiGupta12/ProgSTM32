@@ -65,7 +65,7 @@ public final class UARTCMDExecutor {
         scm.clearPortIOBuffers(comPortHandle, true, true);
     }
 
-    public void closeComPort() throws SerialComException {
+    public void disconnectFromBootloader() throws SerialComException {
         
         scm.closeComPort(comPortHandle);
     }
