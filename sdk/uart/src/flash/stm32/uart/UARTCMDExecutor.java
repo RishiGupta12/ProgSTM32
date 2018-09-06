@@ -31,6 +31,7 @@ public final class UARTCMDExecutor {
     private final byte[] CMD_EXTD_ERASE = new byte[] { (byte)0x44, (byte)0xBB };
     private final byte[] CMD_WRITE_PROTECT = new byte[] { (byte)0x63, (byte)0x9C };
     private final byte[] CMD_WRITE_UNPROTECT = new byte[] { (byte)0x73, (byte)0x8C };
+    private final byte[] CMD_READOUT_PROTECT = new byte[] { (byte)0x82, (byte)0x7D };
 
     private long comPortHandle;
     private final SerialComManager scm;
@@ -721,13 +722,51 @@ public final class UARTCMDExecutor {
     public int writeUnprotectMemoryRegion() throws SerialComException {
         
         int res;
+        byte[] buf = new byte[2];
         
         res = sendCommand(CMD_WRITE_UNPROTECT);
         if (res == -1) {
             return 0;
         }
         
-        return 0;
+        //TODO timeout
+        while(true) {
+            res = scm.readBytes(comPortHandle, buf, 0, 1, -1, null);
+            if (res > 0) {
+                if (buf[0] == ACK) {
+                    return 0;
+                }
+                if (buf[0] == NACK) {
+                    return -1;
+                }
+            }
+        }
+        
+    }
+    
+    public int readoutprotectMemoryRegion() throws SerialComException {
+        
+        int res;
+        byte[] buf = new byte[2];
+        
+        res = sendCommand(CMD_WRITE_UNPROTECT);
+        if (res == -1) {
+            return 0;
+        }
+        
+        //TODO timeout
+        while(true) {
+            res = scm.readBytes(comPortHandle, buf, 0, 1, -1, null);
+            if (res > 0) {
+                if (buf[0] == ACK) {
+                    return 0;
+                }
+                if (buf[0] == NACK) {
+                    return -1;
+                }
+            }
+        }
+        
     }
 }
     
