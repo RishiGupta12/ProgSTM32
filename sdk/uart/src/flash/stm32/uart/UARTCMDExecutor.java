@@ -649,6 +649,13 @@ public final class UARTCMDExecutor {
             i++;
         }
         
+        res = 0;
+        i = 2 + (2 * totalPages);
+        for (x=0; x < i; x++) {
+            res ^= erasePagesInfo[x];
+        }
+        erasePagesInfo[i] = (byte) res;
+        
         return 0;
     }
 }
