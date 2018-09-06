@@ -28,6 +28,7 @@ public final class UARTCMDExecutor {
     private final byte[] CMD_GO = new byte[] { (byte)0x21, (byte)0xDE };
     private final byte[] CMD_WRITE_MEMORY = new byte[] { (byte)0x31, (byte)0xCE };
     private final byte[] CMD_ERASE = new byte[] { (byte)0x43, (byte)0xBC };
+    private final byte[] CMD_EXTD_ERASE = new byte[] { (byte)0x44, (byte)0xBB };
 
     private long comPortHandle;
     private final SerialComManager scm;
@@ -477,7 +478,7 @@ public final class UARTCMDExecutor {
 
     /**
      * <p>
-     * If memReg has REGTYPE.MAIN and REGTYPE.SYSTEM bits set, mass erase is performed. In this 
+     * If memReg has both REGTYPE.MAIN and REGTYPE.SYSTEM bits set, mass erase is performed. In this 
      * case remaining arguments are ignored.
      * </p>
      * 
@@ -544,7 +545,58 @@ public final class UARTCMDExecutor {
         }
         return 0;
     }
+    
+    /**
+     * <p>
+     * If memReg has REGTYPE.MAIN and REGTYPE.SYSTEM bits set, mass erase is performed. In this 
+     * case remaining arguments are ignored.
+     * </p>
+     * 
+     * @param memReg
+     * @param startPageNum
+     * @param numOfPages
+     * @return
+     * @throws SerialComException
+     */
+    public int extendedEraseMemoryRegion(final int memReg, final int startPageNum, final int numOfPages) 
+            throws SerialComException {
+        
+        int x;
+        int i;
+        int res;
+        byte[] erasePagesInfo;
+        
+        if (startPageNum < 0) {
+            throw new IllegalArgumentException("Invalid startPageNum");
+        }
+        
+        if ((numOfPages > 254) || (numOfPages < 0)) {
+            throw new IllegalArgumentException("Invalid numOfPages");
+        }
+        
+        res = sendCommand(CMD_EXTD_ERASE);
+        if (res == -1) {
+            return 0;
+        }
+        
+        // mass erase case
+        if ((memReg & (REGTYPE.MAIN | REGTYPE.SYSTEM)) == (REGTYPE.MAIN | REGTYPE.SYSTEM)) {
+            erasePagesInfo = new byte[3];
+            erasePagesInfo[0] = (byte) 0xFF;
+            erasePagesInfo[1] = (byte) 0xFF;
+            erasePagesInfo[2] = (byte) 0x00;
+            //TODO should mass erase ack will take more time than normal commands, if yes then add timeout parameters to sendCommand API
+            res = sendCommand(erasePagesInfo);
+            if (res == -1) {
+                return 0;
+            }
+            return 0;
+        }
+        
+        return 0;
+    }
 }
+    
 
 
 
