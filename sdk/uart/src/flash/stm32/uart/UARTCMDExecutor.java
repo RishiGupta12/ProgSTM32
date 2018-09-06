@@ -594,11 +594,11 @@ public final class UARTCMDExecutor {
         }
         
         // mass erase case
-        if ((memReg & (REGTYPE.MAIN | REGTYPE.SYSTEM)) == (REGTYPE.MAIN | REGTYPE.SYSTEM)) {
+        if ((memReg & (REGTYPE.BANK1)) == REGTYPE.BANK1) {
             erasePagesInfo = new byte[3];
             erasePagesInfo[0] = (byte) 0xFF;
-            erasePagesInfo[1] = (byte) 0xFF;
-            erasePagesInfo[2] = (byte) 0x00;
+            erasePagesInfo[1] = (byte) 0xFE;
+            erasePagesInfo[2] = (byte) 0x01;
             //TODO should mass erase ack will take more time than normal commands, if yes then add timeout parameters to sendCommand API
             res = sendCommand(erasePagesInfo);
             if (res == -1) {
