@@ -1,0 +1,50 @@
+#!/bin/bash
+#
+# Copyright (C) 2018, Rishi Gupta. All rights reserved.
+#
+
+cd "$(dirname '$0')"
+
+if [[ $EUID -eq 0 ]]; then
+	echo "$(tput setaf 1)Non root user required.$(tput sgr0)" 1>&2
+	exit 1
+fi
+
+rm -rf INSTALL m4 configure Makefile.in depcomp config.guess config.sub >/dev/null 2>&1
+rm -rf missing aclocal.m4 install-sh ltmain.sh config.h config.h.in >/dev/null 2>&1
+rm -rf config.h.in~ configdata.pm autom4te.cache config.status config.log stamp-h1 >/dev/null 2>&1
+
+mkdir m4
+
+command -v libtoolize >/dev/null 2>&1
+if  [ $? -ne 0 ]; then
+    command -v libtool >/dev/null 2>&1
+    if  [ $? -ne 0 ]; then
+        echo "could not find libtool." 1>&2
+        exit 1
+    fi
+fi
+
+command -v pkg-config >/dev/null 2>&1
+if [ $? -ne 0 ]; then
+    echo "pkg-config is required." 1>&2
+    exit 1
+fi
+
+command -v autoreconf >/dev/null 2>&1
+if [ $? -ne 0 ]; then
+    echo "autoconf and automake are required." 1>&2
+    exit 1
+fi
+
+# sudo apt-get install autoconf-archive
+autoreconf -vis -W all
+status=$?
+if [ $status -ne 0 ]; then
+    echo "autoreconf exited with status $status" 1>&2
+    exit 1
+fi
+
+echo "$(tput setaf 11)Bootstrapped successfully.$(tput sgr0)"
+
+exit 0
