@@ -15,3 +15,7 @@ m4_define([CURRENT_VERSION],
                   else
                      printf "unknown"
                   fi ]))
+
+# process any command-line arguments and perform initialization 
+# and verification
+AC_INIT([flashSTM32], [CURRENT_VERSION], [gupt21@gmail.com])
