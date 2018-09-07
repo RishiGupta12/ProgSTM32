@@ -39,6 +39,10 @@ AM_INIT_AUTOMAKE([foreign 1.11 serial-tests -Wall -Wno-portability subdir-object
 AC_CANONICAL_HOST
 AC_DEFINE_UNQUOTED([CANONICAL_HOST], "$host", [Canonical host string.])
 
+# Add tests so that the generated libtool script will understand 
+# the characteristics of the host
+LT_INIT
+
 
 
 
