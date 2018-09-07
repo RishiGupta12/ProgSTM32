@@ -34,4 +34,34 @@ AC_CONFIG_MACRO_DIR([m4])
 # in the tree
 AM_INIT_AUTOMAKE([foreign 1.11 serial-tests -Wall -Wno-portability subdir-objects silent-rules color-tests dist-xz tar-ustar])
 
+# Compute the canonical host-system type variable, host, 
+# host_cpu, host_vendor, and host_os
+AC_CANONICAL_HOST
+AC_DEFINE_UNQUOTED([CANONICAL_HOST], "$host", [Canonical host string.])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
