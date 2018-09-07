@@ -43,6 +43,9 @@ AC_DEFINE_UNQUOTED([CANONICAL_HOST], "$host", [Canonical host string.])
 # the characteristics of the host
 LT_INIT
 
+# Determine a C compiler to use
+AC_PROG_CC
+
 
 
 
