@@ -46,7 +46,10 @@ LT_INIT
 # Determine a C compiler to use
 AC_PROG_CC
 
-
+# Set output variable INSTALL to the name of a BSD-compatible install 
+# program, if one is found in the current PATH. Otherwise, set INSTALL 
+# to ‘dir/install-sh -c’
+AC_PROG_INSTALL
 
 
 
