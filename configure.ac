@@ -3,6 +3,9 @@
 # Copyright (C) 2018, Rishi Gupta. All rights reserved.
 #
 
+# Add custom copyright information
+AC_COPYRIGHT(Copyright (C) 2018, Rishi Gupta. All rights reserved.)
+
 # Specify minimum version of autoconf required
 AC_PREREQ(2.64)
 
@@ -26,3 +29,5 @@ AC_CONFIG_HEADERS([config.h])
 
 # Central place to that will contain all custom macros
 AC_CONFIG_MACRO_DIR([m4])
+
+# 
