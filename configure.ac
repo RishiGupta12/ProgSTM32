@@ -51,6 +51,13 @@ AC_PROG_CC
 # to ‘dir/install-sh -c’
 AC_PROG_INSTALL
 
+# Check for each program and if found set variable to the name of that 
+# program
+AC_CHECK_PROGS([M4], gm4 m4, no)
+
+
+
+
 
 
 
