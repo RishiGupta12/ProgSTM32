@@ -19,3 +19,7 @@ m4_define([CURRENT_VERSION],
 # process any command-line arguments and perform initialization 
 # and verification
 AC_INIT([flashSTM32], [CURRENT_VERSION], [gupt21@gmail.com])
+
+# instantiating macro to generate config.h for passing #DEFINE
+# to source code
+AC_CONFIG_HEADERS([config.h])
