@@ -55,7 +55,13 @@ AC_PROG_INSTALL
 # program
 AC_CHECK_PROGS([M4], gm4 m4, no)
 
-
+# List of makefiles that automake should generate
+AC_CONFIG_FILES([
+Makefile
+sdk/Makefile
+sdk/uart/Makefile
+sdk/uart/src/Makefile
+])
 
 
 
