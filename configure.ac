@@ -6,4 +6,12 @@
 # specify minimum version of autoconf required
 AC_PREREQ(2.64)
 
-
+# package version will remain constant unless edited manually
+# by modifying package_version file
+m4_define([CURRENT_VERSION],
+     m4_esyscmd([ if test -e package_version; then
+                     . ./package_version
+                     printf "$PACKAGE_VERSION"
+                  else
+                     printf "unknown"
+                  fi ]))
