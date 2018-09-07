@@ -63,28 +63,51 @@ sdk/uart/Makefile
 sdk/uart/src/Makefile
 ])
 
+# Generate config.status and launch it, run the configuration action
+# now
+AC_OUTPUT
 
+# 
+AC_DEFUN([AX_SUMMARIZE_ENV],
+[
+BUILD_USER=${USER}
+BUILD_ARCH=${host}
+BUILD_HOST=${ac_hostname}
+BUILD_DATE=$(date +'%F %H:%M')
 
+AC_DEFINE_UNQUOTED([BUILD_USER],     "${BUILD_USER}",     [The fine user who built the package])
+AC_DEFINE_UNQUOTED([BUILD_ARCH],     "${BUILD_ARCH}",     [Architecture of the build host])
+AC_DEFINE_UNQUOTED([BUILD_HOST],     "${BUILD_HOST}",     [Build host name])
+AC_DEFINE_UNQUOTED([BUILD_DATE],     "${BUILD_DATE}",     [Build date])
 
+AC_SUBST(BUILD_USER)
+AC_SUBST(BUILD_ARCH)
+AC_SUBST(BUILD_HOST)
+AC_SUBST(BUILD_DATE)
+AC_SUBST(BUILD_VERSION)
+])
 
+AC_DEFUN([AX_SUMMARIZE_CONFIG],
+[
+echo
+echo '##########################################################################'
+echo '#                                SUMMARY                                 #'
+echo '##########################################################################'
+echo
+echo Configure date................ : $BUILD_DATE
+echo Package version............... : $PACKAGE-$VERSION
+echo C compiler.................... : $CC
+echo Build architecture............ : $BUILD_ARCH
+echo C compiler flags.............. : $CFLAGS
+echo
+echo Configure complete! Now proceed with:
+echo "    - 'make'               compile the libraries/binaries"
+echo "    - 'make V=s'           to print extra logs from make while building"
+echo "    - 'make check'         run automated tests"
+echo "    - 'make install'       install the libraries/binaries/files in output/product folder"
+echo
+])
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+AX_SUMMARIZE_ENV
+AX_SUMMARIZE_CONFIG
 
