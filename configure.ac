@@ -30,4 +30,8 @@ AC_CONFIG_HEADERS([config.h])
 # Central place to that will contain all custom macros
 AC_CONFIG_MACRO_DIR([m4])
 
-# 
+# Automake options that should be applied to every Makefile.am 
+# in the tree
+AM_INIT_AUTOMAKE([foreign 1.11 serial-tests -Wall -Wno-portability subdir-objects silent-rules color-tests dist-xz tar-ustar])
+
+
