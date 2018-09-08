@@ -1,8 +1,15 @@
+MAKEFLAGS=@$MAKEFLAGS@
+
 ACLOCAL_AMFLAGS = -I m4
 
 SUBDIRS = sdk
 
 include flashstm32.mk
+
+.PHONY: uartsdk clean-local maintainer-clean-local
+
+uartsdk:
+	$(MAKE) -C $(top_srcdir)/sdk/uart -$(MAKEFLAGS)
 
 clean-local:
 	[ -n "$(top_srcdir)" ] && rm -rf $(top_srcdir)/doc
