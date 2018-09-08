@@ -3,6 +3,9 @@
 # Copyright (C) 2018, Rishi Gupta. All rights reserved.
 #
 
+dnl Process this file with Autoconf to produce a portable
+dnl configure script.
+
 dnl Add custom copyright information
 AC_COPYRIGHT(Copyright (C)2018 Rishi Gupta. All rights reserved.)
 
