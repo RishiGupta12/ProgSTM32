@@ -1,6 +1,6 @@
 include $(top_srcdir)/flashstm32.mk
 
-.PHONY: all uartsdk clean
+.PHONY: uartsdk
 
 all: uartsdk
 
