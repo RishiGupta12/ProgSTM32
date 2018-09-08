@@ -36,10 +36,12 @@ public final class UARTCMDExecutor {
     private final byte[] CMD_WRITE_UNPROTECT = new byte[] { (byte)0x73, (byte)0x8C };
     private final byte[] CMD_READOUT_PROTECT = new byte[] { (byte)0x82, (byte)0x7D };
     private final byte[] CMD_READOUT_UNPROTECT = new byte[] { (byte)0x92, (byte)0x6D };
-
-    private long comPortHandle;
+    
     private final SerialComManager scm;
     private final SystemProperties sprop;
+
+    private long comPortHandle;
+    int supportedCmds;
 
     public UARTCMDExecutor(String libName) throws IOException {
 
@@ -134,7 +136,6 @@ public final class UARTCMDExecutor {
 
         int x;
         int res;
-        int supportedCmds;
         byte[] buf = new byte[32];
         
         res = sendCommand(CMD_GET_ALLOWED_CMDS);
