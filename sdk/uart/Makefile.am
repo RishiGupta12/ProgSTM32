@@ -1,6 +1,6 @@
 include $(top_srcdir)/flashstm32.mk
 
-.PHONY: all uartsdk
+.PHONY: all uartsdk clean
 
 all: uartsdk
 
@@ -13,3 +13,6 @@ uartsdk:
 	cp $(top_srcdir)/sdk/uart/sp-core.jar $(top_srcdir)/build
 	cp $(top_srcdir)/sdk/uart/sp-tty.jar $(top_srcdir)/build
 	rm $(top_srcdir)/sdk/uart/stm32uartsdk.jar
+
+clean:
+	ant clean
