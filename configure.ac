@@ -75,7 +75,6 @@ AC_CONFIG_FILES([
 Makefile
 sdk/Makefile
 sdk/uart/Makefile
-sdk/uart/src/Makefile
 ])
 
 dnl Generate config.status and launch it, run the configuration action
