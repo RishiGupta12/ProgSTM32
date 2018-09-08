@@ -5,6 +5,7 @@
 package flash.stm32.uart;
 
 import java.io.IOException;
+import java.util.concurrent.TimeoutException;
 
 import com.serialpundit.core.SerialComException;
 import com.serialpundit.serial.SerialComManager;
@@ -52,23 +53,30 @@ public final class UARTCMDExecutor {
     public void connectToBootloader(String port, SerialComManager.BAUDRATE baudRate, 
             SerialComManager.DATABITS dataBits, SerialComManager.STOPBITS stopBits, 
             SerialComManager.PARITY parity, SerialComManager.FLOWCONTROL flowCtrl)
-            throws SerialComException {
+            throws SerialComException, TimeoutException {
 
+        int x;
+        
         comPortHandle = scm.openComPort(port, true, true, true);
 
         scm.configureComPortData(comPortHandle, dataBits, stopBits, parity, baudRate, 0);
 
         scm.configureComPortControl(comPortHandle, flowCtrl, 'x', 'x', false, false);
 
-        // 500 milliseconds timeout or serial port read
+        // 500 milliseconds timeout on serial port read
         scm.fineTuneReadBehaviour(comPortHandle, 0, 5, 100, 5, 200);
         
         scm.clearPortIOBuffers(comPortHandle, true, true);
         
-        while(true) {
+        for (x=0; x < 3; x++) {
             scm.writeSingleByte(comPortHandle, (byte) 0x7F);
-            
+            byte[] rcvData = scm.readBytes(comPortHandle);
+            if ((rcvData != null) && (rcvData[0] == ACK)) {
+                return;
+            }
         }
+        
+        throw new TimeoutException("init sequence timedout");
     }
 
     public void disconnectFromBootloader() throws SerialComException {
