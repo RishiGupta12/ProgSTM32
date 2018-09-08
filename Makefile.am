@@ -2,6 +2,8 @@ ACLOCAL_AMFLAGS = -I m4
 
 SUBDIRS = sdk
 
+include flashstm32.mk
+
 clean-local:
 	[ -n "$(top_srcdir)" ] && rm -rf $(top_srcdir)/doc
 
