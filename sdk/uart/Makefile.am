@@ -1,3 +1,3 @@
-$(info ....Building UART SDK....)
+include $(top_srcdir)/flashstm32.mk
 
 SUBDIRS = src
