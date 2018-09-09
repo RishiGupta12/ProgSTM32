@@ -219,7 +219,7 @@ public final class UARTCMDExecutor {
         String bootloaderVersion = null;
         byte[] buf = new byte[32];
         
-        res = sendCommand(CMD_GET_ALLOWED_CMDS);
+        res = sendCmdOrCmdData(CMD_GET_ALLOWED_CMDS);
         if (res == -1) {
             return null;
         }
