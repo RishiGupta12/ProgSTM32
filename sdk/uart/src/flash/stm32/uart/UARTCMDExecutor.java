@@ -91,6 +91,7 @@ public final class UARTCMDExecutor {
         
         int x;
         byte[] buf = new byte[2];
+        long curTime;
         long responseWaitTime;
         
         scm.writeBytes(comPortHandle, sndbuf);
@@ -112,8 +113,16 @@ public final class UARTCMDExecutor {
                 }
             }
             
-            if (System.currentTimeMillis() >= responseWaitTime) {
+            curTime = System.currentTimeMillis();
+            if (curTime >= responseWaitTime) {
                 throw new TimeoutException("init sequence timedout");
+            }
+            
+            if ((responseWaitTime - curTime) > 1000) {
+                try {
+                    Thread.sleep(800);
+                } catch (InterruptedException e) {
+                }
             }
         }
     }
