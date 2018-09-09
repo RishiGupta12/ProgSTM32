@@ -397,13 +397,14 @@ public final class UARTCMDExecutor {
      * 
      * @return 
      * @throws SerialComException
+     * @throws TimeoutException 
      */
-    public int goJump(int addrToJumpTo) throws SerialComException {
+    public int goJump(int addrToJumpTo) throws SerialComException, TimeoutException {
         
         int res;
         byte[] addrbuf = new byte[5];
         
-        res = sendCmdOrCmdData(CMD_GO);
+        res = sendCmdOrCmdData(CMD_GO, 0);
         if (res == -1) {
             return 0;
         }
@@ -414,7 +415,7 @@ public final class UARTCMDExecutor {
         addrbuf[3] = (byte) ( addrToJumpTo & 0xFF);
         addrbuf[4] = (byte) (addrbuf[0] ^ addrbuf[1] ^ addrbuf[2] ^ addrbuf[3]);
         
-        res = sendCmdOrCmdData(addrbuf);
+        res = sendCmdOrCmdData(addrbuf, 0);
         if (res == -1) {
             return 0;
         }
