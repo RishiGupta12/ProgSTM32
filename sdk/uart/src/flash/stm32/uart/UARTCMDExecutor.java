@@ -540,9 +540,10 @@ public final class UARTCMDExecutor {
      * @param numOfPages
      * @return
      * @throws SerialComException
+     * @throws TimeoutException 
      */
     public int eraseMemoryRegion(final int memReg, final int startPageNum, final int numOfPages) 
-            throws SerialComException {
+            throws SerialComException, TimeoutException {
         
         int x;
         int i;
@@ -557,7 +558,7 @@ public final class UARTCMDExecutor {
             throw new IllegalArgumentException("Invalid numOfPages");
         }
         
-        res = sendCmdOrCmdData(CMD_ERASE);
+        res = sendCmdOrCmdData(CMD_ERASE, 0);
         if (res == -1) {
             return 0;
         }
@@ -568,7 +569,7 @@ public final class UARTCMDExecutor {
             erasePagesInfo[0] = (byte) 0xFF;
             erasePagesInfo[1] = (byte) 0x00;
             //TODO should mass erase ack will take more time than normal commands, if yes then add timeout parameters to sendCommand API
-            res = sendCmdOrCmdData(erasePagesInfo);
+            res = sendCmdOrCmdData(erasePagesInfo, 0);
             if (res == -1) {
                 return 0;
             }
@@ -593,7 +594,7 @@ public final class UARTCMDExecutor {
         erasePagesInfo[i] = (byte) res;
         
         //TODO total timeout
-        res = sendCmdOrCmdData(erasePagesInfo);
+        res = sendCmdOrCmdData(erasePagesInfo, 0);
         if (res == -1) {
             return 0;
         }
