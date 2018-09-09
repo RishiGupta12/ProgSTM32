@@ -434,7 +434,7 @@ public final class UARTCMDExecutor {
             throw new IllegalArgumentException("The startAddr must be 32 bit aligned");
         }
         
-        res = sendCommand(CMD_WRITE_MEMORY);
+        res = sendCmdOrCmdData(CMD_WRITE_MEMORY);
         if (res == -1) {
             return 0;
         }
