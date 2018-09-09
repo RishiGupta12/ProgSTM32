@@ -819,12 +819,12 @@ public final class UARTCMDExecutor {
         }
     }
     
-    public int readoutUnprotectMemoryRegion() throws SerialComException {
+    public int readoutUnprotectMemoryRegion() throws SerialComException, TimeoutException {
         
         int res;
         byte[] buf = new byte[2];
         
-        res = sendCmdOrCmdData(CMD_READOUT_UNPROTECT);
+        res = sendCmdOrCmdData(CMD_READOUT_UNPROTECT, 0);
         if (res == -1) {
             return 0;
         }
