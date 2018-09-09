@@ -300,13 +300,14 @@ public final class UARTCMDExecutor {
      * 
      * @return 0 on failure, 1 if enabled, 2 if disabled.
      * @throws SerialComException
+     * @throws TimeoutException 
      */
-    public int getReadProtectionStatus() throws SerialComException {
+    public int getReadProtectionStatus() throws SerialComException, TimeoutException {
         
         int res;
         byte[] buf = new byte[16];
         
-        res = sendCmdOrCmdData(CMD_GET_VRPS);
+        res = sendCmdOrCmdData(CMD_GET_VRPS, 0);
         if (res == -1) {
             return 0;
         }
