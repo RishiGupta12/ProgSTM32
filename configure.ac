@@ -74,7 +74,6 @@ dnl List of makefiles that automake should generate
 AC_CONFIG_FILES([
 Makefile
 sdk/Makefile
-sdk/uart/Makefile
 ])
 
 dnl Generate config.status and launch it, run the configuration action
