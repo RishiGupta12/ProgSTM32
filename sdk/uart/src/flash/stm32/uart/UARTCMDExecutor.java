@@ -724,7 +724,7 @@ public final class UARTCMDExecutor {
     }
     
     public int writeProtectMemoryRegion(final int startPageNum, final int numOfPages) 
-            throws SerialComException {
+            throws SerialComException, TimeoutException {
         
         int x;
         int i;
@@ -740,7 +740,7 @@ public final class UARTCMDExecutor {
             throw new IllegalArgumentException("Invalid numOfPages");
         }
         
-        res = sendCmdOrCmdData(CMD_WRITE_PROTECT);
+        res = sendCmdOrCmdData(CMD_WRITE_PROTECT, 0);
         if (res == -1) {
             return 0;
         }
@@ -763,7 +763,7 @@ public final class UARTCMDExecutor {
         erasePagesInfo[i] = (byte) res;
         
         //TODO total timeout
-        res = sendCmdOrCmdData(erasePagesInfo);
+        res = sendCmdOrCmdData(erasePagesInfo, 0);
         if (res == -1) {
             return 0;
         }
