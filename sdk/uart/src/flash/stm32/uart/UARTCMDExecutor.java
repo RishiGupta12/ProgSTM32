@@ -86,12 +86,12 @@ public final class UARTCMDExecutor {
         scm.closeComPort(comPortHandle);
     }
     
-    private int sendCommand(byte[] cmd) throws SerialComException {
+    private int sendCmdOrCmdData(byte[] sndbuf) throws SerialComException {
         
         int x;
         byte[] buf = new byte[2];
         
-        scm.writeBytes(comPortHandle, cmd);
+        scm.writeBytes(comPortHandle, sndbuf);
         
         //TODO parity error handling
         x = scm.readBytes(comPortHandle, buf, 0, 1, -1, null);
