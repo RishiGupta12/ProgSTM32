@@ -332,8 +332,10 @@ public final class UARTCMDExecutor {
      * 
      * @return 
      * @throws SerialComException
+     * @throws TimeoutException 
      */
-    public int readMemory(byte[] data, int startAddr, int numBytesToRead) throws SerialComException {
+    public int readMemory(byte[] data, int startAddr, int numBytesToRead) 
+            throws SerialComException, TimeoutException {
         
         int x;
         int res;
@@ -351,7 +353,7 @@ public final class UARTCMDExecutor {
             throw new IllegalArgumentException("Data buffer is small");
         }
         
-        res = sendCmdOrCmdData(CMD_READ_MEMORY);
+        res = sendCmdOrCmdData(CMD_READ_MEMORY, 0);
         if (res == -1) {
             return 0;
         }
@@ -362,7 +364,7 @@ public final class UARTCMDExecutor {
         addrbuf[3] = (byte) ( startAddr & 0xFF);
         addrbuf[4] = (byte) (addrbuf[0] ^ addrbuf[1] ^ addrbuf[2] ^ addrbuf[3]);
         
-        res = sendCmdOrCmdData(addrbuf);
+        res = sendCmdOrCmdData(addrbuf, 0);
         if (res == -1) {
             return 0;
         }
@@ -370,7 +372,7 @@ public final class UARTCMDExecutor {
         numbuf[0] = (byte) numBytesToRead;
         numbuf[1] = (byte) (numBytesToRead ^ 0xFF);
         
-        res = sendCmdOrCmdData(numbuf);
+        res = sendCmdOrCmdData(numbuf, 0);
         if (res == -1) {
             return 0;
         }
