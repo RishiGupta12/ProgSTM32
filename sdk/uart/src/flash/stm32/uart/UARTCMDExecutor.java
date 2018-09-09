@@ -742,7 +742,7 @@ public final class UARTCMDExecutor {
         int res;
         byte[] buf = new byte[2];
         
-        res = sendCommand(CMD_WRITE_UNPROTECT);
+        res = sendCmdOrCmdData(CMD_WRITE_UNPROTECT);
         if (res == -1) {
             return 0;
         }
