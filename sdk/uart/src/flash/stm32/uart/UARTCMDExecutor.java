@@ -279,7 +279,7 @@ public final class UARTCMDExecutor {
         int res;
         byte[] buf = new byte[16];
         
-        res = sendCommand(CMD_GET_VRPS);
+        res = sendCmdOrCmdData(CMD_GET_VRPS);
         if (res == -1) {
             return 0;
         }
