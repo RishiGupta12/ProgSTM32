@@ -9,7 +9,7 @@ include flashstm32.mk
 .PHONY: uartsdk clean-local maintainer-clean-local
 
 uartsdk:
-	$(MAKE) -C $(top_srcdir)/sdk/uart -$(MAKEFLAGS)
+	$(MAKE) -C $(top_srcdir)/sdk -$(MAKEFLAGS)
 
 clean-local:
 	[ -n "$(top_srcdir)" ] && rm -rf $(top_srcdir)/doc
@@ -18,4 +18,3 @@ FILES = INSTALL m4 configure Makefile.in depcomp config.guess config.sub missing
 
 maintainer-clean-local:
 	[ -n "$(top_srcdir)" ] && cd $(top_srcdir) && rm -rf $(FILES)
-	rm -f $(top_srcdir)/external/Makefile
