@@ -373,7 +373,7 @@ public final class UARTCMDExecutor {
         int res;
         byte[] addrbuf = new byte[5];
         
-        res = sendCommand(CMD_GO);
+        res = sendCmdOrCmdData(CMD_GO);
         if (res == -1) {
             return 0;
         }
