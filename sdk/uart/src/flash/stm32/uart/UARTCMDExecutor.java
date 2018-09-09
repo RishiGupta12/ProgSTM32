@@ -93,14 +93,20 @@ public final class UARTCMDExecutor {
         
         scm.writeBytes(comPortHandle, sndbuf);
         
-        //TODO parity error handling
-        x = scm.readBytes(comPortHandle, buf, 0, 1, -1, null);
-        
-        if ((x == 1) && (buf[0] == ACK)) {
-            return 0;
+        while(true) {
+            x = scm.readBytes(comPortHandle, buf, 0, 1, -1, null); //TODO parity error handling
+            if (x > 0) {
+                if (buf[0] == ACK) {
+                    return 0;
+                }
+                else if (buf[0] == NACK) {
+                    throw new SerialComException("nack");
+                }
+                else {
+                    
+                }
+            }
         }
-        
-        return -1;
     }
     
     /*
