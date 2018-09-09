@@ -561,7 +561,7 @@ public final class UARTCMDExecutor {
         erasePagesInfo[i] = (byte) res;
         
         //TODO total timeout
-        res = sendCommand(erasePagesInfo);
+        res = sendCmdOrCmdData(erasePagesInfo);
         if (res == -1) {
             return 0;
         }
