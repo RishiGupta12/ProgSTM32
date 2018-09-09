@@ -237,14 +237,15 @@ public final class UARTCMDExecutor {
      * 
      * @return 
      * @throws SerialComException
+     * @throws TimeoutException 
      */
-    public String getBootloaderVersion() throws SerialComException {
+    public String getBootloaderVersion() throws SerialComException, TimeoutException {
         
         int res;
         String bootloaderVersion = null;
         byte[] buf = new byte[32];
         
-        res = sendCmdOrCmdData(CMD_GET_ALLOWED_CMDS);
+        res = sendCmdOrCmdData(CMD_GET_ALLOWED_CMDS, 0);
         if (res == -1) {
             return null;
         }
