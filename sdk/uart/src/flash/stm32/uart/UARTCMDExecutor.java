@@ -86,7 +86,7 @@ public final class UARTCMDExecutor {
         scm.closeComPort(comPortHandle);
     }
     
-    private int sendCmdOrCmdData(byte[] sndbuf) throws SerialComException {
+    private int sendCmdOrCmdData(byte[] sndbuf, int timeout) throws SerialComException {
         
         int x;
         byte[] buf = new byte[2];
