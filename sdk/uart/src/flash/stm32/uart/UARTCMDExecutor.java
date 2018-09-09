@@ -610,7 +610,7 @@ public final class UARTCMDExecutor {
             throw new IllegalArgumentException("Both bank1 and bank2 bits can't be set");
         }
         
-        res = sendCommand(CMD_EXTD_ERASE);
+        res = sendCmdOrCmdData(CMD_EXTD_ERASE);
         if (res == -1) {
             return 0;
         }
