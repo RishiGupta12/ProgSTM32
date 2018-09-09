@@ -323,7 +323,7 @@ public final class UARTCMDExecutor {
             throw new IllegalArgumentException("Data buffer is small");
         }
         
-        res = sendCommand(CMD_READ_MEMORY);
+        res = sendCmdOrCmdData(CMD_READ_MEMORY);
         if (res == -1) {
             return 0;
         }
