@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!--
+	Copyright (C) 2018, Rishi Gupta. All rights reserved.
+
+  build.xml
+  An Ant script to compile java source files, build jar and clean
+  artifcats as required.
+-->
+<project name="flashstm32"  default="compile">
+    <target name="uartsdk">
+        <mkdir dir="bin"/>
+		<javac srcdir="uart:common" destdir="bin" includeAntRuntime="no">   
+			<classpath>
+				<pathelement path="sp-core.jar:sp-tty.jar"/>
+			</classpath>
+		</javac>
+		<jar destfile="flashstm32uartsdk.jar" basedir="bin" />
+    </target>
+	<target name="clean">
+		<delete dir="bin" />
+		<delete file="flashstm32uartsdk.jar" />
+	</target>
+</project>
