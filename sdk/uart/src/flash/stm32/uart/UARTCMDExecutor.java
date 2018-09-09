@@ -650,7 +650,7 @@ public final class UARTCMDExecutor {
             erasePagesInfo[1] = (byte) 0xFD;
             erasePagesInfo[2] = (byte) 0x02;
             //TODO should mass erase ack will take more time than normal commands, if yes then add timeout parameters to sendCommand API
-            res = sendCommand(erasePagesInfo);
+            res = sendCmdOrCmdData(erasePagesInfo);
             if (res == -1) {
                 return 0;
             }
