@@ -620,9 +620,10 @@ public final class UARTCMDExecutor {
      * @param numOfPages
      * @return
      * @throws SerialComException
+     * @throws TimeoutException 
      */
     public int extendedEraseMemoryRegion(final int memReg, final int startPageNum, final int numOfPages) 
-            throws SerialComException {
+            throws SerialComException, TimeoutException {
         
         int x;
         int i;
@@ -643,7 +644,7 @@ public final class UARTCMDExecutor {
             throw new IllegalArgumentException("Both bank1 and bank2 bits can't be set");
         }
         
-        res = sendCmdOrCmdData(CMD_EXTD_ERASE);
+        res = sendCmdOrCmdData(CMD_EXTD_ERASE, 0);
         if (res == -1) {
             return 0;
         }
@@ -655,7 +656,7 @@ public final class UARTCMDExecutor {
             erasePagesInfo[1] = (byte) 0xFF;
             erasePagesInfo[2] = (byte) 0x00;
             //TODO should mass erase ack will take more time than normal commands, if yes then add timeout parameters to sendCommand API
-            res = sendCmdOrCmdData(erasePagesInfo);
+            res = sendCmdOrCmdData(erasePagesInfo, 0);
             if (res == -1) {
                 return 0;
             }
@@ -669,7 +670,7 @@ public final class UARTCMDExecutor {
             erasePagesInfo[1] = (byte) 0xFE;
             erasePagesInfo[2] = (byte) 0x01;
             //TODO should mass erase ack will take more time than normal commands, if yes then add timeout parameters to sendCommand API
-            res = sendCmdOrCmdData(erasePagesInfo);
+            res = sendCmdOrCmdData(erasePagesInfo, 0);
             if (res == -1) {
                 return 0;
             }
@@ -683,7 +684,7 @@ public final class UARTCMDExecutor {
             erasePagesInfo[1] = (byte) 0xFD;
             erasePagesInfo[2] = (byte) 0x02;
             //TODO should mass erase ack will take more time than normal commands, if yes then add timeout parameters to sendCommand API
-            res = sendCmdOrCmdData(erasePagesInfo);
+            res = sendCmdOrCmdData(erasePagesInfo, 0);
             if (res == -1) {
                 return 0;
             }
@@ -714,7 +715,7 @@ public final class UARTCMDExecutor {
         erasePagesInfo[i] = (byte) res;
         
         //TODO total timeout
-        res = sendCmdOrCmdData(erasePagesInfo);
+        res = sendCmdOrCmdData(erasePagesInfo, 0);
         if (res == -1) {
             return 0;
         }
