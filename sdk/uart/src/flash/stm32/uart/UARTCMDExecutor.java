@@ -272,13 +272,14 @@ public final class UARTCMDExecutor {
      * 
      * @return 
      * @throws SerialComException
+     * @throws TimeoutException 
      */
-    public int getChipID() throws SerialComException {
+    public int getChipID() throws SerialComException, TimeoutException {
         
         int res;
         byte[] buf = new byte[16];
         
-        res = sendCmdOrCmdData(CMD_GET_ID);
+        res = sendCmdOrCmdData(CMD_GET_ID, 0);
         if (res == -1) {
             return 0;
         }
