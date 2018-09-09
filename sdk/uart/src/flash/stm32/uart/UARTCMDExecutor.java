@@ -155,14 +155,15 @@ public final class UARTCMDExecutor {
      * 
      * @return 0 if operation fails or bit mask of commands supported by given bootloader.
      * @throws SerialComException
+     * @throws TimeoutException 
      */
-    public int getAllowedCommands() throws SerialComException {
+    public int getAllowedCommands() throws SerialComException, TimeoutException {
 
         int x;
         int res;
         byte[] buf = new byte[32];
         
-        res = sendCmdOrCmdData(CMD_GET_ALLOWED_CMDS);
+        res = sendCmdOrCmdData(CMD_GET_ALLOWED_CMDS, 0);
         if (res == -1) {
             return 0;
         }
