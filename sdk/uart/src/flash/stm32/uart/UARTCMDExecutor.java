@@ -525,7 +525,7 @@ public final class UARTCMDExecutor {
             throw new IllegalArgumentException("Invalid numOfPages");
         }
         
-        res = sendCommand(CMD_ERASE);
+        res = sendCmdOrCmdData(CMD_ERASE);
         if (res == -1) {
             return 0;
         }
