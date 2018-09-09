@@ -440,8 +440,9 @@ public final class UARTCMDExecutor {
      * TODO handle two NACK
      * @return 
      * @throws SerialComException
+     * @throws TimeoutException 
      */
-    public int writeMemory(final byte[] data, int startAddr) throws SerialComException {
+    public int writeMemory(final byte[] data, int startAddr) throws SerialComException, TimeoutException {
         
         int res;
         int x = 0;
@@ -465,7 +466,7 @@ public final class UARTCMDExecutor {
             throw new IllegalArgumentException("The startAddr must be 32 bit aligned");
         }
         
-        res = sendCmdOrCmdData(CMD_WRITE_MEMORY);
+        res = sendCmdOrCmdData(CMD_WRITE_MEMORY, 0);
         if (res == -1) {
             return 0;
         }
@@ -476,7 +477,7 @@ public final class UARTCMDExecutor {
         addrbuf[3] = (byte) ( startAddr & 0xFF);
         addrbuf[4] = (byte) (addrbuf[0] ^ addrbuf[1] ^ addrbuf[2] ^ addrbuf[3]);
         
-        res = sendCmdOrCmdData(addrbuf);
+        res = sendCmdOrCmdData(addrbuf, 0);
         if (res == -1) {
             return 0;
         }
