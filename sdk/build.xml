@@ -17,12 +17,12 @@
 				<pathelement path="sp-core.jar:sp-tty.jar"/>
 			</classpath>
 		</javac>
-		<jar destfile="flashstm32uartsdk.jar" basedir="bin" />
+		<jar destfile="${uartjarname}" basedir="bin" />
     </target>
 
 	<target name="clean">
 		<delete dir="bin" />
-		<delete file="flashstm32uartsdk.jar" />
+		<delete file="${uartjarname}" />
 	</target>
 
 </project>
