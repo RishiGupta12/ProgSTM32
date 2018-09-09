@@ -771,12 +771,12 @@ public final class UARTCMDExecutor {
         return 0;
     }
     
-    public int writeUnprotectMemoryRegion() throws SerialComException {
+    public int writeUnprotectMemoryRegion() throws SerialComException, TimeoutException {
         
         int res;
         byte[] buf = new byte[2];
         
-        res = sendCmdOrCmdData(CMD_WRITE_UNPROTECT);
+        res = sendCmdOrCmdData(CMD_WRITE_UNPROTECT, 0);
         if (res == -1) {
             return 0;
         }
