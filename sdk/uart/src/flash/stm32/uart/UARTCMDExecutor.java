@@ -86,15 +86,21 @@ public final class UARTCMDExecutor {
         scm.closeComPort(comPortHandle);
     }
     
-    private int sendCmdOrCmdData(byte[] sndbuf, int timeout) throws SerialComException {
+    private int sendCmdOrCmdData(byte[] sndbuf, int timeOutDuration) 
+            throws SerialComException, TimeoutException {
         
         int x;
         byte[] buf = new byte[2];
+        long responseWaitTime;
         
         scm.writeBytes(comPortHandle, sndbuf);
         
+        responseWaitTime = System.currentTimeMillis() + (1000 * timeOutDuration);
+        
         while(true) {
+            
             x = scm.readBytes(comPortHandle, buf, 0, 1, -1, null); //TODO parity error handling
+            
             if (x > 0) {
                 if (buf[0] == ACK) {
                     return 0;
@@ -103,8 +109,11 @@ public final class UARTCMDExecutor {
                     throw new SerialComException("nack");
                 }
                 else {
-                    
                 }
+            }
+            
+            if (System.currentTimeMillis() >= responseWaitTime) {
+                throw new TimeoutException("init sequence timedout");
             }
         }
     }
