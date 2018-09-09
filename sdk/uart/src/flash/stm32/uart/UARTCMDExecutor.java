@@ -445,7 +445,7 @@ public final class UARTCMDExecutor {
         addrbuf[3] = (byte) ( startAddr & 0xFF);
         addrbuf[4] = (byte) (addrbuf[0] ^ addrbuf[1] ^ addrbuf[2] ^ addrbuf[3]);
         
-        res = sendCommand(addrbuf);
+        res = sendCmdOrCmdData(addrbuf);
         if (res == -1) {
             return 0;
         }
