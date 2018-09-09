@@ -342,7 +342,7 @@ public final class UARTCMDExecutor {
         numbuf[0] = (byte) numBytesToRead;
         numbuf[1] = (byte) (numBytesToRead ^ 0xFF);
         
-        res = sendCommand(numbuf);
+        res = sendCmdOrCmdData(numbuf);
         if (res == -1) {
             return 0;
         }
