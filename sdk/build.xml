@@ -12,7 +12,7 @@
 
     <target name="uartsdk">
         <mkdir dir="bin"/>
-		<javac srcdir="uart:common" destdir="bin" includeAntRuntime="no">   
+		<javac srcdir="core:uart" destdir="bin" includeAntRuntime="no">   
 			<classpath>
 				<pathelement path="sp-core.jar:sp-tty.jar"/>
 			</classpath>
