@@ -2,11 +2,13 @@
  * Copyright (C) 2018, Rishi Gupta. All rights reserved.
  */
 
-package flash.stm32.uart;
+package flash.stm32.core;
 
 /**
  * <p>
- * Contains bit masks to categories flash memory area.
+ * Contains bit masks to categories flash memory area into 
+ * main flash memory, system memory, option bytes and banks 
+ * as applicable to given microcontroller.
  * </p>
  * 
  * @author Rishi Gupta

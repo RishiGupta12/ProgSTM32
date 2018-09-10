@@ -2,11 +2,18 @@
  * Copyright (C) 2018, Rishi Gupta. All rights reserved.
  */
 
-package flash.stm32.internal;
+package flash.stm32.core.internal;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
+/**
+ * <p>
+ * Central place to get system specific properties.
+ * </p>
+ * 
+ * @author Rishi Gupta
+ */
 public final class SystemProperties {
 
     private String jtmpdir;

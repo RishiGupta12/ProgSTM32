@@ -7,4 +7,4 @@
  * 
  * @author Rishi Gupta
  */
-package flash.stm32.internal;
+package flash.stm32.core.internal;
