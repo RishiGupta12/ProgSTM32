@@ -35,8 +35,12 @@ public final class UARTInterface extends CommunicationInterface {
         scm = new SerialComManager(libName, tmpDir, true, false);
 
     }
-
-    public void open() {
-
+    
+    public void open(String port, SerialComManager.BAUDRATE baudRate, 
+            SerialComManager.DATABITS dataBits, SerialComManager.STOPBITS stopBits, 
+            SerialComManager.PARITY parity, SerialComManager.FLOWCONTROL flowCtrl)
+            throws SerialComException {
+        
     }
+
 }
