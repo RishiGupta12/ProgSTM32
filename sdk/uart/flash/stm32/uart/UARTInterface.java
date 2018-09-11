@@ -13,6 +13,7 @@ import com.serialpundit.core.SerialComException;
 import com.serialpundit.serial.SerialComManager;
 
 import java.io.IOException;
+import java.util.concurrent.TimeoutException;
 
 /**
  * <p>
@@ -89,7 +90,7 @@ public final class UARTInterface extends CommunicationInterface {
         scm.closeComPort(comPortHandle);
     }
 
-    public Device connectAndIdentifyDevice() {
+    public Device connectAndIdentifyDevice() throws SerialComException, TimeoutException {
 
         if (comPortHandle != -1) {
             uartce.connectAndIdentifyDevice(comPortHandle);
