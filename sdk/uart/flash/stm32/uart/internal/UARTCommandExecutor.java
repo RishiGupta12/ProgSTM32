@@ -216,4 +216,38 @@ public class UARTCommandExecutor extends CommandExecutor {
         
         return supportedCmds;
     }
+    
+    /**
+     * 
+     * @return 
+     * @throws SerialComException
+     * @throws TimeoutException 
+     */
+    public String getBootloaderVersion() throws SerialComException, TimeoutException {
+        
+        int res;
+        String bootloaderVersion = null;
+        byte[] buf = new byte[32];
+        
+        res = sendCmdOrCmdData(CMD_GET_ALLOWED_CMDS, 0);
+        if (res == -1) {
+            return null;
+        }
+        
+        res = receiveResponse(buf);
+        if (res == -1) {
+            return null;
+        }
+        
+        if (buf[1] == 0x31) {
+            bootloaderVersion = new String("3.1");
+        } else if (buf[1] == 0x30) {
+            bootloaderVersion = new String("3.0");
+        } else if (buf[1] == 0x22) {
+            bootloaderVersion = new String("2.2");
+        } else {
+        }
+        
+        return bootloaderVersion;
+    }
 }
