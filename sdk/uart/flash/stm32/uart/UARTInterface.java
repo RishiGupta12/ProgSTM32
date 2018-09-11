@@ -21,12 +21,12 @@ import com.serialpundit.serial.SerialComManager;
  * @author Rishi Gupta
  */
 public final class UARTInterface extends CommunicationInterface {
-    
+
     private final SerialComManager scm;
     private final SystemProperties sprop;
 
     private long comPortHandle;
-    
+
     public UARTInterface(String libName) throws IOException {
 
         sprop = new SystemProperties();
@@ -37,6 +37,6 @@ public final class UARTInterface extends CommunicationInterface {
     }
 
     public void open() {
-        
+
     }
 }
