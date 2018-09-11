@@ -3,8 +3,9 @@
  */
 
 /**
- * <p>Encapsulates behavior and environment shared with 
- * other packages.</p>
+ * <p>
+ * Encapsulates behavior and environment shared with other packages.
+ * </p>
  * 
  * @author Rishi Gupta
  */
