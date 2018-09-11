@@ -14,6 +14,6 @@ import flash.stm32.core.CommunicationInterface;
  * 
  * @author Rishi Gupta
  */
-public class UARTInterface extends CommunicationInterface {
+public final class UARTInterface extends CommunicationInterface {
 
 }
