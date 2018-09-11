@@ -25,6 +25,7 @@ public class UARTCommandExecutor extends CommandExecutor {
     private final byte ACK = 0x79;
     private final byte NACK = 0x1F;
     private final byte[] CMD_GET_ALLOWED_CMDS = new byte[] { (byte)0x00, (byte)0xFF };
+    private final byte[] CMD_GET_VRPS = new byte[] { (byte)0x01, (byte)0xFE };
     
     private final SerialComManager scm;
     private long comPortHandle;
