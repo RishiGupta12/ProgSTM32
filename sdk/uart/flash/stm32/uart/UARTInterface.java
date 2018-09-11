@@ -27,6 +27,11 @@ public final class UARTInterface extends CommunicationInterface {
 
     private long comPortHandle;
 
+    /**
+     * 
+     * @param libName
+     * @throws IOException
+     */
     public UARTInterface(String libName) throws IOException {
 
         sprop = new SystemProperties();
@@ -35,12 +40,21 @@ public final class UARTInterface extends CommunicationInterface {
         scm = new SerialComManager(libName, tmpDir, true, false);
 
     }
-    
-    public void open(String port, SerialComManager.BAUDRATE baudRate, 
-            SerialComManager.DATABITS dataBits, SerialComManager.STOPBITS stopBits, 
-            SerialComManager.PARITY parity, SerialComManager.FLOWCONTROL flowCtrl)
+
+    /**
+     * 
+     * @param port
+     * @param baudRate
+     * @param dataBits
+     * @param stopBits
+     * @param parity
+     * @param flowCtrl
+     * @throws SerialComException
+     */
+    public void open(String port, SerialComManager.BAUDRATE baudRate, SerialComManager.DATABITS dataBits,
+            SerialComManager.STOPBITS stopBits, SerialComManager.PARITY parity, SerialComManager.FLOWCONTROL flowCtrl)
             throws SerialComException {
-        
+
         comPortHandle = scm.openComPort(port, true, true, true);
 
         scm.configureComPortData(comPortHandle, dataBits, stopBits, parity, baudRate, 0);
@@ -49,12 +63,16 @@ public final class UARTInterface extends CommunicationInterface {
 
         // 500 milliseconds timeout on serial port read
         scm.fineTuneReadBehaviour(comPortHandle, 0, 5, 100, 5, 200);
-        
+
         scm.clearPortIOBuffers(comPortHandle, true, true);
     }
 
+    /**
+     * 
+     * @throws SerialComException
+     */
     public void close() throws SerialComException {
-        
+
         scm.closeComPort(comPortHandle);
     }
 }
