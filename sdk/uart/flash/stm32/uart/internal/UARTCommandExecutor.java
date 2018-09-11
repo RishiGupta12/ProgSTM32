@@ -30,6 +30,7 @@ public class UARTCommandExecutor extends CommandExecutor {
     private final byte[] CMD_READ_MEMORY = new byte[] { (byte)0x11, (byte)0xEE };
     private final byte[] CMD_GO = new byte[] { (byte)0x21, (byte)0xDE };
     private final byte[] CMD_WRITE_MEMORY = new byte[] { (byte)0x31, (byte)0xCE };
+    private final byte[] CMD_ERASE = new byte[] { (byte)0x43, (byte)0xBC };
     
     private final SerialComManager scm;
     private long comPortHandle;
