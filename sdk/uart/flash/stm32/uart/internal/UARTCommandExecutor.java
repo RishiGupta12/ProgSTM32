@@ -21,6 +21,7 @@ import flash.stm32.core.internal.CommandExecutor;
 public class UARTCommandExecutor extends CommandExecutor {
     
     private final byte ACK = 0x79;
+    private final byte NACK = 0x1F;
 
     private final SerialComManager scm;
     private long comPortHandle;
