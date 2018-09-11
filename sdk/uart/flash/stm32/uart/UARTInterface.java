@@ -41,6 +41,16 @@ public final class UARTInterface extends CommunicationInterface {
             SerialComManager.PARITY parity, SerialComManager.FLOWCONTROL flowCtrl)
             throws SerialComException {
         
+        comPortHandle = scm.openComPort(port, true, true, true);
+
+        scm.configureComPortData(comPortHandle, dataBits, stopBits, parity, baudRate, 0);
+
+        scm.configureComPortControl(comPortHandle, flowCtrl, 'x', 'x', false, false);
+
+        // 500 milliseconds timeout on serial port read
+        scm.fineTuneReadBehaviour(comPortHandle, 0, 5, 100, 5, 200);
+        
+        scm.clearPortIOBuffers(comPortHandle, true, true);
     }
 
 }
