@@ -134,4 +134,86 @@ public class UARTCommandExecutor extends CommandExecutor {
         
         return index;
     }
+    
+    /**
+     * 
+     * @return 0 if operation fails or bit mask of commands supported by given bootloader.
+     * @throws SerialComException
+     * @throws TimeoutException 
+     */
+    public int getAllowedCommands() throws SerialComException, TimeoutException {
+
+        int x;
+        int res;
+        byte[] buf = new byte[32];
+        
+        res = sendCmdOrCmdData(CMD_GET_ALLOWED_CMDS, 0);
+        if (res == -1) {
+            return 0;
+        }
+        
+        res = receiveResponse(buf);
+        if (res == -1) {
+            return 0;
+        }
+        
+        supportedCmds = 0;
+        x = 2;
+        while((buf[x] != ACK) && (x < res)) {
+            switch (buf[x]) {
+            
+            case 0x00:
+                supportedCmds = supportedCmds | BLCMDS.GET;
+                break;
+                
+            case 0x01:
+                supportedCmds = supportedCmds | BLCMDS.GET_VRPS;
+                break;
+                
+            case 0x02:
+                supportedCmds = supportedCmds | BLCMDS.GET_ID;
+                break;
+                
+            case 0x11:
+                supportedCmds = supportedCmds | BLCMDS.READ_MEMORY;
+                break;
+                
+            case 0x21:
+                supportedCmds = supportedCmds | BLCMDS.GO;
+                break;
+                
+            case 0x31:
+                supportedCmds = supportedCmds | BLCMDS.WRITE_MEMORY;
+                break;
+                
+            case 0x43:
+                supportedCmds = supportedCmds | BLCMDS.ERASE;
+                break;
+                
+            case 0x44:
+                supportedCmds = supportedCmds | BLCMDS.EXTENDED_ERASE;
+                break;
+                
+            case 0x63:
+                supportedCmds = supportedCmds | BLCMDS.WRITE_PROTECT;
+                break;
+                
+            case 0x73:
+                supportedCmds = supportedCmds | BLCMDS.WRITE_UNPROTECT;
+                break;
+                
+            case (byte)0x82:
+                supportedCmds = supportedCmds | BLCMDS.READOUT_PROTECT;
+                break;
+                
+            case (byte)0x92:
+                supportedCmds = supportedCmds | BLCMDS.READOUT_UNPROTECT;
+                break;                
+            }
+            
+            x++;
+        }
+        
+        return supportedCmds;
+    }
 }
