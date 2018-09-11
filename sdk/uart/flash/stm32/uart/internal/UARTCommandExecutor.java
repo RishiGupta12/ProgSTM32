@@ -2,13 +2,14 @@
  * Copyright (C) 2018, Rishi Gupta. All rights reserved.
  */
 
-package flash.stm32.core.internal;
+package flash.stm32.uart.internal;
+
+import flash.stm32.core.internal.CommandExecutor;
 
 /**
  * <p>
- * Entity which implements USART protocol required for
- * communication between host computer and bootloader in
- * a stm32 microcontroller.
+ * Entity which implements USART protocol required for communication between
+ * host computer and bootloader in a stm32 microcontroller.
  * </p>
  * 
  * @author Rishi Gupta
