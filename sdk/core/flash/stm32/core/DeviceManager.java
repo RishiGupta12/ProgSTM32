@@ -4,6 +4,8 @@
 
 package flash.stm32.core;
 
+import java.io.IOException;
+
 import flash.stm32.uart.UARTInterface;
 
 /**
@@ -40,7 +42,7 @@ public final class DeviceManager {
         }
     }
 
-    public CommunicationInterface getCommunicationIface(IFace iface) {
+    public CommunicationInterface getCommunicationIface(IFace iface, String libName) throws IOException {
 
         int x;
 
@@ -51,7 +53,7 @@ public final class DeviceManager {
         x = iface.getValue();
 
         if (x == 1) {
-            return new UARTInterface();
+            return new UARTInterface(libName);
         }
 
         return null;
