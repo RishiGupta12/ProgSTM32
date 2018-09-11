@@ -20,16 +20,16 @@ public final class DeviceManager {
      * host computer.
      * </p>
      */
-    public enum UART {
+    public enum IFace {
         /**
          * <p>
          * Represents USART interface (serial port).
          * </p>
          */
-        SB_1(1);
+        UART(1);
         private int value;
 
-        private UART(int value) {
+        private IFace(int value) {
             this.value = value;
         }
 
@@ -38,4 +38,7 @@ public final class DeviceManager {
         }
     }
 
+    public void getCommunicationIface() {
+        
+    }
 }
