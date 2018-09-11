@@ -250,4 +250,33 @@ public class UARTCommandExecutor extends CommandExecutor {
         
         return bootloaderVersion;
     }
+    
+    /**
+     * STM32 product codes are defined in AN2606 application note.
+     * 
+     * @return 
+     * @throws SerialComException
+     * @throws TimeoutException 
+     */
+    public int getChipID() throws SerialComException, TimeoutException {
+        
+        int res;
+        byte[] buf = new byte[16];
+        
+        res = sendCmdOrCmdData(CMD_GET_ID, 0);
+        if (res == -1) {
+            return 0;
+        }
+        
+        res = receiveResponse(buf);
+        if (res == -1) {
+            return 0;
+        }
+        
+        res = 0;
+        res = res | (buf[1] << 8);
+        res = res | buf[2];
+        
+        return res;
+    }
 }
