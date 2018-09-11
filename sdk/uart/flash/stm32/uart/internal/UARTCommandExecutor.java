@@ -779,4 +779,28 @@ public class UARTCommandExecutor extends CommandExecutor {
             }
         }
     }
+    
+    public int readoutprotectMemoryRegion() throws SerialComException, TimeoutException {
+        
+        int res;
+        byte[] buf = new byte[2];
+        
+        res = sendCmdOrCmdData(CMD_READOUT_PROTECT, 0);
+        if (res == -1) {
+            return 0;
+        }
+        
+        //TODO timeout
+        while(true) {
+            res = scm.readBytes(comPortHandle, buf, 0, 1, -1, null);
+            if (res > 0) {
+                if (buf[0] == ACK) {
+                    return 0;
+                }
+                if (buf[0] == NACK) {
+                    return -1;
+                }
+            }
+        }
+    }
 }
