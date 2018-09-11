@@ -24,6 +24,13 @@ import java.io.IOException;
  */
 public final class UARTInterface extends CommunicationInterface {
 
+    /**
+     * <p>
+     * Production release version of this UART STM32 flasher sdk.
+     * </p>
+     */
+    public static final String STM32UARTSDK_VERSION = "1.0";
+
     private final SerialComManager scm;
     private final SystemProperties sprop;
     private final UARTCommandExecutor uartce;
