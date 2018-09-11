@@ -311,5 +311,70 @@ public class UARTCommandExecutor extends CommandExecutor {
         return res;
     }
     
-    
+    /**
+     * This API read data from any valid memory address in RAM, Flash memory 
+     * and the information block (system memory or option byte areas). It may 
+     * be used by GUI programs where input address is taken from user.
+     * 
+     * @return 
+     * @throws SerialComException
+     * @throws TimeoutException 
+     */
+    public int readMemory(byte[] data, int startAddr, int numBytesToRead) 
+            throws SerialComException, TimeoutException {
+        
+        int x;
+        int res;
+        int index = 0;
+        byte[] addrbuf = new byte[5];
+        byte[] numbuf = new byte[2];
+        
+        if(data == null) {
+            throw new IllegalArgumentException("Data buffer can't be null");
+        }
+        if ((numBytesToRead > 256) || (numBytesToRead <= 0)) {
+            throw new IllegalArgumentException("The numBytesToRead must be between 1 to 256");
+        }
+        if (numBytesToRead > data.length) {
+            throw new IllegalArgumentException("Data buffer is small");
+        }
+        
+        res = sendCmdOrCmdData(CMD_READ_MEMORY, 0);
+        if (res == -1) {
+            return 0;
+        }
+        
+        addrbuf[0] = (byte) ((startAddr >> 24) & 0xFF);
+        addrbuf[1] = (byte) ((startAddr >> 16) & 0xFF);
+        addrbuf[2] = (byte) ((startAddr >> 8) & 0xFF);
+        addrbuf[3] = (byte) ( startAddr & 0xFF);
+        addrbuf[4] = (byte) (addrbuf[0] ^ addrbuf[1] ^ addrbuf[2] ^ addrbuf[3]);
+        
+        res = sendCmdOrCmdData(addrbuf, 0);
+        if (res == -1) {
+            return 0;
+        }
+        
+        numbuf[0] = (byte) numBytesToRead;
+        numbuf[1] = (byte) (numBytesToRead ^ 0xFF);
+        
+        res = sendCmdOrCmdData(numbuf, 0);
+        if (res == -1) {
+            return 0;
+        }
+        
+        //TODO timeout
+        while(true) {
+            x = scm.readBytes(comPortHandle, data, index, numBytesToRead, -1, null);
+            if (x > 0) {
+                index = index + x;
+                numBytesToRead = numBytesToRead - x;
+            }
+            if (numBytesToRead == 0) {
+                break;
+            }
+        }
+        
+        return 0;
+    }
 }
