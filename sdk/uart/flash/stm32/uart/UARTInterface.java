@@ -41,9 +41,9 @@ public final class UARTInterface extends CommunicationInterface {
         String tmpDir = sprop.getJavaIOTmpDir();
 
         scm = new SerialComManager(libName, tmpDir, true, false);
-        
+
         uartce = new UARTCommandExecutor(scm);
-        
+
         comPortHandle = -1;
     }
 
@@ -81,36 +81,13 @@ public final class UARTInterface extends CommunicationInterface {
 
         scm.closeComPort(comPortHandle);
     }
-    
+
     public Device connectAndIdentifyDevice() {
-        
+
         if (comPortHandle != -1) {
             uartce.connectAndIdentifyDevice(comPortHandle);
         }
-        
+
         throw new IllegalStateException("com port not opened");
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

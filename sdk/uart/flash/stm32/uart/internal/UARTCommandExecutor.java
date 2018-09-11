@@ -4,6 +4,8 @@
 
 package flash.stm32.uart.internal;
 
+import java.util.concurrent.TimeoutException;
+
 import com.serialpundit.serial.SerialComManager;
 
 import flash.stm32.core.internal.CommandExecutor;
@@ -27,7 +29,28 @@ public class UARTCommandExecutor extends CommandExecutor {
 
     public void connectAndIdentifyDevice(long comPortHandle) {
 
+        int x;
+        int y;
+        int z;
         this.comPortHandle = comPortHandle;
+
+        for (x = 0; x < 3; x++) {
+            scm.writeSingleByte(comPortHandle, (byte) 0x7F);
+            byte[] rcvData = scm.readBytes(comPortHandle);
+            if (rcvData != null) {
+                y = rcvData.length;
+                for (z = 0; z < y; z++) {
+                    if (rcvData[z] == ACK) {
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (x >= 3) {
+            throw new TimeoutException("init sequence timedout");
+        }
+
     }
 
 }
