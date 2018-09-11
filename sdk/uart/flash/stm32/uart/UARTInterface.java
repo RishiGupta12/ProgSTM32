@@ -53,4 +53,8 @@ public final class UARTInterface extends CommunicationInterface {
         scm.clearPortIOBuffers(comPortHandle, true, true);
     }
 
+    public void close() throws SerialComException {
+        
+        scm.closeComPort(comPortHandle);
+    }
 }
