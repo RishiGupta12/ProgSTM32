@@ -20,14 +20,18 @@ public final class SystemProperties {
     private final SecurityManager securityManager;
 
     /**
-     * <p>Allocates a new SystemProperties object.</p>
+     * <p>
+     * Allocates a new SystemProperties object.
+     * </p>
      */
     public SystemProperties() {
         securityManager = System.getSecurityManager();
     }
 
     /**
-     * <p>Gives system/user temp directory as returned by JVM.</p>
+     * <p>
+     * Gives system/user temp directory as returned by JVM.
+     * </p>
      * 
      * @return tmp directory for Java operations.
      * @throws SecurityException
