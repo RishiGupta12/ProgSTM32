@@ -21,6 +21,7 @@ import flash.stm32.core.internal.CommandExecutor;
  */
 public class UARTCommandExecutor extends CommandExecutor {
 
+    private final byte INITSEQ = 0x7F;
     private final byte ACK = 0x79;
     private final byte NACK = 0x1F;
 
@@ -39,7 +40,7 @@ public class UARTCommandExecutor extends CommandExecutor {
         this.comPortHandle = comPortHandle;
 
         for (x = 0; x < 3; x++) {
-            scm.writeSingleByte(comPortHandle, (byte) 0x7F);
+            scm.writeSingleByte(comPortHandle, INITSEQ);
             byte[] rcvData = scm.readBytes(comPortHandle);
             if (rcvData != null) {
                 y = rcvData.length;
