@@ -419,4 +419,98 @@ public class UARTCommandExecutor extends CommandExecutor {
             }
         }
     }
+    
+    /**
+     * 
+     * 
+     * TODO handle two NACK
+     * @return 
+     * @throws SerialComException
+     * @throws TimeoutException 
+     */
+    public int writeMemory(final byte[] data, int startAddr) throws SerialComException, TimeoutException {
+        
+        int res;
+        int x = 0;
+        int checksum;
+        int requiredPad ;
+        int numBytesToWrite;
+        byte[] paddingData = null;
+        byte[] addrbuf = new byte[5];
+
+        if (data == null) {
+            throw new IllegalArgumentException("Data buffer can't be null");
+        }
+        
+        numBytesToWrite = data.length;
+        if ((numBytesToWrite > 256) || (numBytesToWrite == 0)) {
+            throw new IllegalArgumentException("Inappropriate data buffer size");
+        }
+        
+        //TODO is this required for all uC
+        if ((startAddr & 0x3) != 0) {
+            throw new IllegalArgumentException("The startAddr must be 32 bit aligned");
+        }
+        
+        res = sendCmdOrCmdData(CMD_WRITE_MEMORY, 0);
+        if (res == -1) {
+            return 0;
+        }
+        
+        addrbuf[0] = (byte) ((startAddr >> 24) & 0xFF);
+        addrbuf[1] = (byte) ((startAddr >> 16) & 0xFF);
+        addrbuf[2] = (byte) ((startAddr >> 8) & 0xFF);
+        addrbuf[3] = (byte) ( startAddr & 0xFF);
+        addrbuf[4] = (byte) (addrbuf[0] ^ addrbuf[1] ^ addrbuf[2] ^ addrbuf[3]);
+        
+        res = sendCmdOrCmdData(addrbuf, 0);
+        if (res == -1) {
+            return 0;
+        }
+        
+        requiredPad = (numBytesToWrite + 1) % 4;
+        
+        if (requiredPad  > 0) {
+            requiredPad  = 4 - requiredPad ;
+            paddingData = new byte[requiredPad];
+            x = paddingData.length;
+            for (res=0; res < x; res++) {
+                paddingData[res] = (byte) 0xFF;
+            }
+        }
+        
+        checksum = 0;
+        for (res=0; res < numBytesToWrite; res++) {
+            checksum = (byte) ((byte)checksum ^ data[res]);
+        }
+        
+        if (requiredPad  > 0) {
+            for (res=0; res < x; res++) {
+                checksum = (byte) ((byte)checksum ^ paddingData[res]);
+            }
+        }
+        
+        scm.writeSingleByte(comPortHandle, (byte) (numBytesToWrite + requiredPad));
+        
+        scm.writeBytes(comPortHandle, data);
+        
+        if (requiredPad  > 0) {
+            scm.writeBytes(comPortHandle, paddingData);
+        }
+        
+        scm.writeSingleByte(comPortHandle, (byte) checksum);
+        
+        //TODO timeout
+        while(true) {
+            res = scm.readBytes(comPortHandle, addrbuf, 0, 1, -1, null);
+            if (res > 0) {
+                if (addrbuf[0] == ACK) {
+                    return 0;
+                }
+                if (addrbuf[0] == NACK) {
+                    return -1;
+                }
+            }
+        }
+    }
 }
