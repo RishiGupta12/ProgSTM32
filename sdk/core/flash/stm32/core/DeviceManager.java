@@ -4,6 +4,8 @@
 
 package flash.stm32.core;
 
+import flash.stm32.uart.UARTInterface;
+
 /**
  * <p>
  * Entry point to the flashstm32 sdk. Application must obtain an instance of
@@ -38,10 +40,20 @@ public final class DeviceManager {
         }
     }
 
-    public void getCommunicationIface(IFace iface) {
-        
-        if(iface == null) {
+    public CommunicationInterface getCommunicationIface(IFace iface) {
+
+        int x;
+
+        if (iface == null) {
             throw new IllegalArgumentException("iface can not be null.");
         }
+
+        x = iface.getValue();
+
+        if (x == 1) {
+            return new UARTInterface();
+        }
+
+        return null;
     }
 }
