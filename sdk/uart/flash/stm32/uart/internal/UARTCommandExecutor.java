@@ -38,7 +38,9 @@ public class UARTCommandExecutor extends CommandExecutor {
     private final byte[] CMD_READOUT_UNPROTECT = new byte[] { (byte)0x92, (byte)0x6D };
     
     private final SerialComManager scm;
+    
     private long comPortHandle;
+    private int supportedCmds;
 
     public UARTCommandExecutor(SerialComManager scm) {
         this.scm = scm;
