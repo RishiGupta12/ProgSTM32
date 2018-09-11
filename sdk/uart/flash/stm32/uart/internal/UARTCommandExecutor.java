@@ -19,7 +19,7 @@ import flash.stm32.core.internal.CommandExecutor;
  * 
  * @author Rishi Gupta
  */
-public class UARTCommandExecutor extends CommandExecutor {
+public final class UARTCommandExecutor extends CommandExecutor {
 
     private final byte INITSEQ = 0x7F;
     private final byte ACK = 0x79;
