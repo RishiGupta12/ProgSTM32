@@ -3,7 +3,9 @@
  */
 
 /**
- * <p>Contains classes and methods for internal use of sdk.</p>
+ * <p>
+ * Contains classes and methods for internal use of sdk.
+ * </p>
  * 
  * @author Rishi Gupta
  */
