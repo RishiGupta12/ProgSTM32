@@ -6,8 +6,8 @@ package flash.stm32.core;
 
 /**
  * <p>
- * Entry point to the flashstm32 sdk. Application must obtain 
- * an instance of this class and call methods in it.
+ * Entry point to the flashstm32 sdk. Application must obtain an instance of
+ * this class and call methods in it.
  * </p>
  * 
  * @author Rishi Gupta
