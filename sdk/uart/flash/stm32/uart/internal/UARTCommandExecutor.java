@@ -707,4 +707,52 @@ public class UARTCommandExecutor extends CommandExecutor {
         
         return 0;
     }
+    
+    public int writeProtectMemoryRegion(final int startPageNum, final int numOfPages) 
+            throws SerialComException, TimeoutException {
+        
+        int x;
+        int i;
+        int res;
+        byte[] erasePagesInfo;
+        
+        if (startPageNum < 0) {
+            throw new IllegalArgumentException("Invalid startPageNum");
+        }
+        
+        //TODO what is max num pages in extended cmd, product specific it is
+        if ((numOfPages > 254) || (numOfPages < 0)) {
+            throw new IllegalArgumentException("Invalid numOfPages");
+        }
+        
+        res = sendCmdOrCmdData(CMD_WRITE_PROTECT, 0);
+        if (res == -1) {
+            return 0;
+        }
+        
+        //TODO what if numOfPages = 0xFF
+        erasePagesInfo = new byte[1 + numOfPages + 1];
+        erasePagesInfo[0] = (byte) numOfPages;
+        
+        x = startPageNum;
+        for (res=1; res < numOfPages; res++) {
+            erasePagesInfo[res] = (byte) x;
+            x++;
+        }
+        
+        res = 0;
+        i = numOfPages + 1;
+        for (x=0; x < i; x++) {
+            res ^= erasePagesInfo[x];
+        }
+        erasePagesInfo[i] = (byte) res;
+        
+        //TODO total timeout
+        res = sendCmdOrCmdData(erasePagesInfo, 0);
+        if (res == -1) {
+            return 0;
+        }
+        
+        return 0;
+    }
 }
