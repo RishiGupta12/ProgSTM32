@@ -377,4 +377,46 @@ public class UARTCommandExecutor extends CommandExecutor {
         
         return 0;
     }
+    
+    /**
+     * The host should send the base address where the application to jump to is programmed.
+     * 
+     * @return 
+     * @throws SerialComException
+     * @throws TimeoutException 
+     */
+    public int goJump(int addrToJumpTo) throws SerialComException, TimeoutException {
+        
+        int res;
+        byte[] addrbuf = new byte[5];
+        
+        res = sendCmdOrCmdData(CMD_GO, 0);
+        if (res == -1) {
+            return 0;
+        }
+        
+        addrbuf[0] = (byte) ((addrToJumpTo >> 24) & 0xFF);
+        addrbuf[1] = (byte) ((addrToJumpTo >> 16) & 0xFF);
+        addrbuf[2] = (byte) ((addrToJumpTo>> 8) & 0xFF);
+        addrbuf[3] = (byte) ( addrToJumpTo & 0xFF);
+        addrbuf[4] = (byte) (addrbuf[0] ^ addrbuf[1] ^ addrbuf[2] ^ addrbuf[3]);
+        
+        res = sendCmdOrCmdData(addrbuf, 0);
+        if (res == -1) {
+            return 0;
+        }
+        
+        //TODO timeout
+        while(true) {
+            res = scm.readBytes(comPortHandle, addrbuf, 0, 1, -1, null);
+            if (res > 0) {
+                if (addrbuf[0] == ACK) {
+                    return 0;
+                }
+                if (addrbuf[0] == NACK) {
+                    return -1;
+                }
+            }
+        }
+    }
 }
