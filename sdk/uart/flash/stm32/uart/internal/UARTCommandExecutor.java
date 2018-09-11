@@ -4,6 +4,8 @@
 
 package flash.stm32.uart.internal;
 
+import com.serialpundit.serial.SerialComManager;
+
 import flash.stm32.core.internal.CommandExecutor;
 
 /**
@@ -15,5 +17,17 @@ import flash.stm32.core.internal.CommandExecutor;
  * @author Rishi Gupta
  */
 public class UARTCommandExecutor extends CommandExecutor {
+
+    private final SerialComManager scm;
+    private long comPortHandle;
+
+    public UARTCommandExecutor(SerialComManager scm) {
+        this.scm = scm;
+    }
+
+    public void connectAndIdentifyDevice(long comPortHandle) {
+
+        this.comPortHandle = comPortHandle;
+    }
 
 }
