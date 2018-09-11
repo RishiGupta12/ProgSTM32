@@ -38,7 +38,10 @@ public final class DeviceManager {
         }
     }
 
-    public void getCommunicationIface() {
+    public void getCommunicationIface(IFace iface) {
         
+        if(iface == null) {
+            throw new IllegalArgumentException("iface can not be null.");
+        }
     }
 }
