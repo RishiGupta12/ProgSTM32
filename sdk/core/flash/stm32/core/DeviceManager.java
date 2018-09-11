@@ -12,6 +12,6 @@ package flash.stm32.core;
  * 
  * @author Rishi Gupta
  */
-public class DeviceManager {
+public final class DeviceManager {
 
 }
