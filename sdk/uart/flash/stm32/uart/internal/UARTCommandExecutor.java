@@ -513,4 +513,77 @@ public class UARTCommandExecutor extends CommandExecutor {
             }
         }
     }
+    
+    /**
+     * <p>
+     * If memReg has both REGTYPE.MAIN and REGTYPE.SYSTEM bits set, mass erase is performed. In this 
+     * case remaining arguments are ignored.
+     * </p>
+     * 
+     * @param memReg
+     * @param startPageNum
+     * @param numOfPages
+     * @return
+     * @throws SerialComException
+     * @throws TimeoutException 
+     */
+    public int eraseMemoryRegion(final int memReg, final int startPageNum, final int numOfPages) 
+            throws SerialComException, TimeoutException {
+        
+        int x;
+        int i;
+        int res;
+        byte[] erasePagesInfo;
+        
+        if (startPageNum < 0) {
+            throw new IllegalArgumentException("Invalid startPageNum");
+        }
+        
+        if ((numOfPages > 254) || (numOfPages < 0)) {
+            throw new IllegalArgumentException("Invalid numOfPages");
+        }
+        
+        res = sendCmdOrCmdData(CMD_ERASE, 0);
+        if (res == -1) {
+            return 0;
+        }
+        
+        // mass erase case
+        if ((memReg & (REGTYPE.MAIN | REGTYPE.SYSTEM)) == (REGTYPE.MAIN | REGTYPE.SYSTEM)) {
+            erasePagesInfo = new byte[2];
+            erasePagesInfo[0] = (byte) 0xFF;
+            erasePagesInfo[1] = (byte) 0x00;
+            //TODO should mass erase ack will take more time than normal commands, if yes then add timeout parameters to sendCommand API
+            res = sendCmdOrCmdData(erasePagesInfo, 0);
+            if (res == -1) {
+                return 0;
+            }
+            return 0;
+        }
+        
+        // non-mass erase case
+        erasePagesInfo = new byte[numOfPages + 2];
+        erasePagesInfo[0] = (byte) numOfPages;
+        
+        x = startPageNum;
+        for (res=1; res < numOfPages; res++) {
+            erasePagesInfo[res] = (byte) x;
+            x++;
+        }
+        
+        res = 0;
+        i = numOfPages + 1;
+        for (x=0; x < i; x++) {
+            res ^= erasePagesInfo[x];
+        }
+        erasePagesInfo[i] = (byte) res;
+        
+        //TODO total timeout
+        res = sendCmdOrCmdData(erasePagesInfo, 0);
+        if (res == -1) {
+            return 0;
+        }
+        
+        return 0;
+    }
 }
