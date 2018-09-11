@@ -14,4 +14,28 @@ package flash.stm32.core;
  */
 public final class DeviceManager {
 
+    /**
+     * <p>
+     * Pre-defined communication interface for communication between bootloader and
+     * host computer.
+     * </p>
+     */
+    public enum UART {
+        /**
+         * <p>
+         * Represents USART interface (serial port).
+         * </p>
+         */
+        SB_1(1);
+        private int value;
+
+        private UART(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return this.value;
+        }
+    }
+
 }
