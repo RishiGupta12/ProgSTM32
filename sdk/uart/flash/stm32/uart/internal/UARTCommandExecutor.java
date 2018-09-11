@@ -281,4 +281,35 @@ public class UARTCommandExecutor extends CommandExecutor {
         
         return res;
     }
+    
+    /**
+     * 
+     * @return 0 on failure, 1 if enabled, 2 if disabled.
+     * @throws SerialComException
+     * @throws TimeoutException 
+     */
+    public int getReadProtectionStatus() throws SerialComException, TimeoutException {
+        
+        int res;
+        byte[] buf = new byte[16];
+        
+        res = sendCmdOrCmdData(CMD_GET_VRPS, 0);
+        if (res == -1) {
+            return 0;
+        }
+        
+        res = receiveResponse(buf);
+        if (res == -1) {
+            return 0;
+        }
+        
+        //TODO exact purpose of byte1,2
+        //buf[1]
+        //buf[2]
+
+        
+        return res;
+    }
+    
+    
 }
