@@ -4,6 +4,11 @@
 
 package flash.stm32.core;
 
+import java.util.concurrent.TimeoutException;
+
+import com.serialpundit.core.SerialComException;
+import com.serialpundit.serial.SerialComManager;
+
 import flash.stm32.core.internal.SystemProperties;
 
 /**
@@ -13,7 +18,7 @@ import flash.stm32.core.internal.SystemProperties;
  * 
  * @author Rishi Gupta
  */
-public class CommunicationInterface {
+public abstract class CommunicationInterface {
 
     public final SystemProperties sprop;
 
@@ -21,4 +26,14 @@ public class CommunicationInterface {
 
         sprop = new SystemProperties();
     }
+
+    public abstract void open(String port, SerialComManager.BAUDRATE baudRate, SerialComManager.DATABITS dataBits,
+            SerialComManager.STOPBITS stopBits, SerialComManager.PARITY parity, SerialComManager.FLOWCONTROL flowCtrl)
+            throws SerialComException;
+
+    public abstract void close() throws SerialComException;
+
+    public abstract Device connectAndIdentifyDevice() throws SerialComException, TimeoutException;
+
+    public abstract void disconnectFromDevice();
 }
