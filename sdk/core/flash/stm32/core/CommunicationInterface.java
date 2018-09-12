@@ -20,7 +20,7 @@ import flash.stm32.core.internal.SystemProperties;
  */
 public abstract class CommunicationInterface {
 
-    public final SystemProperties sysprop;
+    protected final SystemProperties sysprop;
 
     public CommunicationInterface() {
 

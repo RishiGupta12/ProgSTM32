@@ -11,6 +11,15 @@ package flash.stm32.core;
  * 
  * @author Rishi Gupta
  */
-public class Device {
+public abstract class Device {
+
+    protected int pid;
+    protected int numBanks;
+    protected int numPagesInABank;
+    protected int pageSize;
+    protected int mainMemStartAddr;
+    protected int mainMemEndAddr;
+    protected int IBSysMemStartAddr;
+    protected int IBSysMemeEndAddr;
 
 }
