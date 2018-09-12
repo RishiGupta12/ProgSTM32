@@ -20,11 +20,11 @@ import flash.stm32.core.internal.SystemProperties;
  */
 public abstract class CommunicationInterface {
 
-    public final SystemProperties sprop;
+    public final SystemProperties sysprop;
 
     public CommunicationInterface() {
 
-        sprop = new SystemProperties();
+        sysprop = new SystemProperties();
     }
 
     public abstract void open(String port, SerialComManager.BAUDRATE baudRate, SerialComManager.DATABITS dataBits,

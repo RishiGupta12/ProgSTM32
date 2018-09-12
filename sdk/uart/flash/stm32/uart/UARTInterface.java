@@ -45,7 +45,7 @@ public final class UARTInterface extends CommunicationInterface {
 
         super();
         
-        String tmpDir = sprop.getJavaIOTmpDir();
+        String tmpDir = sysprop.getJavaIOTmpDir();
 
         scm = new SerialComManager(libName, tmpDir, true, false);
 
