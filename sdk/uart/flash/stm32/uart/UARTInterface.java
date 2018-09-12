@@ -98,4 +98,8 @@ public final class UARTInterface extends CommunicationInterface {
 
         throw new IllegalStateException("com port not opened");
     }
+    
+    public void disconnectFromDevice() {
+        //todo reset needed or not
+    }
 }
