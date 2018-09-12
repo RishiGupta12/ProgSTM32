@@ -9,6 +9,7 @@ import java.util.concurrent.TimeoutException;
 import com.serialpundit.core.SerialComException;
 import com.serialpundit.serial.SerialComManager;
 
+import flash.stm32.core.Device;
 import flash.stm32.core.REGTYPE;
 import flash.stm32.core.internal.CommandExecutor;
 
@@ -42,6 +43,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
 
     private long comPortHandle;
     private int supportedCmds;
+    private Device curDev;
 
     public UARTCommandExecutor(SerialComManager scm) {
 
@@ -49,7 +51,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
         this.scm = scm;
     }
 
-    public void connectAndIdentifyDevice(long comPortHandle) throws SerialComException, TimeoutException {
+    public Device connectAndIdentifyDevice(long comPortHandle) throws SerialComException, TimeoutException {
 
         int x;
         int y;
@@ -76,7 +78,9 @@ public final class UARTCommandExecutor extends CommandExecutor {
 
         x = getChipID();
 
-        dCreator.createDevFromPID(x);
+        curDev = dCreator.createDevFromPID(x);
+        
+        return curDev;
     }
 
     private int sendCmdOrCmdData(byte[] sndbuf, int timeOutDuration) throws SerialComException, TimeoutException {

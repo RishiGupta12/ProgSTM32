@@ -44,7 +44,7 @@ public final class UARTInterface extends CommunicationInterface {
     public UARTInterface(String libName) throws IOException {
 
         super();
-        
+
         String tmpDir = sysprop.getJavaIOTmpDir();
 
         scm = new SerialComManager(libName, tmpDir, true, false);
@@ -92,7 +92,7 @@ public final class UARTInterface extends CommunicationInterface {
     public Device connectAndIdentifyDevice() throws SerialComException, TimeoutException {
 
         if (comPortHandle != -1) {
-            uartce.connectAndIdentifyDevice(comPortHandle);
+            return uartce.connectAndIdentifyDevice(comPortHandle);
         }
 
         throw new IllegalStateException("com port not opened");

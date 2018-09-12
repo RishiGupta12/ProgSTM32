@@ -16,6 +16,6 @@ import flash.stm32.core.Device;
 public class DeviceCreator {
 
     public Device createDevFromPID(int pid) {
-
+        return null;
     }
 }
