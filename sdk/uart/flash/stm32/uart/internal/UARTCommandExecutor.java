@@ -52,6 +52,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
         int x;
         int y;
         int z;
+
         this.comPortHandle = comPortHandle;
 
         for (x = 0; x < 3; x++) {
@@ -71,6 +72,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
             throw new TimeoutException("init sequence timedout");
         }
 
+        x = getChipID();
     }
 
     private int sendCmdOrCmdData(byte[] sndbuf, int timeOutDuration) throws SerialComException, TimeoutException {
