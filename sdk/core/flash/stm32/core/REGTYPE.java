@@ -53,4 +53,11 @@ public final class REGTYPE {
      * </p>
      */
     public static final int BANK2 = 0x10;
+
+    /**
+     * <p>
+     * Represents an EEPROM memory region.
+     * </p>
+     */
+    public static final int EEPROM = 0x20;
 }
