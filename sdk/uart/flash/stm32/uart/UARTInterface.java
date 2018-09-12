@@ -4,7 +4,6 @@
 
 package flash.stm32.uart;
 
-import flash.stm32.core.internal.SystemProperties;
 import flash.stm32.uart.internal.UARTCommandExecutor;
 import flash.stm32.core.CommunicationInterface;
 import flash.stm32.core.Device;
@@ -33,7 +32,6 @@ public final class UARTInterface extends CommunicationInterface {
     public static final String STM32UARTSDK_VERSION = "1.0";
 
     private final SerialComManager scm;
-    private final SystemProperties sprop;
     private final UARTCommandExecutor uartce;
 
     private long comPortHandle;
@@ -45,7 +43,7 @@ public final class UARTInterface extends CommunicationInterface {
      */
     public UARTInterface(String libName) throws IOException {
 
-        sprop = new SystemProperties();
+        super();
         String tmpDir = sprop.getJavaIOTmpDir();
 
         scm = new SerialComManager(libName, tmpDir, true, false);
@@ -98,8 +96,8 @@ public final class UARTInterface extends CommunicationInterface {
 
         throw new IllegalStateException("com port not opened");
     }
-    
+
     public void disconnectFromDevice() {
-        //todo reset needed or not
+        // todo reset needed or not
     }
 }
