@@ -44,6 +44,8 @@ public final class UARTCommandExecutor extends CommandExecutor {
     private int supportedCmds;
 
     public UARTCommandExecutor(SerialComManager scm) {
+
+        super();
         this.scm = scm;
     }
 
@@ -73,6 +75,8 @@ public final class UARTCommandExecutor extends CommandExecutor {
         }
 
         x = getChipID();
+
+        dCreator.createDevFromPID(x);
     }
 
     private int sendCmdOrCmdData(byte[] sndbuf, int timeOutDuration) throws SerialComException, TimeoutException {

@@ -13,4 +13,7 @@ package flash.stm32.core.internal;
  */
 public class DeviceCreator {
 
+    public void createDevFromPID(int pid) {
+
+    }
 }
