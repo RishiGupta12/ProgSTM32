@@ -60,4 +60,11 @@ public final class REGTYPE {
      * </p>
      */
     public static final int EEPROM = 0x20;
+
+    /**
+     * <p>
+     * Represents an RAM (random access memory) region.
+     * </p>
+     */
+    public static final int RAM = 0x40;
 }
