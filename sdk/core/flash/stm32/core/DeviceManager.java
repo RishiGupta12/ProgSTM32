@@ -43,7 +43,7 @@ public final class DeviceManager {
     }
 
     /**
-     * libName
+     * 
      * 
      * @param iface
      * @param libName
