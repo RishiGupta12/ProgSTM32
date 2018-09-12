@@ -42,12 +42,23 @@ public final class DeviceManager {
         }
     }
 
+    /**
+     * libName
+     * 
+     * @param iface
+     * @param libName
+     * @return
+     * @throws IOException
+     */
     public CommunicationInterface getCommunicationIface(IFace iface, String libName) throws IOException {
 
         int x;
 
         if (iface == null) {
             throw new IllegalArgumentException("iface can not be null.");
+        }
+        if (libName == null) {
+            throw new IllegalArgumentException("libName can not be null.");
         }
 
         x = iface.getValue();
