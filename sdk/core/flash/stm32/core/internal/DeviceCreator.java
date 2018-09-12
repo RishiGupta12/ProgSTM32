@@ -4,6 +4,8 @@
 
 package flash.stm32.core.internal;
 
+import flash.stm32.core.Device;
+
 /**
  * <p>
  * Handles concrete stm32 device specific information management.
@@ -13,7 +15,7 @@ package flash.stm32.core.internal;
  */
 public class DeviceCreator {
 
-    public void createDevFromPID(int pid) {
+    public Device createDevFromPID(int pid) {
 
     }
 }
