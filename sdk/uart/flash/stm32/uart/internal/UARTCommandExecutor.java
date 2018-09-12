@@ -113,7 +113,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
         }
     }
 
-    /*
+    /**
      * @return number of bytes read including length of data, ACK at end.
      */
     private int receiveResponse(byte[] res) throws SerialComException {
