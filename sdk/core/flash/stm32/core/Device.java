@@ -89,4 +89,8 @@ public abstract class Device {
     public String getBootloaderVersion() throws SerialComException, TimeoutException {
         return cmdExtr.getBootloaderVersion();
     }
+    
+    public int getChipID() throws SerialComException, TimeoutException {
+        return cmdExtr.getChipID();
+    }
 }
