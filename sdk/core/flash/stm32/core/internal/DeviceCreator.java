@@ -33,12 +33,30 @@ public class DeviceCreator {
             }
 
             return new UnknownDevice(pid);
-        }
-        else if ((pid >= 0x413) && (pid <= 0x458)) {
+        } else if ((pid >= 0x413) && (pid <= 0x458)) {
             // F4 series
-        }
-        else {
-            
+            switch (pid) {
+            case 0x413:
+                return new DevF3x413();
+            case 0x419:
+                return new DevF3x419();
+            case 0x421:
+                return new DevF3x421();
+            case 0x423:
+                return new DevF3x423();
+            case 0x431:
+                return new DevF3x431();
+            case 0x433:
+                return new DevF3x433();
+            case 0x441:
+                return new DevF3x441();
+            case 0x458:
+                return new DevF3x458();
+            }
+
+            return new UnknownDevice(pid);
+        } else {
+
         }
 
         return null;
