@@ -63,15 +63,15 @@ public class DeviceCreator {
 
         /* F1 series */
         case 0x410:
-            return new DevF1x410();
+            return new DevF1x410(cmdExtr);
         case 0x412:
-            return new DevF1x412();
+            return new DevF1x412(cmdExtr);
         case 0x414:
-            return new DevF1x414();
+            return new DevF1x414(cmdExtr);
         case 0x420:
-            return new DevF1x420();
+            return new DevF1x420(cmdExtr);
         case 0x428:
-            return new DevF1x428();
+            return new DevF1x428(cmdExtr);
 
         /* H7 series */
         case 0x450:
