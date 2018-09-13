@@ -14,21 +14,28 @@ package flash.stm32.core;
 public abstract class Device {
 
     protected int pid;
-    protected int numBanks;
-    protected int numPagesInABank;
-    protected int pageSize;
+    protected String mcuSeries;
+
     protected int flashMemSize;
     protected int mainMemStartAddr;
     protected int mainMemEndAddr;
+
+    protected int numBanks;
+    protected int numPagesInABank;
+    protected int pageSize;
+
     protected int IBSysMemStartAddr;
-    protected int IBSysMemeEndAddr;
-    protected String mcuSeries;
+    protected int IBSysMemEndAddr;
+
+    protected int RAMMemStartAddr;
+    protected int RAMMemEndAddr;
 
     /**
      * 
      * @param flashMemSize
      */
     public void setFlashMemSize(int flashMemSize) {
+        // TODO update applicable parameters from datasheet
         this.flashMemSize = flashMemSize;
     }
 
