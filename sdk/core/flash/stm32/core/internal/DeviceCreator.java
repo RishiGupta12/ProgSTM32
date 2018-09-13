@@ -21,7 +21,7 @@ public class DeviceCreator {
 
         /* F3 series */
         case 0x422:
-            return new DevF3x422();
+            return new DevF3x422(cmdExtr);
         case 0x432:
             return new DevF3x432();
         case 0x438:
@@ -113,7 +113,7 @@ public class DeviceCreator {
 
         /* F0 series */
         case 0x440:
-            return new DevF0x440();
+            return new DevF0x440(cmdExtr);
         case 0x442:
             return new DevF0x442();
         case 0x444:
