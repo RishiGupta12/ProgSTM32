@@ -23,4 +23,11 @@ public abstract class Device {
     protected int IBSysMemStartAddr;
     protected int IBSysMemeEndAddr;
 
+    /**
+     * 
+     * @param flashMemSize
+     */
+    public void setFlashMemSize(int flashMemSize) {
+        this.flashMemSize = flashMemSize;
+    }
 }
