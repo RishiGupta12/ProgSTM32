@@ -111,6 +111,18 @@ public class DeviceCreator {
         case 0x470:
             return new DevL4x470();
 
+        /* F0 series */
+        case 0x440:
+            return new DevF0x440();
+        case 0x442:
+            return new DevF0x442();
+        case 0x444:
+            return new DevF0x444();
+        case 0x445:
+            return new DevF0x445();
+        case 0x448:
+            return new DevF0x448();
+
         }
 
         return new UnknownDevice(pid);
