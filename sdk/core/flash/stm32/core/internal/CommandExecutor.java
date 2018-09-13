@@ -43,4 +43,7 @@ public abstract class CommandExecutor {
 
     public abstract int eraseMemoryRegion(final int memReg, final int startPageNum, final int numOfPages)
             throws SerialComException, TimeoutException;
+    
+    public abstract int extendedEraseMemoryRegion(final int memReg, final int startPageNum, final int numOfPages)
+            throws SerialComException, TimeoutException;
 }
