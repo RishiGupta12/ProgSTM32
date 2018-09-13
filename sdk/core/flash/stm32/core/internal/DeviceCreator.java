@@ -33,21 +33,21 @@ public class DeviceCreator {
 
         /* F4 series */
         case 0x413:
-            return new DevF4x413();
+            return new DevF4x413(cmdExtr);
         case 0x419:
-            return new DevF4x419();
+            return new DevF4x419(cmdExtr);
         case 0x421:
-            return new DevF4x421();
+            return new DevF4x421(cmdExtr);
         case 0x423:
-            return new DevF4x423();
+            return new DevF4x423(cmdExtr);
         case 0x431:
-            return new DevF4x431();
+            return new DevF4x431(cmdExtr);
         case 0x433:
-            return new DevF4x433();
+            return new DevF4x433(cmdExtr);
         case 0x441:
-            return new DevF4x441();
+            return new DevF4x441(cmdExtr);
         case 0x458:
-            return new DevF4x458();
+            return new DevF4x458(cmdExtr);
 
         /* F2 series */
         case 0x411:
