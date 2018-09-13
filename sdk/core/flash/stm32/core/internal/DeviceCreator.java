@@ -19,7 +19,7 @@ public class DeviceCreator {
 
         switch (pid) {
 
-        // F3 series
+        /* F3 series */
         case 0x422:
             return new DevF3x422();
         case 0x432:
@@ -31,7 +31,7 @@ public class DeviceCreator {
         case 0x446:
             return new DevF3x446();
 
-        // F4 series
+        /* F4 series */
         case 0x413:
             return new DevF4x413();
         case 0x419:
@@ -49,11 +49,11 @@ public class DeviceCreator {
         case 0x458:
             return new DevF4x458();
 
-        // F2 series
+        /* F2 series */
         case 0x411:
             return new DevF2x411();
 
-        // F7 series
+        /* F7 series */
         case 0x449:
             return new DevF7x449();
         case 0x451:
@@ -61,7 +61,7 @@ public class DeviceCreator {
         case 0x452:
             return new DevF7x452();
 
-        // F1 series
+        /* F1 series */
         case 0x410:
             return new DevF1x410();
         case 0x412:
@@ -73,9 +73,19 @@ public class DeviceCreator {
         case 0x428:
             return new DevF1x428();
 
-        // H7 series
+        /* H7 series */
         case 0x450:
             return new DevH7x450();
+
+        /* L0 series */
+        case 0x417:
+            return new DevL0x417();
+        case 0x425:
+            return new DevL0x425();
+        case 0x447:
+            return new DevL0x447();
+        case 0x457:
+            return new DevL0x457();
 
         }
 
