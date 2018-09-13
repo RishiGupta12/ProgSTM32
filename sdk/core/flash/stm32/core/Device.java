@@ -8,6 +8,10 @@ package flash.stm32.core;
  * <p>
  * Base class representing a stm32 device.
  * </p>
+ * <p>
+ * RAM address 0x00 means two or more devices have same pid but different
+ * addresses. Therefore more concrete information has to be provided by caller.
+ * </p>
  * 
  * @author Rishi Gupta
  */
