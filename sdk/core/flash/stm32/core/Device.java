@@ -85,4 +85,8 @@ public abstract class Device {
     public int getAllowedCommands() throws SerialComException, TimeoutException {
         return cmdExtr.getAllowedCommands();
     }
+    
+    public String getBootloaderVersion() throws SerialComException, TimeoutException {
+        return cmdExtr.getBootloaderVersion();
+    }
 }
