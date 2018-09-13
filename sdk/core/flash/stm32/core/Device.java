@@ -97,4 +97,8 @@ public abstract class Device {
     public int getReadProtectionStatus() throws SerialComException, TimeoutException {
         cmdExtr.getReadProtectionStatus();
     }
+    
+    public int readMemory(byte[] data, int startAddr, int numBytesToRead) throws SerialComException, TimeoutException {
+        cmdExtr.readMemory();
+    }
 }

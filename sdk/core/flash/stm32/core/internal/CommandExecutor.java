@@ -30,4 +30,5 @@ public abstract class CommandExecutor {
     public abstract String getBootloaderVersion() throws SerialComException, TimeoutException;
     public abstract int getChipID() throws SerialComException, TimeoutException;
     public abstract int getReadProtectionStatus() throws SerialComException, TimeoutException;
+    public abstract int readMemory(byte[] data, int startAddr, int numBytesToRead) throws SerialComException, TimeoutException;
 }
