@@ -21,7 +21,7 @@ public class DeviceCreator {
             // F3 series
             switch (pid) {
             case 0x422:
-                break;
+                return new DevF3x422();
             case 0x432:
                 break;
             case 0x438:
