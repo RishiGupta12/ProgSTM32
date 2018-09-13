@@ -119,4 +119,9 @@ public abstract class Device {
             throws SerialComException, TimeoutException {
         return cmdExtr.extendedEraseMemoryRegion(memReg, startPageNum, numOfPages);
     }
+
+    public int writeProtectMemoryRegion(final int startPageNum, final int numOfPages)
+            throws SerialComException, TimeoutException {
+        return cmdExtr.writeProtectMemoryRegion(startPageNum, numOfPages);
+    }
 }
