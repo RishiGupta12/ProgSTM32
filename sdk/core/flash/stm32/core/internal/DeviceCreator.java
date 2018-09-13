@@ -115,13 +115,13 @@ public class DeviceCreator {
         case 0x440:
             return new DevF0x440(cmdExtr);
         case 0x442:
-            return new DevF0x442();
+            return new DevF0x442(cmdExtr);
         case 0x444:
-            return new DevF0x444();
+            return new DevF0x444(cmdExtr);
         case 0x445:
-            return new DevF0x445();
+            return new DevF0x445(cmdExtr);
         case 0x448:
-            return new DevF0x448();
+            return new DevF0x448(cmdExtr);
 
         }
 
