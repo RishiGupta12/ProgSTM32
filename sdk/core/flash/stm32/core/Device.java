@@ -4,6 +4,8 @@
 
 package flash.stm32.core;
 
+import flash.stm32.core.internal.DevF3x432;
+
 /**
  * <p>
  * Base class representing a stm32 device.
@@ -49,5 +51,28 @@ public abstract class Device {
      */
     public String getuCSeries() {
         return mcuSeries;
+    }
+
+    /**
+     * 
+     * @return
+     */
+    public int[] getMCUInformation() {
+
+        int[] info = new int[11];
+
+        info[0] = pid;
+        info[1] = flashMemSize;
+        info[2] = mainMemStartAddr;
+        info[3] = mainMemEndAddr;
+        info[4] = numBanks;
+        info[5] = numPagesInABank;
+        info[6] = pageSize;
+        info[7] = IBSysMemStartAddr;
+        info[8] = IBSysMemEndAddr;
+        info[9] = RAMMemStartAddr;
+        info[10] = RAMMemEndAddr;
+
+        return info;
     }
 }
