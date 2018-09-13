@@ -23,7 +23,7 @@ public class DeviceCreator {
             case 0x422:
                 return new DevF3x422();
             case 0x432:
-                break;
+                return new DevF3x432();
             case 0x438:
                 break;
             case 0x439:
