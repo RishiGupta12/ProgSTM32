@@ -34,6 +34,12 @@ public class DeviceCreator {
 
             return new UnknownDevice(pid);
         }
+        else if ((pid >= 0x413) && (pid <= 0x458)) {
+            // F4 series
+        }
+        else {
+            
+        }
 
         return null;
     }
