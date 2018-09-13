@@ -4,6 +4,10 @@
 
 package flash.stm32.core;
 
+import java.util.concurrent.TimeoutException;
+
+import com.serialpundit.core.SerialComException;
+
 import flash.stm32.core.internal.CommandExecutor;
 
 /**
@@ -76,5 +80,9 @@ public abstract class Device {
         info[10] = RAMMemEndAddr;
 
         return info;
+    }
+
+    public int getAllowedCommands() throws SerialComException, TimeoutException {
+        return cmdExtr.getAllowedCommands();
     }
 }

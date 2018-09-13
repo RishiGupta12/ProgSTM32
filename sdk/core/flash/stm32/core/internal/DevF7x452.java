@@ -8,7 +8,8 @@ import flash.stm32.core.Device;
 
 final class DevF7x452 extends Device {
 
-    public DevF7x452() {
+    public DevF7x452(CommandExecutor cmdExtr) {
+        this.cmdExtr = cmdExtr;
         pid = 0x452;
         mcuSeries = "STM32F72xxx/73xxx";
         RAMMemStartAddr = 0x20004000;

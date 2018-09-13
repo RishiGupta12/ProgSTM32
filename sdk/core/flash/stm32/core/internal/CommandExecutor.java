@@ -4,6 +4,10 @@
 
 package flash.stm32.core.internal;
 
+import java.util.concurrent.TimeoutException;
+
+import com.serialpundit.core.SerialComException;
+
 import flash.stm32.core.internal.DeviceCreator;
 
 /**
@@ -14,12 +18,13 @@ import flash.stm32.core.internal.DeviceCreator;
  * 
  * @author Rishi Gupta
  */
-public class CommandExecutor {
+public abstract class CommandExecutor {
 
     public final DeviceCreator dCreator;
 
     public CommandExecutor() {
-
         dCreator = new DeviceCreator();
     }
+    
+    public abstract int getAllowedCommands() throws SerialComException, TimeoutException;
 }

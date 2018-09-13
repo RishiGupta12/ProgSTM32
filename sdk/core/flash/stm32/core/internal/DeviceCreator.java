@@ -55,11 +55,11 @@ public class DeviceCreator {
 
         /* F7 series */
         case 0x449:
-            return new DevF7x449();
+            return new DevF7x449(cmdExtr);
         case 0x451:
-            return new DevF7x451();
+            return new DevF7x451(cmdExtr);
         case 0x452:
-            return new DevF7x452();
+            return new DevF7x452(cmdExtr);
 
         /* F1 series */
         case 0x410:
@@ -79,37 +79,37 @@ public class DeviceCreator {
 
         /* L0 series */
         case 0x417:
-            return new DevL0x417();
+            return new DevL0x417(cmdExtr);
         case 0x425:
-            return new DevL0x425();
+            return new DevL0x425(cmdExtr);
         case 0x447:
-            return new DevL0x447();
+            return new DevL0x447(cmdExtr);
         case 0x457:
-            return new DevL0x457();
+            return new DevL0x457(cmdExtr);
 
         /* L1 series */
         case 0x416:
-            return new DevL1x416();
+            return new DevL1x416(cmdExtr);
         case 0x427:
-            return new DevL1x427();
+            return new DevL1x427(cmdExtr);
         case 0x429:
-            return new DevL1x429();
+            return new DevL1x429(cmdExtr);
         case 0x436:
-            return new DevL1x436();
+            return new DevL1x436(cmdExtr);
         case 0x437:
-            return new DevL1x437();
+            return new DevL1x437(cmdExtr);
 
         /* L4 series */
         case 0x415:
-            return new DevL4x415();
+            return new DevL4x415(cmdExtr);
         case 0x435:
-            return new DevL4x435();
+            return new DevL4x435(cmdExtr);
         case 0x4261:
-            return new DevL4x461();
+            return new DevL4x461(cmdExtr);
         case 0x462:
-            return new DevL4x462();
+            return new DevL4x462(cmdExtr);
         case 0x470:
-            return new DevL4x470();
+            return new DevL4x470(cmdExtr);
 
         /* F0 series */
         case 0x440:
