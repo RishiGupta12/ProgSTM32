@@ -61,11 +61,13 @@ public final class UARTCommandExecutor extends CommandExecutor {
 
         for (x = 0; x < 3; x++) {
             scm.writeSingleByte(comPortHandle, INITSEQ);
+
             byte[] rcvData = scm.readBytes(comPortHandle);
             if (rcvData != null) {
                 y = rcvData.length;
                 for (z = 0; z < y; z++) {
-                    if (rcvData[z] == ACK) {
+                    /* If stm32 was already in bootloader mode, it will send NACK. */
+                    if ((rcvData[z] == ACK) || (rcvData[z] == NACK)) {
                         break;
                     }
                 }
