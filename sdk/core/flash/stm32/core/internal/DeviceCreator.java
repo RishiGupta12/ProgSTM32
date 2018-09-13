@@ -29,8 +29,10 @@ public class DeviceCreator {
             case 0x439:
                 return new DevF3x439();
             case 0x446:
-                break;
+                return new DevF3x446();
             }
+
+            return new UnknownDevice(pid);
         }
 
         return null;
