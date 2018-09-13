@@ -4,6 +4,8 @@
 
 package flash.stm32.core;
 
+import flash.stm32.core.internal.CommandExecutor;
+
 /**
  * <p>
  * Base class representing a stm32 device.
@@ -16,6 +18,8 @@ package flash.stm32.core;
  * @author Rishi Gupta
  */
 public abstract class Device {
+
+    protected CommandExecutor cmdExtr;
 
     protected int pid;
     protected String mcuSeries;
