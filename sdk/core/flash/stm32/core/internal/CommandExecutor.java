@@ -38,6 +38,9 @@ public abstract class CommandExecutor {
             throws SerialComException, TimeoutException;
 
     public abstract int goJump(int addrToJumpTo) throws SerialComException, TimeoutException;
-    
+
     public abstract int writeMemory(final byte[] data, int startAddr) throws SerialComException, TimeoutException;
+
+    public abstract int eraseMemoryRegion(final int memReg, final int startPageNum, final int numOfPages)
+            throws SerialComException, TimeoutException;
 }

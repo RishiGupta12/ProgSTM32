@@ -109,4 +109,9 @@ public abstract class Device {
     public int writeMemory(final byte[] data, int startAddr) throws SerialComException, TimeoutException {
         return cmdExtr.writeMemory(data, startAddr);
     }
+
+    public int eraseMemoryRegion(final int memReg, final int startPageNum, final int numOfPages)
+            throws SerialComException, TimeoutException {
+        return cmdExtr.eraseMemoryRegion(memReg, startPageNum, numOfPages);
+    }
 }
