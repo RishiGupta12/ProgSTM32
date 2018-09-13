@@ -73,6 +73,10 @@ public class DeviceCreator {
         case 0x428:
             return new DevF1x428();
 
+        // H7 series
+        case 0x450:
+            return new DevH7x450();
+
         }
 
         return new UnknownDevice(pid);
