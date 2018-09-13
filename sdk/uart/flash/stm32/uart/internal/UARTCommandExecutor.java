@@ -77,7 +77,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
         }
 
         x = getChipID();
-        curDev = dCreator.createDevFromPID(x);
+        curDev = dCreator.createDevFromPID(x, this);
 
         return curDev;
     }
