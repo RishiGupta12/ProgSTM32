@@ -75,7 +75,7 @@ public class DeviceCreator {
 
         /* H7 series */
         case 0x450:
-            return new DevH7x450();
+            return new DevH7x450(cmdExtr);
 
         /* L0 series */
         case 0x417:
