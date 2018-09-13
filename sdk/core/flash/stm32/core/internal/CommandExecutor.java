@@ -51,4 +51,6 @@ public abstract class CommandExecutor {
             throws SerialComException, TimeoutException;
 
     public abstract int writeUnprotectMemoryRegion() throws SerialComException, TimeoutException;
+    
+    public abstract int readoutprotectMemoryRegion() throws SerialComException, TimeoutException;
 }
