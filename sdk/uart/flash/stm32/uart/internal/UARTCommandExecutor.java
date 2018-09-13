@@ -55,22 +55,39 @@ public final class UARTCommandExecutor extends CommandExecutor {
 
         int x;
         int y;
-        int z;
+        int z = 0;
+        byte[] rcvData = null;
 
         this.comPortHandle = comPortHandle;
 
         for (x = 0; x < 3; x++) {
             scm.writeSingleByte(comPortHandle, INITSEQ);
 
-            byte[] rcvData = scm.readBytes(comPortHandle);
+            rcvData = scm.readBytes(comPortHandle);
             if (rcvData != null) {
                 y = rcvData.length;
                 for (z = 0; z < y; z++) {
-                    /* If stm32 was already in bootloader mode, it will send NACK. */
+                    /*
+                     * If stm32 was already in bootloader mode, it will send NACK if command code is
+                     * wrong.
+                     */
                     if ((rcvData[z] == ACK) || (rcvData[z] == NACK)) {
                         break;
                     }
                 }
+            }
+        }
+
+        /*
+         * Suppose bootloader was waiting for data for the command previously executed,
+         * then sending invalid data will result in NACK and bootloader getting out of
+         * the command execution.
+         */
+        if ((rcvData != null) && (rcvData[z] == NACK)) {
+            scm.writeSingleByte(comPortHandle, (byte) 0xFF);
+            rcvData = scm.readBytes(comPortHandle);
+            if ((rcvData != null) && (rcvData[z] != NACK)) {
+                throw new TimeoutException("init sequence timedout, consider putting stm in bootloader mode again.");
             }
         }
 
