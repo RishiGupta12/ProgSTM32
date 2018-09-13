@@ -69,7 +69,7 @@ public class DeviceCreator {
         case 0x414:
             return new DevF1x414();
         case 0x420:
-            return new DevF3x439();
+            return new DevF1x420();
         case 0x428:
             return new DevF3x446();
 
