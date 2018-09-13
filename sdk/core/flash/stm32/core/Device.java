@@ -124,4 +124,8 @@ public abstract class Device {
             throws SerialComException, TimeoutException {
         return cmdExtr.writeProtectMemoryRegion(startPageNum, numOfPages);
     }
+
+    public int writeUnprotectMemoryRegion() throws SerialComException, TimeoutException {
+        return cmdExtr.writeUnprotectMemoryRegion();
+    }
 }

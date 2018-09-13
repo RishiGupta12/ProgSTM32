@@ -49,4 +49,6 @@ public abstract class CommandExecutor {
 
     public abstract int writeProtectMemoryRegion(final int startPageNum, final int numOfPages)
             throws SerialComException, TimeoutException;
+
+    public abstract int writeUnprotectMemoryRegion() throws SerialComException, TimeoutException;
 }
