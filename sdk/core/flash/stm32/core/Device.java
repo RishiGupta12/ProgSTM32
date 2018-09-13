@@ -17,6 +17,7 @@ public abstract class Device {
     protected int numBanks;
     protected int numPagesInABank;
     protected int pageSize;
+    protected int flashMemSize;
     protected int mainMemStartAddr;
     protected int mainMemEndAddr;
     protected int IBSysMemStartAddr;

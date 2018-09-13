@@ -350,10 +350,10 @@ public final class UARTCommandExecutor extends CommandExecutor {
             return 0;
         }
 
-        addrbuf[0] = (byte) ((startAddr >> 24) & 0xFF);
-        addrbuf[1] = (byte) ((startAddr >> 16) & 0xFF);
-        addrbuf[2] = (byte) ((startAddr >> 8) & 0xFF);
-        addrbuf[3] = (byte) (startAddr & 0xFF);
+        addrbuf[0] = (byte) ((startAddr >> 24) & 0x000000FF);
+        addrbuf[1] = (byte) ((startAddr >> 16) & 0x000000FF);
+        addrbuf[2] = (byte) ((startAddr >> 8) & 0x000000FF);
+        addrbuf[3] = (byte) (startAddr & 0x000000FF);
         addrbuf[4] = (byte) (addrbuf[0] ^ addrbuf[1] ^ addrbuf[2] ^ addrbuf[3]);
 
         res = sendCmdOrCmdData(addrbuf, 0);
@@ -402,10 +402,10 @@ public final class UARTCommandExecutor extends CommandExecutor {
             return 0;
         }
 
-        addrbuf[0] = (byte) ((addrToJumpTo >> 24) & 0xFF);
-        addrbuf[1] = (byte) ((addrToJumpTo >> 16) & 0xFF);
-        addrbuf[2] = (byte) ((addrToJumpTo >> 8) & 0xFF);
-        addrbuf[3] = (byte) (addrToJumpTo & 0xFF);
+        addrbuf[0] = (byte) ((addrToJumpTo >> 24) & 0x000000FF);
+        addrbuf[1] = (byte) ((addrToJumpTo >> 16) & 0x000000FF);
+        addrbuf[2] = (byte) ((addrToJumpTo >> 8) & 0x000000FF);
+        addrbuf[3] = (byte) (addrToJumpTo & 0x000000FF);
         addrbuf[4] = (byte) (addrbuf[0] ^ addrbuf[1] ^ addrbuf[2] ^ addrbuf[3]);
 
         res = sendCmdOrCmdData(addrbuf, 0);
@@ -465,10 +465,10 @@ public final class UARTCommandExecutor extends CommandExecutor {
             return 0;
         }
 
-        addrbuf[0] = (byte) ((startAddr >> 24) & 0xFF);
-        addrbuf[1] = (byte) ((startAddr >> 16) & 0xFF);
-        addrbuf[2] = (byte) ((startAddr >> 8) & 0xFF);
-        addrbuf[3] = (byte) (startAddr & 0xFF);
+        addrbuf[0] = (byte) ((startAddr >> 24) & 0x000000FF);
+        addrbuf[1] = (byte) ((startAddr >> 16) & 0x000000FF);
+        addrbuf[2] = (byte) ((startAddr >> 8) & 0x000000FF);
+        addrbuf[3] = (byte) (startAddr & 0x000000FF);
         addrbuf[4] = (byte) (addrbuf[0] ^ addrbuf[1] ^ addrbuf[2] ^ addrbuf[3]);
 
         res = sendCmdOrCmdData(addrbuf, 0);
