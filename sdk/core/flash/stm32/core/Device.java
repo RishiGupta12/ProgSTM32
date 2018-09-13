@@ -4,8 +4,6 @@
 
 package flash.stm32.core;
 
-import flash.stm32.core.internal.DevF3x432;
-
 /**
  * <p>
  * Base class representing a stm32 device.
