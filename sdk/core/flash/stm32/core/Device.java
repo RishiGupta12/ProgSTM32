@@ -105,4 +105,8 @@ public abstract class Device {
     public int goJump(int addrToJumpTo) throws SerialComException, TimeoutException {
         return cmdExtr.goJump(addrToJumpTo);
     }
+
+    public int writeMemory(final byte[] data, int startAddr) throws SerialComException, TimeoutException {
+        return cmdExtr.writeMemory(data, startAddr);
+    }
 }
