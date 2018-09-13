@@ -22,6 +22,7 @@ public abstract class Device {
     protected int mainMemEndAddr;
     protected int IBSysMemStartAddr;
     protected int IBSysMemeEndAddr;
+    protected String mcuSeries;
 
     /**
      * 
@@ -29,5 +30,13 @@ public abstract class Device {
      */
     public void setFlashMemSize(int flashMemSize) {
         this.flashMemSize = flashMemSize;
+    }
+
+    /**
+     * 
+     * @return
+     */
+    public String getuCSeries() {
+        return mcuSeries;
     }
 }
