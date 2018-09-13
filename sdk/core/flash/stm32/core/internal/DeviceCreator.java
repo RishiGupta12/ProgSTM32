@@ -31,8 +31,6 @@ public class DeviceCreator {
             case 0x446:
                 return new DevF3x446();
             }
-
-            return new UnknownDevice(pid);
         } else if ((pid >= 0x413) && (pid <= 0x458)) {
             // F4 series
             switch (pid) {
@@ -53,12 +51,10 @@ public class DeviceCreator {
             case 0x458:
                 return new DevF3x458();
             }
-
-            return new UnknownDevice(pid);
         } else {
 
         }
 
-        return null;
+        return new UnknownDevice(pid);
     }
 }
