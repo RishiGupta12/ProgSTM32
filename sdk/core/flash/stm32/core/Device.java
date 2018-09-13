@@ -132,4 +132,8 @@ public abstract class Device {
     public int readoutprotectMemoryRegion() throws SerialComException, TimeoutException {
         return cmdExtr.readoutprotectMemoryRegion();
     }
+
+    public int readoutUnprotectMemoryRegion() throws SerialComException, TimeoutException {
+        return cmdExtr.readoutUnprotectMemoryRegion();
+    }
 }
