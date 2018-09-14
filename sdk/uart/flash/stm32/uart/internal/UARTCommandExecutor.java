@@ -348,9 +348,11 @@ public final class UARTCommandExecutor extends CommandExecutor {
      * @throws SerialComException
      * @throws TimeoutException
      */
-    public int readMemory(byte[] data, int startAddr, int numBytesToRead) throws SerialComException, TimeoutException {
+    public int readMemory(byte[] data, final int startAddr, final int numBytesToRead) throws SerialComException, TimeoutException {
 
         int x;
+        int y;
+        int z;
         int res;
         int index = 0;
         byte[] addrbuf = new byte[5];
@@ -366,40 +368,55 @@ public final class UARTCommandExecutor extends CommandExecutor {
             throw new IllegalArgumentException("Data buffer can't hold given number of bytes.");
         }
 
-        res = sendCmdOrCmdData(CMD_READ_MEMORY, 0);
-        if (res == -1) {
-            return 0;
-        }
+        /* read data chunks in multiples of 255 */
+        y = numBytesToRead / 255;
 
-        addrbuf[0] = (byte) ((startAddr >> 24) & 0x000000FF);
-        addrbuf[1] = (byte) ((startAddr >> 16) & 0x000000FF);
-        addrbuf[2] = (byte) ((startAddr >> 8) & 0x000000FF);
-        addrbuf[3] = (byte) (startAddr & 0x000000FF);
-        addrbuf[4] = (byte) (addrbuf[0] ^ addrbuf[1] ^ addrbuf[2] ^ addrbuf[3]);
+        if (y > 0) {
+            for (z = 0; z < y; z++) {
 
-        res = sendCmdOrCmdData(addrbuf, 0);
-        if (res == -1) {
-            return 0;
-        }
+                res = sendCmdOrCmdData(CMD_READ_MEMORY, 0);
+                if (res == -1) {
+                    return 0;
+                }
 
-        numbuf[0] = (byte) numBytesToRead;
-        numbuf[1] = (byte) (numBytesToRead ^ 0xFF);
+                addrbuf[0] = (byte) ((startAddr >> 24) & 0x000000FF);
+                addrbuf[1] = (byte) ((startAddr >> 16) & 0x000000FF);
+                addrbuf[2] = (byte) ((startAddr >> 8) & 0x000000FF);
+                addrbuf[3] = (byte) (startAddr & 0x000000FF);
+                addrbuf[4] = (byte) (addrbuf[0] ^ addrbuf[1] ^ addrbuf[2] ^ addrbuf[3]);
 
-        res = sendCmdOrCmdData(numbuf, 0);
-        if (res == -1) {
-            return 0;
-        }
+                res = sendCmdOrCmdData(addrbuf, 0);
+                if (res == -1) {
+                    return 0;
+                }
 
-        // TODO timeout
-        while (true) {
-            x = scm.readBytes(comPortHandle, data, index, numBytesToRead, -1, null);
-            if (x > 0) {
-                index = index + x;
-                numBytesToRead = numBytesToRead - x;
+                numbuf[0] = (byte) numBytesToRead;
+                numbuf[1] = (byte) (numBytesToRead ^ 0xFF);
+
+                res = sendCmdOrCmdData(numbuf, 0);
+                if (res == -1) {
+                    return 0;
+                }
+
+                // TODO timeout
+                while (true) {
+                    x = scm.readBytes(comPortHandle, data, index, numBytesToRead, -1, null);
+                    if (x > 0) {
+                        index = index + x;
+                        numBytesToRead = numBytesToRead - x;
+                    }
+                    if (numBytesToRead == 0) {
+                        break;
+                    }
+                }
             }
-            if (numBytesToRead == 0) {
-                break;
-            }
+        }
+
+        /* read remaining (remainder bytes less than 255 in last read chunk) */
+        y = numBytesToRead % 255;
+
+        if (y > 0) {
+
         }
 
         return 0;
