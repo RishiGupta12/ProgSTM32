@@ -69,7 +69,9 @@ public final class UARTCommandExecutor extends CommandExecutor {
                 for (z = 0; z < y; z++) {
                     /*
                      * If stm32 was already in bootloader mode, it will send NACK if command code is
-                     * wrong.
+                     * wrong. Sending INITSEQ 5 times is done to send enough data bytes that stm32
+                     * can detect as wrong in comparision to what it was expecting and than it has
+                     * no choice other than sending NACK.
                      */
                     if ((rcvData[z] == ACK) || (rcvData[z] == NACK)) {
                         break;
@@ -79,9 +81,9 @@ public final class UARTCommandExecutor extends CommandExecutor {
         }
 
         /*
-         * Suppose bootloader was waiting for the next data byte for the command
-         * previously executed, then sending invalid data will result in NACK and
-         * bootloader getting out of the command execution.
+         * EXtra safety; Suppose bootloader was waiting for the next data byte for the
+         * command previously executed, then sending invalid data will result in NACK
+         * and bootloader getting out of the command execution.
          */
         if ((rcvData != null) && (rcvData[z] == NACK)) {
             scm.writeSingleByte(comPortHandle, (byte) 0xFF);
@@ -338,9 +340,9 @@ public final class UARTCommandExecutor extends CommandExecutor {
     }
 
     /**
-     * This API read data from any valid memory address in RAM, Flash memory and the
-     * information block (system memory or option byte areas). It may be used by GUI
-     * programs where input address is taken from user.
+     * This API read data from any valid memory address in RAM, main flash memory
+     * and the information block (system memory or option byte areas). It may be
+     * used by GUI programs where input address is taken from user.
      * 
      * @return
      * @throws SerialComException
@@ -355,13 +357,13 @@ public final class UARTCommandExecutor extends CommandExecutor {
         byte[] numbuf = new byte[2];
 
         if (data == null) {
-            throw new IllegalArgumentException("Data buffer can't be null");
+            throw new IllegalArgumentException("Data buffer can't be null.");
         }
-        if ((numBytesToRead > 256) || (numBytesToRead <= 0)) {
-            throw new IllegalArgumentException("The numBytesToRead must be between 1 to 256");
+        if (numBytesToRead <= 0) {
+            throw new IllegalArgumentException("Invalid numBytesToRead.");
         }
         if (numBytesToRead > data.length) {
-            throw new IllegalArgumentException("Data buffer is small");
+            throw new IllegalArgumentException("Data buffer can't hold given number of bytes.");
         }
 
         res = sendCmdOrCmdData(CMD_READ_MEMORY, 0);
