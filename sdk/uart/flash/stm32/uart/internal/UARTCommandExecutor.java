@@ -422,6 +422,46 @@ public final class UARTCommandExecutor extends CommandExecutor {
 
         if (y > 0) {
 
+            numbuf[0] = (byte) y;
+            numbuf[1] = (byte) (y ^ 0xFF);
+
+            for (z = 0; z < y; z++) {
+
+                res = sendCmdOrCmdData(CMD_READ_MEMORY, 0);
+                if (res == -1) {
+                    return 0;
+                }
+
+                startAddr = startAddr + 255;
+                addrbuf[0] = (byte) ((startAddr >> 24) & 0x000000FF);
+                addrbuf[1] = (byte) ((startAddr >> 16) & 0x000000FF);
+                addrbuf[2] = (byte) ((startAddr >> 8) & 0x000000FF);
+                addrbuf[3] = (byte) (startAddr & 0x000000FF);
+                addrbuf[4] = (byte) (addrbuf[0] ^ addrbuf[1] ^ addrbuf[2] ^ addrbuf[3]);
+
+                res = sendCmdOrCmdData(addrbuf, 0);
+                if (res == -1) {
+                    return 0;
+                }
+
+                res = sendCmdOrCmdData(numbuf, 0);
+                if (res == -1) {
+                    return 0;
+                }
+
+                // TODO timeout
+                bytesToRead = 255;
+                while (true) {
+                    x = scm.readBytes(comPortHandle, data, index, bytesToRead, -1, null);
+                    if (x > 0) {
+                        index = index + x;
+                        bytesToRead = bytesToRead - x;
+                    }
+                    if (bytesToRead == 0) {
+                        break;
+                    }
+                }
+            }
         }
 
         return 0;
