@@ -348,13 +348,15 @@ public final class UARTCommandExecutor extends CommandExecutor {
      * @throws SerialComException
      * @throws TimeoutException
      */
-    public int readMemory(byte[] data, final int startAddr, final int numBytesToRead) throws SerialComException, TimeoutException {
+    public int readMemory(byte[] data, final int startAddr, final int numBytesToRead)
+            throws SerialComException, TimeoutException {
 
         int x;
         int y;
         int z;
         int res;
         int index = 0;
+        int bytesToRead;
         byte[] addrbuf = new byte[5];
         byte[] numbuf = new byte[2];
 
@@ -372,6 +374,10 @@ public final class UARTCommandExecutor extends CommandExecutor {
         y = numBytesToRead / 255;
 
         if (y > 0) {
+
+            numbuf[0] = (byte) 255;
+            numbuf[1] = (byte) 0;
+
             for (z = 0; z < y; z++) {
 
                 res = sendCmdOrCmdData(CMD_READ_MEMORY, 0);
@@ -390,22 +396,20 @@ public final class UARTCommandExecutor extends CommandExecutor {
                     return 0;
                 }
 
-                numbuf[0] = (byte) numBytesToRead;
-                numbuf[1] = (byte) (numBytesToRead ^ 0xFF);
-
                 res = sendCmdOrCmdData(numbuf, 0);
                 if (res == -1) {
                     return 0;
                 }
 
                 // TODO timeout
+                bytesToRead = 255;
                 while (true) {
-                    x = scm.readBytes(comPortHandle, data, index, numBytesToRead, -1, null);
+                    x = scm.readBytes(comPortHandle, data, index, bytesToRead, -1, null);
                     if (x > 0) {
                         index = index + x;
-                        numBytesToRead = numBytesToRead - x;
+                        bytesToRead = bytesToRead - x;
                     }
-                    if (numBytesToRead == 0) {
+                    if (bytesToRead == 0) {
                         break;
                     }
                 }
