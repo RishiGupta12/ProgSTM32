@@ -348,7 +348,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
      * @throws SerialComException
      * @throws TimeoutException
      */
-    public int readMemory(byte[] data, final int startAddr, final int numBytesToRead)
+    public int readMemory(byte[] data, int startAddr, final int numBytesToRead)
             throws SerialComException, TimeoutException {
 
         int x;
@@ -385,6 +385,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
                     return 0;
                 }
 
+                startAddr = startAddr + 255;
                 addrbuf[0] = (byte) ((startAddr >> 24) & 0x000000FF);
                 addrbuf[1] = (byte) ((startAddr >> 16) & 0x000000FF);
                 addrbuf[2] = (byte) ((startAddr >> 8) & 0x000000FF);
