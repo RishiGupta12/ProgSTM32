@@ -60,7 +60,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
 
         this.comPortHandle = comPortHandle;
 
-        for (x = 0; x < 3; x++) {
+        for (x = 0; x < 5; x++) {
             scm.writeSingleByte(comPortHandle, INITSEQ);
 
             rcvData = scm.readBytes(comPortHandle);
@@ -79,9 +79,9 @@ public final class UARTCommandExecutor extends CommandExecutor {
         }
 
         /*
-         * Suppose bootloader was waiting for data for the command previously executed,
-         * then sending invalid data will result in NACK and bootloader getting out of
-         * the command execution.
+         * Suppose bootloader was waiting for the next data byte for the command
+         * previously executed, then sending invalid data will result in NACK and
+         * bootloader getting out of the command execution.
          */
         if ((rcvData != null) && (rcvData[z] == NACK)) {
             scm.writeSingleByte(comPortHandle, (byte) 0xFF);
