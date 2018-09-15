@@ -70,6 +70,16 @@ AS_IF([test -f $pdir/scripts/colorchk.sh],
   [source $pdir/scripts/colorchk.sh]
   [chk_termcolor_support $pdir/flashstm32.mk], [AC_MSG_ERROR([Couldn't find scripts/colorchk.sh])])
 
+##################
+dnl Check for Java and associated tools
+
+AC_ARG_VAR([JAVA_HOME], [location of Java Development Kit (JDK)])
+
+
+
+##################
+
+
 dnl List of makefiles that automake should generate
 AC_CONFIG_FILES([
 Makefile
