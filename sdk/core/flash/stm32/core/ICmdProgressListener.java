@@ -8,5 +8,5 @@ public interface ICmdProgressListener {
 
     public abstract void onDataWriteProgressUpdate(long numBlock, int percentOfBlocksSent);
 
-    public abstract void onDataReadProgressUpdate(long numBlock);
+    public abstract void onDataReadProgressUpdate(int totalBytesReadTillNow, int totalNumBytesToRead);
 }
