@@ -441,6 +441,10 @@ public final class UARTCommandExecutor extends CommandExecutor {
                 this.readGiveMemory(data, startAddr, bytesToRead, index);
                 index = index + 255;
                 startAddr = startAddr + 255;
+                if (progressListener != null) {
+                    totalBytesReadTillNow = totalBytesReadTillNow + y;
+                    progressListener.onDataReadProgressUpdate(totalBytesReadTillNow, numBytesToRead);
+                }
             }
         }
 
