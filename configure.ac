@@ -70,19 +70,20 @@ AS_IF([test -f $pdir/scripts/colorchk.sh],
   [source $pdir/scripts/colorchk.sh]
   [chk_termcolor_support $pdir/flashstm32.mk], [AC_MSG_ERROR([Couldn't find scripts/colorchk.sh])])
 
-##################
 dnl Check for Java and associated tools
-AC_ARG_VAR([JAVA_HOME], [location of Java Development Kit (JDK)])
-
 AC_PATH_PROG([JAVA], [java], [$JAVA])
 AC_PATH_PROG([JAVAC], [javac], [$JAVAC])
 
+AC_ARG_VAR([JAVA_HOME], [location of Java Development Kit (JDK)])
 if test "x$JAVA_HOME" != "x"; then
-
+  echo ""
 fi
 
-##################
-
+dnl Check for ant to build java source
+AC_CHECK_PROG(ANT, ant, ant, no)
+if test "$ANT" = "no"; then
+  AC_MSG_ERROR([ant not found])
+fi
 
 dnl List of makefiles that automake should generate
 AC_CONFIG_FILES([
@@ -117,9 +118,9 @@ AC_SUBST(BUILD_VERSION)
 AC_DEFUN([AX_SUMMARIZE_CONFIG],
 [
 echo
-echo '------------------------------------------------'
-echo '|                  SUMMARY                     |'
-echo '------------------------------------------------'
+echo '  ------------------------------------------------'
+echo ' |                  SUMMARY                       |'
+echo '  ------------------------------------------------'
 echo
 echo Configure date................ : $BUILD_DATE
 echo Package version............... : $PACKAGE-$VERSION
