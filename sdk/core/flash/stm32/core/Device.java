@@ -98,8 +98,9 @@ public abstract class Device {
         return cmdExtr.getReadProtectionStatus();
     }
 
-    public int readMemory(byte[] data, int startAddr, int numBytesToRead) throws SerialComException, TimeoutException {
-        return cmdExtr.readMemory(data, startAddr, numBytesToRead);
+    public int readMemory(byte[] data, int startAddr, int numBytesToRead, ICmdProgressListener progressListener)
+            throws SerialComException, TimeoutException {
+        return cmdExtr.readMemory(data, startAddr, numBytesToRead, progressListener);
     }
 
     public int goJump(int addrToJumpTo) throws SerialComException, TimeoutException {
