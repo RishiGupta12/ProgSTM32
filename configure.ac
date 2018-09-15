@@ -75,7 +75,9 @@ dnl Check for Java and associated tools
 
 AC_ARG_VAR([JAVA_HOME], [location of Java Development Kit (JDK)])
 
+if test "x$JAVA_HOME" != "x"; then
 
+fi
 
 ##################
 
