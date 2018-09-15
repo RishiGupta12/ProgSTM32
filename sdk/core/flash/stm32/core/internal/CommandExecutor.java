@@ -8,6 +8,7 @@ import java.util.concurrent.TimeoutException;
 
 import com.serialpundit.core.SerialComException;
 
+import flash.stm32.core.ICmdProgressListener;
 import flash.stm32.core.internal.DeviceCreator;
 
 /**
@@ -34,8 +35,8 @@ public abstract class CommandExecutor {
 
     public abstract int getReadProtectionStatus() throws SerialComException, TimeoutException;
 
-    public abstract int readMemory(byte[] data, int startAddr, int numBytesToRead)
-            throws SerialComException, TimeoutException;
+    public abstract int readMemory(byte[] data, int startAddr, final int numBytesToRead,
+            ICmdProgressListener progressListener) throws SerialComException, TimeoutException;
 
     public abstract int goJump(int addrToJumpTo) throws SerialComException, TimeoutException;
 
