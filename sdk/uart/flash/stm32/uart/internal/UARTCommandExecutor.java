@@ -606,11 +606,11 @@ public final class UARTCommandExecutor extends CommandExecutor {
         byte[] erasePagesInfo;
 
         if (startPageNum < 0) {
-            throw new IllegalArgumentException("Invalid startPageNum");
+            throw new IllegalArgumentException("Invalid startPageNum.");
         }
 
         if ((numOfPages > 254) || (numOfPages < 0)) {
-            throw new IllegalArgumentException("Invalid numOfPages");
+            throw new IllegalArgumentException("Invalid numOfPages.");
         }
 
         res = sendCmdOrCmdData(CMD_ERASE, 0);
