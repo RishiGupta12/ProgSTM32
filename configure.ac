@@ -73,6 +73,8 @@ AS_IF([test -f $pdir/scripts/colorchk.sh],
 ##################
 dnl Check for Java and associated tools
 
+AC_PATH_PROG([JAVA], [java], [$JAVA])
+
 AC_ARG_VAR([JAVA_HOME], [location of Java Development Kit (JDK)])
 
 if test "x$JAVA_HOME" != "x"; then
