@@ -6,4 +6,7 @@ package flash.stm32.core;
 
 public interface ICmdProgressListener {
 
+    public abstract void onDataWriteProgressUpdate(long numBlock, int percentOfBlocksSent);
+    
+    
 }
