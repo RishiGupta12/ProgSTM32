@@ -10,6 +10,7 @@ import com.serialpundit.core.SerialComException;
 import com.serialpundit.serial.SerialComManager;
 
 import flash.stm32.core.Device;
+import flash.stm32.core.ICmdProgressListener;
 import flash.stm32.core.REGTYPE;
 import flash.stm32.core.internal.CommandExecutor;
 
@@ -395,12 +396,14 @@ public final class UARTCommandExecutor extends CommandExecutor {
      * @throws SerialComException
      * @throws TimeoutException
      */
-    public int readMemory(byte[] data, int startAddr, final int numBytesToRead)
+    public int readMemory(byte[] data, int startAddr, final int numBytesToRead, ICmdProgressListener progressListener)
             throws SerialComException, TimeoutException {
 
+        int x;
         int y;
         int z;
         int index = 0;
+        int totalBytesReadTillNow = 0;
         int bytesToRead;
 
         if (data == null) {
@@ -414,18 +417,22 @@ public final class UARTCommandExecutor extends CommandExecutor {
         }
 
         /* read data chunks in multiples of 255 */
-        y = numBytesToRead / 255;
+        x = numBytesToRead / 255;
 
-        if (y > 0) {
+        if (x > 0) {
             bytesToRead = 255;
-            for (z = 0; z < y; z++) {
+            for (z = 0; z < x; z++) {
                 this.readGiveMemory(data, startAddr, bytesToRead, index);
                 index = index + 255;
                 startAddr = startAddr + 255;
+                if (progressListener != null) {
+                    totalBytesReadTillNow = totalBytesReadTillNow + 255;
+                    progressListener.onDataReadProgressUpdate(totalBytesReadTillNow, numBytesToRead);
+                }
             }
         }
 
-        /* read remaining (remainder bytes less than 255 in last read chunk) */
+        /* read remaining (bytes less than 255 in last read chunk) */
         y = numBytesToRead % 255;
 
         if (y > 0) {
