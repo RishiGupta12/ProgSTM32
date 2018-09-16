@@ -790,6 +790,11 @@ public final class UARTCommandExecutor extends CommandExecutor {
         return 0;
     }
 
+    /**
+     * At the end of the write protect command, the bootloader transmits the ACK
+     * byte and generates a system reset to take into account, the new configuration
+     * of the option byte.
+     */
     public int writeProtectMemoryRegion(final int startPageNum, final int numOfPages)
             throws SerialComException, TimeoutException {
 
