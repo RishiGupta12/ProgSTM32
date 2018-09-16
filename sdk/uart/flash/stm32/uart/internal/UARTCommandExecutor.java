@@ -617,7 +617,8 @@ public final class UARTCommandExecutor extends CommandExecutor {
      * 
      * <p>
      * Default bootloader in STM32 microcontrollers does not allow to erase system
-     * memory, user data area, option bytes area etc.
+     * memory, user data area, option bytes area etc. Therefore only main memory
+     * flash area can be erased through this bootloader and command.
      * </p>
      * 
      * @param memReg
