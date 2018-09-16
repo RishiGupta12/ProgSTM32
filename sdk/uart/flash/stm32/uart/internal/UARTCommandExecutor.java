@@ -26,6 +26,9 @@ public final class UARTCommandExecutor extends CommandExecutor {
 
     /* upto 35 seconds maximum wait for erase command to complete. */
     private final int ERASE_TIMEOUT = 35;
+    
+    /* general one second timeout */
+    private final int TIMEOUT_ONE = 1;
 
     private final byte INITSEQ = 0x7F;
     private final byte ACK = 0x79;
@@ -834,8 +837,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
         }
         erasePagesInfo[i] = (byte) res;
 
-        // TODO total timeout
-        res = sendCmdOrCmdData(erasePagesInfo, 0);
+        res = sendCmdOrCmdData(erasePagesInfo, TIMEOUT_ONE);
         if (res == -1) {
             return 0;
         }
