@@ -599,6 +599,14 @@ public final class UARTCommandExecutor extends CommandExecutor {
      * mentions tME as mass erase time with minimum, maximum and typical values.
      * </p>
      * 
+     * <p>
+     * STM32F4 series or some devices may not have flash page concept and instead
+     * might organize flash memory into sectors. In such microcontrollers, sector is
+     * the smallest possible unit for performing erase operation. To handle these
+     * cases we treat startPageNum starting sector number and totalNumOfPages as
+     * total number of sectors.
+     * </p>
+     * 
      * @param memReg
      * @param startPageNum
      * @param numOfPages

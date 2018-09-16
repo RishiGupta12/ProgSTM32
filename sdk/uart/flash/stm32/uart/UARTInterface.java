@@ -76,7 +76,7 @@ public final class UARTInterface extends CommunicationInterface {
 
         /*
          * 500 milliseconds timeout on serial port read. Some methods have timeouts
-         * which are mulitple of this 500. So if this is changed update those methods
+         * which are multiple of this 500. So if this is changed update those methods
          * also.
          */
         scm.fineTuneReadBehaviour(comPortHandle, 0, 5, 100, 5, 200);
