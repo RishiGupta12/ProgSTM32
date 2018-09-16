@@ -874,6 +874,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
 
     public int readoutprotectMemoryRegion() throws SerialComException, TimeoutException {
 
+        int x;
         int res;
         byte[] buf = new byte[2];
 
@@ -882,8 +883,8 @@ public final class UARTCommandExecutor extends CommandExecutor {
             return 0;
         }
 
-        // TODO timeout
-        while (true) {
+        /* one loop is 500 ms, so two loops for 1 second timeout */
+        for (x = 0; x < 2; x++) {
             res = scm.readBytes(comPortHandle, buf, 0, 1, -1, null);
             if (res > 0) {
                 if (buf[0] == ACK) {
@@ -894,6 +895,8 @@ public final class UARTCommandExecutor extends CommandExecutor {
                 }
             }
         }
+
+        return -1;
     }
 
     public int readoutUnprotectMemoryRegion() throws SerialComException, TimeoutException {
