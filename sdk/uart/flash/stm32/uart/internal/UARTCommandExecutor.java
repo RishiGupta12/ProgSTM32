@@ -444,9 +444,10 @@ public final class UARTCommandExecutor extends CommandExecutor {
                 totalBytesReadTillNow = totalBytesReadTillNow + y;
                 progressListener.onDataReadProgressUpdate(totalBytesReadTillNow, numBytesToRead);
             }
+            index = index + y;
         }
 
-        return 0;
+        return index;
     }
 
     /**
