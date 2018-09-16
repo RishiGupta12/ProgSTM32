@@ -600,7 +600,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
      * </p>
      * 
      * <p>
-     * STM32F4 series or some devices may not have flash page concept and instead
+     * STM32F4/STM32F7 series or some devices may not have flash page concept and instead
      * might organize flash memory into sectors. In such microcontrollers, sector is
      * the smallest possible unit for performing erase operation. To handle these
      * cases we treat startPageNum starting sector number and totalNumOfPages as
