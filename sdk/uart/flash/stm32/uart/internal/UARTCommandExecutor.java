@@ -589,8 +589,8 @@ public final class UARTCommandExecutor extends CommandExecutor {
 
     /**
      * <p>
-     * If memReg has both REGTYPE.MAIN and REGTYPE.SYSTEM bits set, mass erase is
-     * performed. In this case remaining arguments are ignored.
+     * For performing mass erase set memReg to REGTYPE.MAIN, startPageNum to -1 and
+     * totalNumOfPages to -1.
      * </p>
      * 
      * @param memReg
@@ -669,8 +669,8 @@ public final class UARTCommandExecutor extends CommandExecutor {
 
     /**
      * <p>
-     * If memReg has REGTYPE.MAIN and REGTYPE.SYSTEM bits set, mass erase is
-     * performed. In this case remaining arguments are ignored.
+     * For performing mass erase set memReg to REGTYPE.MAIN, startPageNum to -1 and
+     * totalNumOfPages to -1.
      * </p>
      * 
      * <p>
