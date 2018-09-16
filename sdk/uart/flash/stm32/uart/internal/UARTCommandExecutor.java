@@ -597,7 +597,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
      * @throws SerialComException
      * @throws TimeoutException
      */
-    public int eraseMemoryRegion(final int memReg, final int startPageNum, final int numOfPages)
+    public int eraseMemoryRegion(final int memReg, final int startPageNum, final int totalNumOfPages)
             throws SerialComException, TimeoutException {
 
         int x;
@@ -605,12 +605,18 @@ public final class UARTCommandExecutor extends CommandExecutor {
         int res;
         byte[] erasePagesInfo;
 
-        if (startPageNum < 0) {
-            throw new IllegalArgumentException("Invalid startPageNum.");
-        }
+        if ((startPageNum == -1) && (totalNumOfPages == -1)) {
+            if ((memReg & REGTYPE.MAIN) != REGTYPE.MAIN) {
+                throw new IllegalArgumentException("Invalid memReg for mass erase.");
+            }
+        } else {
+            if (startPageNum < 0) {
+                throw new IllegalArgumentException("Invalid startPageNum.");
+            }
 
-        if ((numOfPages > 254) || (numOfPages < 0)) {
-            throw new IllegalArgumentException("Invalid numOfPages.");
+            if ((totalNumOfPages > 255) || (totalNumOfPages < 0)) {
+                throw new IllegalArgumentException("Invalid numOfPages.");
+            }
         }
 
         res = sendCmdOrCmdData(CMD_ERASE, 0);
@@ -618,8 +624,8 @@ public final class UARTCommandExecutor extends CommandExecutor {
             return 0;
         }
 
-        // mass erase case
-        if ((memReg & (REGTYPE.MAIN | REGTYPE.SYSTEM)) == (REGTYPE.MAIN | REGTYPE.SYSTEM)) {
+        /* mass erase case */
+        if ((startPageNum == -1) && (totalNumOfPages == -1)) {
             erasePagesInfo = new byte[2];
             erasePagesInfo[0] = (byte) 0xFF;
             erasePagesInfo[1] = (byte) 0x00;
@@ -632,7 +638,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
             return 0;
         }
 
-        // non-mass erase case
+        /* non-mass erase case */
         erasePagesInfo = new byte[numOfPages + 2];
         erasePagesInfo[0] = (byte) numOfPages;
 
