@@ -688,7 +688,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
      * @throws SerialComException
      * @throws TimeoutException
      */
-    public int extendedEraseMemoryRegion(final int memReg, final int startPageNum, final int numOfPages)
+    public int extendedEraseMemoryRegion(final int memReg, final int startPageNum, final int totalNumOfPages)
             throws SerialComException, TimeoutException {
 
         int x;
@@ -696,18 +696,21 @@ public final class UARTCommandExecutor extends CommandExecutor {
         int res;
         int totalPages;
         byte[] erasePagesInfo;
-
-        if (startPageNum < 0) {
-            throw new IllegalArgumentException("Invalid startPageNum");
-        }
-
-        // TODO what is max num pages in extended cmd, product specific it is
-        if ((numOfPages > 254) || (numOfPages < 0)) {
-            throw new IllegalArgumentException("Invalid numOfPages");
-        }
-
-        if ((memReg & (REGTYPE.BANK1 | REGTYPE.BANK2)) == (REGTYPE.BANK1 | REGTYPE.BANK2)) {
-            throw new IllegalArgumentException("Both bank1 and bank2 bits can't be set");
+        
+        if ((startPageNum == -1) && (totalNumOfPages == -1)) {
+            if ((memReg & REGTYPE.MAIN) != REGTYPE.MAIN) {
+                throw new IllegalArgumentException("Invalid memReg for mass erase.");
+            }
+        } else {
+            if (startPageNum < 0) {
+                throw new IllegalArgumentException("Invalid startPageNum.");
+            }
+            if ((totalNumOfPages > 255) || (totalNumOfPages < 0)) {
+                throw new IllegalArgumentException("Invalid numOfPages.");
+            }
+            if ((memReg & (REGTYPE.BANK1 | REGTYPE.BANK2)) == (REGTYPE.BANK1 | REGTYPE.BANK2)) {
+                throw new IllegalArgumentException("Both bank1 and bank2 bits can't be set");
+            }
         }
 
         res = sendCmdOrCmdData(CMD_EXTD_ERASE, 0);
@@ -715,29 +718,25 @@ public final class UARTCommandExecutor extends CommandExecutor {
             return 0;
         }
 
-        // global mass erase case
+        /* global mass erase case */
         if ((memReg & (REGTYPE.MAIN | REGTYPE.SYSTEM)) == (REGTYPE.MAIN | REGTYPE.SYSTEM)) {
             erasePagesInfo = new byte[3];
             erasePagesInfo[0] = (byte) 0xFF;
             erasePagesInfo[1] = (byte) 0xFF;
             erasePagesInfo[2] = (byte) 0x00;
-            // TODO should mass erase ack will take more time than normal commands, if yes
-            // then add timeout parameters to sendCommand API
-            res = sendCmdOrCmdData(erasePagesInfo, ERASE_TIMEOUT);
+            res = sendCmdOrCmdData(erasePagesInfo, 0);
             if (res == -1) {
                 return 0;
             }
             return 0;
         }
 
-        // bank 1 mass erase case
+        /* bank 1 mass erase case */
         if ((memReg & (REGTYPE.BANK1)) == REGTYPE.BANK1) {
             erasePagesInfo = new byte[3];
             erasePagesInfo[0] = (byte) 0xFF;
             erasePagesInfo[1] = (byte) 0xFE;
             erasePagesInfo[2] = (byte) 0x01;
-            // TODO should mass erase ack will take more time than normal commands, if yes
-            // then add timeout parameters to sendCommand API
             res = sendCmdOrCmdData(erasePagesInfo, 0);
             if (res == -1) {
                 return 0;
@@ -745,14 +744,12 @@ public final class UARTCommandExecutor extends CommandExecutor {
             return 0;
         }
 
-        // bank 2 mass erase case
+        /* bank 2 mass erase case */
         if ((memReg & (REGTYPE.BANK2)) == REGTYPE.BANK2) {
             erasePagesInfo = new byte[3];
             erasePagesInfo[0] = (byte) 0xFF;
             erasePagesInfo[1] = (byte) 0xFD;
             erasePagesInfo[2] = (byte) 0x02;
-            // TODO should mass erase ack will take more time than normal commands, if yes
-            // then add timeout parameters to sendCommand API
             res = sendCmdOrCmdData(erasePagesInfo, 0);
             if (res == -1) {
                 return 0;
@@ -760,8 +757,8 @@ public final class UARTCommandExecutor extends CommandExecutor {
             return 0;
         }
 
-        // certain number of pages case
-        totalPages = numOfPages & 0xFFFF;
+        /* certain number of pages case */
+        totalPages = totalNumOfPages & 0xFFFF;
         erasePagesInfo = new byte[2 + (2 * totalPages) + 1];
 
         erasePagesInfo[0] = (byte) ((totalPages >> 8) & 0xFF);
@@ -783,8 +780,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
         }
         erasePagesInfo[i] = (byte) res;
 
-        // TODO total timeout
-        res = sendCmdOrCmdData(erasePagesInfo, 0);
+        res = sendCmdOrCmdData(erasePagesInfo, ERASE_TIMEOUT);
         if (res == -1) {
             return 0;
         }
