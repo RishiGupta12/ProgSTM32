@@ -24,6 +24,9 @@ import flash.stm32.core.internal.CommandExecutor;
  */
 public final class UARTCommandExecutor extends CommandExecutor {
 
+    /* upto 35 seconds maximum wait for erase command to complete. */
+    private final int ERASE_TIMEOUT = 35;
+
     private final byte INITSEQ = 0x7F;
     private final byte ACK = 0x79;
     private final byte NACK = 0x1F;
