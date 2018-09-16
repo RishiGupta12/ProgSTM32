@@ -600,11 +600,11 @@ public final class UARTCommandExecutor extends CommandExecutor {
      * </p>
      * 
      * <p>
-     * STM32F4/STM32F7 series or some devices may not have flash page concept and instead
-     * might organize flash memory into sectors. In such microcontrollers, sector is
-     * the smallest possible unit for performing erase operation. To handle these
-     * cases we treat startPageNum starting sector number and totalNumOfPages as
-     * total number of sectors.
+     * STM32F4/STM32F7 series or some devices may not have flash page concept and
+     * instead might organize flash memory into sectors. In such microcontrollers,
+     * sector is the smallest possible unit for performing erase operation. To
+     * handle these cases we treat startPageNum starting sector number and
+     * totalNumOfPages as total number of sectors.
      * </p>
      * 
      * @param memReg
@@ -630,6 +630,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
             if (startPageNum < 0) {
                 throw new IllegalArgumentException("Invalid startPageNum.");
             }
+            /* totalNumOfPages is device dependent */
             if ((totalNumOfPages > 255) || (totalNumOfPages < 0)) {
                 throw new IllegalArgumentException("Invalid numOfPages.");
             }
