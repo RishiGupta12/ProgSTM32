@@ -346,7 +346,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
         return res;
     }
 
-    private int readGiveMemory(byte[] data, int startAddr, int numBytesToRead, int index)
+    private int readGivenMemory(byte[] data, int startAddr, int numBytesToRead, int index)
             throws SerialComException, TimeoutException {
 
         int x;
@@ -428,7 +428,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
         if (x > 0) {
             bytesToRead = 255;
             for (z = 0; z < x; z++) {
-                this.readGiveMemory(data, startAddr, bytesToRead, index);
+                this.readGivenMemory(data, startAddr, bytesToRead, index);
                 index = index + 255;
                 startAddr = startAddr + 255;
                 if (progressListener != null) {
@@ -442,7 +442,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
         y = numBytesToRead % 255;
 
         if (y > 0) {
-            this.readGiveMemory(data, startAddr, y, index);
+            this.readGivenMemory(data, startAddr, y, index);
             if (progressListener != null) {
                 totalBytesReadTillNow = totalBytesReadTillNow + y;
                 progressListener.onDataReadProgressUpdate(totalBytesReadTillNow, numBytesToRead);
