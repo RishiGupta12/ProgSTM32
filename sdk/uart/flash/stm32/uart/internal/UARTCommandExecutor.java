@@ -77,7 +77,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
                     /*
                      * If stm32 was already in bootloader mode, it will send NACK if command code is
                      * wrong. Sending INITSEQ 5 times is done to send enough data bytes that stm32
-                     * can detect as wrong in comparision to what it was expecting and than it has
+                     * can detect as wrong in comparison to what it was expecting and than it has
                      * no choice other than sending NACK.
                      */
                     if ((rcvData[z] == ACK) || (rcvData[z] == NACK)) {
@@ -88,7 +88,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
         }
 
         /*
-         * EXtra safety; Suppose bootloader was waiting for the next data byte for the
+         * Extra safety; Suppose bootloader was waiting for the next data byte for the
          * command previously executed, then sending invalid data will result in NACK
          * and bootloader getting out of the command execution.
          */
