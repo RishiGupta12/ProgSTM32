@@ -594,7 +594,8 @@ public final class UARTCommandExecutor extends CommandExecutor {
     /**
      * <p>
      * For performing mass erase set memReg to REGTYPE.MAIN, startPageNum to -1 and
-     * totalNumOfPages to -1.
+     * totalNumOfPages to -1. The total time it takes to perform mass erase varies
+     * with processor series, flash characteristics and flash size.
      * </p>
      * 
      * @param memReg
