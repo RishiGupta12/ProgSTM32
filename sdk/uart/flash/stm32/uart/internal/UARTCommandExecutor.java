@@ -600,7 +600,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
      * @throws SerialComException
      * @throws TimeoutException
      */
-    public int eraseMemoryRegion(final int memReg, final int startPageNum, final int totalNumOfPages)
+    public int eraseMemoryRegion(final int memReg, final int startPageNum, int totalNumOfPages)
             throws SerialComException, TimeoutException {
 
         int x;
@@ -616,13 +616,12 @@ public final class UARTCommandExecutor extends CommandExecutor {
             if (startPageNum < 0) {
                 throw new IllegalArgumentException("Invalid startPageNum.");
             }
-
             if ((totalNumOfPages > 255) || (totalNumOfPages < 0)) {
                 throw new IllegalArgumentException("Invalid numOfPages.");
             }
         }
 
-        res = sendCmdOrCmdData(CMD_ERASE, ERASE_TIMEOUT);
+        res = sendCmdOrCmdData(CMD_ERASE, 0);
         if (res == -1) {
             return 0;
         }
@@ -632,9 +631,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
             erasePagesInfo = new byte[2];
             erasePagesInfo[0] = (byte) 0xFF;
             erasePagesInfo[1] = (byte) 0x00;
-            // TODO should mass erase ack will take more time than normal commands, if yes
-            // then add timeout parameters to sendCommand API
-            res = sendCmdOrCmdData(erasePagesInfo, 0);
+            res = sendCmdOrCmdData(erasePagesInfo, ERASE_TIMEOUT);
             if (res == -1) {
                 return 0;
             }
@@ -642,17 +639,21 @@ public final class UARTCommandExecutor extends CommandExecutor {
         }
 
         /* non-mass erase case */
-        erasePagesInfo = new byte[numOfPages + 2];
-        erasePagesInfo[0] = (byte) numOfPages;
+        erasePagesInfo = new byte[totalNumOfPages + 2];
+
+        if (totalNumOfPages >= 255) {
+            totalNumOfPages = 254;
+        }
+        erasePagesInfo[0] = (byte) totalNumOfPages;
 
         x = startPageNum;
-        for (res = 1; res < numOfPages; res++) {
+        for (res = 1; res < totalNumOfPages; res++) {
             erasePagesInfo[res] = (byte) x;
             x++;
         }
 
         res = 0;
-        i = numOfPages + 1;
+        i = totalNumOfPages + 1;
         for (x = 0; x < i; x++) {
             res ^= erasePagesInfo[x];
         }
