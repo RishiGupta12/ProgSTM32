@@ -659,8 +659,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
         }
         erasePagesInfo[i] = (byte) res;
 
-        // TODO total timeout
-        res = sendCmdOrCmdData(erasePagesInfo, 0);
+        res = sendCmdOrCmdData(erasePagesInfo, ERASE_TIMEOUT);
         if (res == -1) {
             return 0;
         }
