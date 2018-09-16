@@ -56,7 +56,8 @@ public final class REGTYPE {
 
     /**
      * <p>
-     * Represents an EEPROM memory region.
+     * Represents an EEPROM memory region. This is also represents Data memory
+     * region.
      * </p>
      */
     public static final int EEPROM = 0x20;
