@@ -600,11 +600,24 @@ public final class UARTCommandExecutor extends CommandExecutor {
      * </p>
      * 
      * <p>
-     * STM32F4/STM32F7 series or some devices may not have flash page concept and
+     * Some devices like STM32F4/STM32F7 series may not have flash page concept and
      * instead might organize flash memory into sectors. In such microcontrollers,
      * sector is the smallest possible unit for performing erase operation. To
-     * handle these cases we treat startPageNum starting sector number and
+     * handle these cases this method treat startPageNum starting sector number and
      * totalNumOfPages as total number of sectors.
+     * </p>
+     * 
+     * <p>
+     * Some devices like STM32L1 series may have both flash page concept and sector
+     * concept where a particular sector may have a group of pages. In such
+     * microcontrollers, sector is the smallest possible unit for performing erase
+     * operation. To address such cases this method treat startPageNum starting
+     * sector number and totalNumOfPages as total number of sectors.
+     * </p>
+     * 
+     * <p>
+     * Default bootloader in STM32 microcontrollers does not allow to erase system
+     * memory, user data area, option bytes area etc.
      * </p>
      * 
      * @param memReg
@@ -622,16 +635,16 @@ public final class UARTCommandExecutor extends CommandExecutor {
         int res;
         byte[] erasePagesInfo;
 
-        if ((startPageNum == -1) && (totalNumOfPages == -1)) {
-            if ((memReg & REGTYPE.MAIN) != REGTYPE.MAIN) {
-                throw new IllegalArgumentException("Invalid memReg for mass erase.");
-            }
-        } else {
+        if ((memReg & REGTYPE.MAIN) != REGTYPE.MAIN) {
+            throw new IllegalArgumentException("Invalid memReg for mass erase.");
+        }
+
+        if ((startPageNum != -1) && (totalNumOfPages != -1)) {
             if (startPageNum < 0) {
                 throw new IllegalArgumentException("Invalid startPageNum.");
             }
-            /* totalNumOfPages is device dependent */
-            if ((totalNumOfPages > 255) || (totalNumOfPages < 0)) {
+            /* totalNumOfPages is device dependent, as of now some initial value is kept */
+            if ((totalNumOfPages > 1024) || (totalNumOfPages < 0)) {
                 throw new IllegalArgumentException("Invalid numOfPages.");
             }
         }
