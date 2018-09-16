@@ -723,7 +723,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
             erasePagesInfo[2] = (byte) 0x00;
             // TODO should mass erase ack will take more time than normal commands, if yes
             // then add timeout parameters to sendCommand API
-            res = sendCmdOrCmdData(erasePagesInfo, 0);
+            res = sendCmdOrCmdData(erasePagesInfo, ERASE_TIMEOUT);
             if (res == -1) {
                 return 0;
             }
