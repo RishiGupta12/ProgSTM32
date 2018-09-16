@@ -622,7 +622,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
             }
         }
 
-        res = sendCmdOrCmdData(CMD_ERASE, 0);
+        res = sendCmdOrCmdData(CMD_ERASE, ERASE_TIMEOUT);
         if (res == -1) {
             return 0;
         }
