@@ -641,12 +641,12 @@ public final class UARTCommandExecutor extends CommandExecutor {
         byte[] erasePagesInfo;
 
         if ((memReg & REGTYPE.MAIN) != REGTYPE.MAIN) {
-            throw new IllegalArgumentException("Invalid memReg for mass erase.");
+            throw new IllegalArgumentException("invalid.mem.region");
         }
 
         if ((startPageNum != -1) && (totalNumOfPages != -1)) {
             if (startPageNum < 0) {
-                throw new IllegalArgumentException("Invalid startPageNum.");
+                throw new IllegalArgumentException("invalid.start.pagenum");
             }
             /* totalNumOfPages is device dependent, as of now some initial value is kept */
             if ((totalNumOfPages > 1024) || (totalNumOfPages < 0)) {
