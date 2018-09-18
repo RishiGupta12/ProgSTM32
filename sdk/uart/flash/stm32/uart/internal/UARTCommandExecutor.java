@@ -133,7 +133,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
                 if (buf[0] == ACK) {
                     return 0;
                 } else if (buf[0] == NACK) {
-                    throw new SerialComException("nack");
+                    throw new SerialComException(rb.getString("nack.received"));
                 } else {
                 }
             }
@@ -520,17 +520,17 @@ public final class UARTCommandExecutor extends CommandExecutor {
         byte[] addrbuf = new byte[5];
 
         if (data == null) {
-            throw new IllegalArgumentException("Data buffer can't be null");
+            throw new IllegalArgumentException(rb.getString("Data buffer can't be null"));
         }
 
         numBytesToWrite = data.length;
         if ((numBytesToWrite > 256) || (numBytesToWrite == 0)) {
-            throw new IllegalArgumentException("invalid.buffer.size");
+            throw new IllegalArgumentException(rb.getString("invalid.buffer.size"));
         }
 
         // TODO is this required for all uC
         if ((startAddr & 0x3) != 0) {
-            throw new IllegalArgumentException("addr.must.align");
+            throw new IllegalArgumentException(rb.getString("addr.must.align"));
         }
 
         res = sendCmdOrCmdData(CMD_WRITE_MEMORY, 0);
@@ -641,7 +641,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
         byte[] erasePagesInfo;
 
         if ((memReg & REGTYPE.MAIN) != REGTYPE.MAIN) {
-            throw new IllegalArgumentException("invalid.mem.region");
+            throw new IllegalArgumentException(rb.getString("invalid.mem.region"));
         }
 
         if ((startPageNum != -1) && (totalNumOfPages != -1)) {
@@ -650,7 +650,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
             }
             /* totalNumOfPages is device dependent, as of now some initial value is kept */
             if ((totalNumOfPages > 1024) || (totalNumOfPages < 0)) {
-                throw new IllegalArgumentException("Invalid numOfPages.");
+                throw new IllegalArgumentException("invalid.number.pages");
             }
         }
 
@@ -732,7 +732,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
 
         if ((startPageNum == -1) && (totalNumOfPages == -1)) {
             if ((memReg & REGTYPE.MAIN) != REGTYPE.MAIN) {
-                throw new IllegalArgumentException("Invalid memReg for mass erase.");
+                throw new IllegalArgumentException(rb.getString("invalid.mem.region"));
             }
         } else {
             if (startPageNum < 0) {
