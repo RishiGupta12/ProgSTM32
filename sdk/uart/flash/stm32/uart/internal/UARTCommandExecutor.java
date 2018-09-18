@@ -420,10 +420,10 @@ public final class UARTCommandExecutor extends CommandExecutor {
             throw new IllegalArgumentException(rb.getString("null.data.buffer"));
         }
         if (numBytesToRead <= 0) {
-            throw new IllegalArgumentException("Invalid numBytesToRead.");
+            throw new IllegalArgumentException(rb.getString("invalid.dataread.length"));
         }
         if (numBytesToRead > data.length) {
-            throw new IllegalArgumentException("Data buffer can't hold given number of bytes.");
+            throw new IllegalArgumentException(rb.getString("shorter.data.buffer"));
         }
 
         /* read data chunks in multiples of 255 */
