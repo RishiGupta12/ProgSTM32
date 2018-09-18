@@ -103,7 +103,7 @@ public final class UARTInterface extends CommunicationInterface {
             return uartce.connectAndIdentifyDevice(comPortHandle);
         }
 
-        throw new IllegalStateException("com port not opened");
+        throw new IllegalStateException(rb.getString("port.not.opened"));
     }
 
     public void disconnectFromDevice() {
