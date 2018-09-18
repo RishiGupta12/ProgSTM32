@@ -105,7 +105,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
         }
 
         if (x >= 3) {
-            throw new TimeoutException("init sequence timedout");
+            throw new TimeoutException(rb.getString("init sequence timedout"));
         }
 
         x = getChipID();
@@ -140,7 +140,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
 
             curTime = System.currentTimeMillis();
             if (curTime >= responseWaitTime) {
-                throw new TimeoutException("operation.timedout");
+                throw new TimeoutException(rb.getString("operation.timedout"));
             }
 
             if ((responseWaitTime - curTime) > 1000) {
@@ -646,11 +646,11 @@ public final class UARTCommandExecutor extends CommandExecutor {
 
         if ((startPageNum != -1) && (totalNumOfPages != -1)) {
             if (startPageNum < 0) {
-                throw new IllegalArgumentException("invalid.start.pagenum");
+                throw new IllegalArgumentException(rb.getString("invalid.start.pagenum"));
             }
             /* totalNumOfPages is device dependent, as of now some initial value is kept */
             if ((totalNumOfPages > 1024) || (totalNumOfPages < 0)) {
-                throw new IllegalArgumentException("invalid.number.pages");
+                throw new IllegalArgumentException(rb.getString("invalid.start.pagenum"));
             }
         }
 
@@ -736,14 +736,14 @@ public final class UARTCommandExecutor extends CommandExecutor {
             }
         } else {
             if (startPageNum < 0) {
-                throw new IllegalArgumentException("Invalid startPageNum.");
+                throw new IllegalArgumentException(rb.getString("invalid.start.pagenum"));
             }
             /* total number of pages is product specific */
             if ((totalNumOfPages > 255) || (totalNumOfPages < 0)) {
-                throw new IllegalArgumentException("Invalid numOfPages.");
+                throw new IllegalArgumentException(rb.getString("invalid.number.pages"));
             }
             if ((memReg & (REGTYPE.BANK1 | REGTYPE.BANK2)) == (REGTYPE.BANK1 | REGTYPE.BANK2)) {
-                throw new IllegalArgumentException("Both bank1 and bank2 bits can't be set");
+                throw new IllegalArgumentException(rb.getString("both.bank.not.allowed"));
             }
         }
 
@@ -836,12 +836,12 @@ public final class UARTCommandExecutor extends CommandExecutor {
         byte[] erasePagesInfo;
 
         if (startPageNum < 0) {
-            throw new IllegalArgumentException("Invalid startPageNum");
+            throw new IllegalArgumentException(rb.getString("invalid.start.pagenum"));
         }
 
         // TODO what is max num pages in extended cmd, product specific it is
         if ((numOfPages > 254) || (numOfPages < 0)) {
-            throw new IllegalArgumentException("Invalid numOfPages");
+            throw new IllegalArgumentException(rb.getString("invalid.number.pages"));
         }
 
         res = sendCmdOrCmdData(CMD_WRITE_PROTECT, 0);
