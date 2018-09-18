@@ -12,6 +12,7 @@ import com.serialpundit.core.SerialComException;
 import com.serialpundit.serial.SerialComManager;
 
 import java.io.IOException;
+import java.util.ResourceBundle;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -31,6 +32,7 @@ public final class UARTInterface extends CommunicationInterface {
      */
     public static final String STM32UARTSDK_VERSION = "1.0";
 
+    private final ResourceBundle rb;
     private final SerialComManager scm;
     private final UARTCommandExecutor uartce;
 
@@ -41,9 +43,11 @@ public final class UARTInterface extends CommunicationInterface {
      * @param libName
      * @throws IOException
      */
-    public UARTInterface(String libName) throws IOException {
+    public UARTInterface(String libName, ResourceBundle rb) throws IOException {
 
         super();
+
+        this.rb = rb;
 
         String tmpDir = sysprop.getJavaIOTmpDir();
 

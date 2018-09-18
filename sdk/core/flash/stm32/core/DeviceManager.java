@@ -44,14 +44,14 @@ public final class DeviceManager {
         }
     }
 
-    private final ResourceBundle msgs;
+    private final ResourceBundle rb;
 
     /**
      * 
      * @param locale
      */
     public DeviceManager(Locale locale) {
-        msgs = ResourceBundle.getBundle("flash.stm32.resources.MessagesBundle", locale);
+        rb = ResourceBundle.getBundle("flash.stm32.resources.MessagesBundle", locale);
     }
 
     /**
@@ -76,7 +76,7 @@ public final class DeviceManager {
         x = iface.getValue();
 
         if (x == 1) {
-            return new UARTInterface(libName);
+            return new UARTInterface(libName, rb);
         }
 
         return null;
