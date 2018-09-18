@@ -525,12 +525,12 @@ public final class UARTCommandExecutor extends CommandExecutor {
 
         numBytesToWrite = data.length;
         if ((numBytesToWrite > 256) || (numBytesToWrite == 0)) {
-            throw new IllegalArgumentException("Inappropriate data buffer size");
+            throw new IllegalArgumentException("invalid.buffer.size");
         }
 
         // TODO is this required for all uC
         if ((startAddr & 0x3) != 0) {
-            throw new IllegalArgumentException("The startAddr must be 32 bit aligned");
+            throw new IllegalArgumentException("addr.must.align");
         }
 
         res = sendCmdOrCmdData(CMD_WRITE_MEMORY, 0);
