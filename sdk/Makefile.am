@@ -6,12 +6,15 @@ extlib_sptty="sp-tty.jar"
 
 .PHONY: uartsdk
 
-dbgcmd_true = sed -i -e '/static/s/false/true/'
-dbgcmd_false = sed -i -e '/static/s/true/false/'
 dbgfile = core/flash/stm32/core/internal/Debug.java
+
 define check_dbg
-	@if [ "x$(D)" == "x1" ]; then $(dbgcmd_true) $(dbgfile); fi
-	@if [ "x$(D)" == "x" ]; then $(dbgcmd_false) $(dbgfile); fi
+	( if [ "x$(D)" == "x1" ]; \
+	  then \
+		sed -i -e '/static/s/false/true/' $(dbgfile); \
+	  else \
+		sed -i -e '/static/s/true/false/' $(dbgfile); \
+	  fi )
 endef
 
 uartsdk:
