@@ -5,6 +5,8 @@
 package flash.stm32.core;
 
 import java.io.IOException;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import flash.stm32.uart.UARTInterface;
 
@@ -40,6 +42,16 @@ public final class DeviceManager {
         public int getValue() {
             return this.value;
         }
+    }
+
+    private final ResourceBundle msgs;
+
+    /**
+     * 
+     * @param locale
+     */
+    public DeviceManager(Locale locale) {
+        msgs = ResourceBundle.getBundle("flash.stm32.resources.MessagesBundle", locale);
     }
 
     /**
