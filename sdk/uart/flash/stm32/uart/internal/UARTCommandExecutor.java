@@ -140,7 +140,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
 
             curTime = System.currentTimeMillis();
             if (curTime >= responseWaitTime) {
-                throw new TimeoutException("Given operation timedout.");
+                throw new TimeoutException("operation.timedout");
             }
 
             if ((responseWaitTime - curTime) > 1000) {
