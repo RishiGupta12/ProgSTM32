@@ -67,10 +67,10 @@ public final class DeviceManager {
         int x;
 
         if (iface == null) {
-            throw new IllegalArgumentException("iface can not be null.");
+            throw new IllegalArgumentException(rb.getString("iface.null.not.allowed"));
         }
         if (libName == null) {
-            throw new IllegalArgumentException("libName can not be null.");
+            throw new IllegalArgumentException(rb.getString("invalid.libname"));
         }
 
         x = iface.getValue();
