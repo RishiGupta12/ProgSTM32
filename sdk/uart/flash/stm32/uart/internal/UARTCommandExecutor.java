@@ -24,12 +24,13 @@ import flash.stm32.core.internal.CommandExecutor;
  */
 public final class UARTCommandExecutor extends CommandExecutor {
 
-    /* upto 35 seconds maximum wait for erase command to complete. */
+    /* Upto 35 seconds maximum wait for erase command to complete. */
     private final int ERASE_TIMEOUT = 35;
 
-    /* general one second timeout */
+    /* General one second timeout */
     private final int TIMEOUT_ONE = 1;
 
+    /* Constants as mentioned in an2606 document */
     private final byte INITSEQ = 0x7F;
     private final byte ACK = 0x79;
     private final byte NACK = 0x1F;
@@ -77,8 +78,8 @@ public final class UARTCommandExecutor extends CommandExecutor {
                     /*
                      * If stm32 was already in bootloader mode, it will send NACK if command code is
                      * wrong. Sending INITSEQ 5 times is done to send enough data bytes that stm32
-                     * can detect as wrong in comparison to what it was expecting and than it has
-                     * no choice other than sending NACK.
+                     * can detect as wrong in comparison to what it was expecting and than it has no
+                     * choice other than sending NACK.
                      */
                     if ((rcvData[z] == ACK) || (rcvData[z] == NACK)) {
                         break;
