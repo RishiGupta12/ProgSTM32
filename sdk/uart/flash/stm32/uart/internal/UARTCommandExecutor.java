@@ -417,7 +417,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
         int bytesToRead;
 
         if (data == null) {
-            throw new IllegalArgumentException("Data buffer can't be null.");
+            throw new IllegalArgumentException(rb.getString("null.data.buffer"));
         }
         if (numBytesToRead <= 0) {
             throw new IllegalArgumentException("Invalid numBytesToRead.");
