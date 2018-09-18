@@ -100,7 +100,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
             scm.writeSingleByte(comPortHandle, (byte) 0xFF);
             rcvData = scm.readBytes(comPortHandle);
             if ((rcvData != null) && (rcvData[z] != NACK)) {
-                throw new TimeoutException("init sequence timedout, consider putting stm in bootloader mode again.");
+                throw new TimeoutException(rb.getString("init.seq.timedout"));
             }
         }
 

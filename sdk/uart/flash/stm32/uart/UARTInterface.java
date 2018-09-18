@@ -53,7 +53,7 @@ public final class UARTInterface extends CommunicationInterface {
 
         scm = new SerialComManager(libName, tmpDir, true, false);
 
-        uartce = new UARTCommandExecutor(scm);
+        uartce = new UARTCommandExecutor(scm, rb);
 
         comPortHandle = -1;
     }
