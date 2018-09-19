@@ -520,7 +520,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
         byte[] addrbuf = new byte[5];
 
         if (data == null) {
-            throw new IllegalArgumentException(rb.getString("Data buffer can't be null"));
+            throw new IllegalArgumentException(rb.getString("null.data.buffer"));
         }
 
         numBytesToWrite = data.length;
