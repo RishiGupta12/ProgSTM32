@@ -382,8 +382,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
             return 0;
         }
 
-        // TODO timeout
-        while (true) {
+        for (res = 0; res < 2; res++) {
             x = scm.readBytes(comPortHandle, data, index, numBytesToRead, -1, null);
             if (x > 0) {
                 index = index + x;
