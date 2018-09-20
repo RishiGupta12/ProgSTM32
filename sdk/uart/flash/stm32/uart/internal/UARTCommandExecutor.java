@@ -499,6 +499,11 @@ public final class UARTCommandExecutor extends CommandExecutor {
         }
     }
 
+    private int writeMemoryInBinFormat(final byte[] data, int startAddr) {
+
+        return 0;
+    }
+
     /**
      * 
      * 
