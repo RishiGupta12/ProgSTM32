@@ -526,6 +526,9 @@ public final class UARTCommandExecutor extends CommandExecutor {
         if (data == null) {
             throw new IllegalArgumentException(rb.getString("null.data.buffer"));
         }
+        if (data.length == 0) {
+            throw new IllegalArgumentException(rb.getString("invalid.datawrite.length"));
+        }
 
         numBytesToWrite = data.length;
         if ((numBytesToWrite > 256) || (numBytesToWrite == 0)) {
