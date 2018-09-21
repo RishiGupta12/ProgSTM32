@@ -11,6 +11,7 @@ import com.serialpundit.core.SerialComException;
 import com.serialpundit.serial.SerialComManager;
 
 import flash.stm32.core.Device;
+import flash.stm32.core.FileType;
 import flash.stm32.core.ICmdProgressListener;
 import flash.stm32.core.REGTYPE;
 import flash.stm32.core.internal.CommandExecutor;
@@ -594,8 +595,8 @@ public final class UARTCommandExecutor extends CommandExecutor {
      * @throws SerialComException
      * @throws TimeoutException
      */
-    public int writeMemory(final byte[] data, final int startAddr, ICmdProgressListener progressListener)
-            throws SerialComException, TimeoutException {
+    public int writeMemory(final int fileType, final byte[] data, final int startAddr,
+            ICmdProgressListener progressListener) throws SerialComException, TimeoutException {
 
         int x;
         int y;
@@ -612,6 +613,15 @@ public final class UARTCommandExecutor extends CommandExecutor {
         numBytesToWrite = data.length;
         if (numBytesToWrite == 0) {
             throw new IllegalArgumentException(rb.getString("invalid.datawrite.length"));
+        }
+
+        if (fileType == FileType.HEX) {
+
+        } else if (fileType == FileType.DETECT) {
+
+        } else if (fileType == FileType.BIN) {
+        } else {
+            throw new IllegalArgumentException(rb.getString("invalid.filetype"));
         }
 
         /* send data in chunk of 256 bytes */
