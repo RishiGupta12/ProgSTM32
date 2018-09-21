@@ -107,9 +107,9 @@ public abstract class Device {
         return cmdExtr.goJump(addrToJumpTo);
     }
 
-    public int writeMemory(final byte[] data, int startAddr, ICmdProgressListener progressListener)
+    public int writeMemory(final int fileType, final byte[] data, int startAddr, ICmdProgressListener progressListener)
             throws SerialComException, TimeoutException {
-        return cmdExtr.writeMemory(data, startAddr, progressListener);
+        return cmdExtr.writeMemory(fileType, data, startAddr, progressListener);
     }
 
     public int eraseMemoryRegion(final int memReg, final int startPageNum, final int numOfPages)

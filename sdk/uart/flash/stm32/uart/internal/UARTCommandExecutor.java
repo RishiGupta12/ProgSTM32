@@ -289,6 +289,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
         } else if (buf[1] == 0x22) {
             bootloaderVersion = new String(rb.getString("bootloader.version.2.2"));
         } else {
+            bootloaderVersion = new String(rb.getString("unknown.version") + " " + buf[1]);
         }
 
         return bootloaderVersion;
