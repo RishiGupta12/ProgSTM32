@@ -566,10 +566,10 @@ public final class UARTCommandExecutor extends CommandExecutor {
             checksum = (byte) ((byte) checksum ^ buf[res]);
         }
 
-        /* send actual data flashed + checksum of data */
+        /* send actual data flashed + checksum of this data */
         scm.writeBytes(comPortHandle, buf);
 
-        /* one loop is 500 ms, so two loops for 1 second timeout */
+        /* wait for physical flashing for 1 sec */
         for (x = 0; x < 2; x++) {
             res = scm.readBytes(comPortHandle, addrBuf, 0, 1, -1, null);
             if (res > 0) {
