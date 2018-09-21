@@ -499,7 +499,88 @@ public final class UARTCommandExecutor extends CommandExecutor {
         }
     }
 
-    private int writeMemoryInBinFormat(final byte[] data, int startAddr) {
+    private int writeMemoryInBinFormat(final byte[] data, int offset, final int length, final int startAddr)
+            throws SerialComException, TimeoutException {
+
+        int x;
+        int res;
+        int checksum;
+        int numBytesToWrite;
+        int numPaddingBytes;
+        byte[] addrBuf = new byte[5];
+        byte[] buf;
+
+        numBytesToWrite = data.length;
+        if ((numBytesToWrite > 256) || (numBytesToWrite <= 0)) {
+            throw new IllegalArgumentException(rb.getString("invalid.datawrite.length"));
+        }
+
+        // TODO is this required for all uC
+        if ((startAddr & 0x3) != 0) {
+            throw new IllegalArgumentException(rb.getString("addr.must.align"));
+        }
+
+        /* send write memory command */
+        res = sendCmdOrCmdData(CMD_WRITE_MEMORY, 0);
+        if (res == -1) {
+            return 0;
+        }
+
+        addrBuf[0] = (byte) ((startAddr >> 24) & 0x000000FF);
+        addrBuf[1] = (byte) ((startAddr >> 16) & 0x000000FF);
+        addrBuf[2] = (byte) ((startAddr >> 8) & 0x000000FF);
+        addrBuf[3] = (byte) (startAddr & 0x000000FF);
+        addrBuf[4] = (byte) (addrBuf[0] ^ addrBuf[1] ^ addrBuf[2] ^ addrBuf[3]);
+
+        /* send address and checksum of address */
+        res = sendCmdOrCmdData(addrBuf, 0);
+        if (res == -1) {
+            return 0;
+        }
+
+        numPaddingBytes = length % 4;
+        if (numPaddingBytes > 0) {
+            numPaddingBytes = 4 - numPaddingBytes;
+        }
+
+        /* send length of data to be written */
+        scm.writeSingleByte(comPortHandle, (byte) (length + numPaddingBytes));
+
+        buf = new byte[length + numPaddingBytes];
+
+        for (x = 0; x < length; x++) {
+            buf[x] = data[offset];
+            offset++;
+        }
+
+        if (numPaddingBytes > 0) {
+            for (res = 0; res < numPaddingBytes; res++) {
+                buf[x] = (byte) 0xFF;
+                x++;
+            }
+        }
+
+        checksum = 0;
+        x = length + numPaddingBytes;
+        for (res = 0; res < x; res++) {
+            checksum = (byte) ((byte) checksum ^ buf[res]);
+        }
+
+        /* send actual data flashed + checksum of data */
+        scm.writeBytes(comPortHandle, buf);
+
+        /* one loop is 500 ms, so two loops for 1 second timeout */
+        for (x = 0; x < 2; x++) {
+            res = scm.readBytes(comPortHandle, addrBuf, 0, 1, -1, null);
+            if (res > 0) {
+                if (buf[0] == ACK) {
+                    return 0;
+                }
+                if (buf[0] == NACK) {
+                    return -1;
+                }
+            }
+        }
 
         return 0;
     }
@@ -513,93 +594,51 @@ public final class UARTCommandExecutor extends CommandExecutor {
      * @throws SerialComException
      * @throws TimeoutException
      */
-    public int writeMemory(final byte[] data, int startAddr) throws SerialComException, TimeoutException {
+    public int writeMemory(final byte[] data, final int startAddr, ICmdProgressListener progressListener)
+            throws SerialComException, TimeoutException {
 
-        int res;
-        int x = 0;
-        int checksum;
-        int requiredPad;
+        int x;
+        int y;
+        int z;
         int numBytesToWrite;
-        byte[] paddingData = null;
-        byte[] addrbuf = new byte[5];
+        int offset = 0;
+        int beginAddr = startAddr;
+        int totalBytesWrittenTillNow = 0;
 
         if (data == null) {
             throw new IllegalArgumentException(rb.getString("null.data.buffer"));
         }
-        if (data.length == 0) {
+
+        numBytesToWrite = data.length;
+        if (numBytesToWrite == 0) {
             throw new IllegalArgumentException(rb.getString("invalid.datawrite.length"));
         }
 
-        numBytesToWrite = data.length;
-        if ((numBytesToWrite > 256) || (numBytesToWrite == 0)) {
-            throw new IllegalArgumentException(rb.getString("invalid.buffer.size"));
-        }
-
-        // TODO is this required for all uC
-        if ((startAddr & 0x3) != 0) {
-            throw new IllegalArgumentException(rb.getString("addr.must.align"));
-        }
-
-        res = sendCmdOrCmdData(CMD_WRITE_MEMORY, 0);
-        if (res == -1) {
-            return 0;
-        }
-
-        addrbuf[0] = (byte) ((startAddr >> 24) & 0x000000FF);
-        addrbuf[1] = (byte) ((startAddr >> 16) & 0x000000FF);
-        addrbuf[2] = (byte) ((startAddr >> 8) & 0x000000FF);
-        addrbuf[3] = (byte) (startAddr & 0x000000FF);
-        addrbuf[4] = (byte) (addrbuf[0] ^ addrbuf[1] ^ addrbuf[2] ^ addrbuf[3]);
-
-        res = sendCmdOrCmdData(addrbuf, 0);
-        if (res == -1) {
-            return 0;
-        }
-
-        requiredPad = (numBytesToWrite + 1) % 4;
-
-        if (requiredPad > 0) {
-            requiredPad = 4 - requiredPad;
-            paddingData = new byte[requiredPad];
-            x = paddingData.length;
-            for (res = 0; res < x; res++) {
-                paddingData[res] = (byte) 0xFF;
-            }
-        }
-
-        checksum = 0;
-        for (res = 0; res < numBytesToWrite; res++) {
-            checksum = (byte) ((byte) checksum ^ data[res]);
-        }
-
-        if (requiredPad > 0) {
-            for (res = 0; res < x; res++) {
-                checksum = (byte) ((byte) checksum ^ paddingData[res]);
-            }
-        }
-
-        scm.writeSingleByte(comPortHandle, (byte) (numBytesToWrite + requiredPad));
-
-        scm.writeBytes(comPortHandle, data);
-
-        if (requiredPad > 0) {
-            scm.writeBytes(comPortHandle, paddingData);
-        }
-
-        scm.writeSingleByte(comPortHandle, (byte) checksum);
-
-        // TODO timeout
-        while (true) {
-            res = scm.readBytes(comPortHandle, addrbuf, 0, 1, -1, null);
-            if (res > 0) {
-                if (addrbuf[0] == ACK) {
-                    return 0;
-                }
-                if (addrbuf[0] == NACK) {
-                    return -1;
+        /* send data in chunk of 256 bytes */
+        x = numBytesToWrite / 256;
+        if (x > 0) {
+            for (z = 0; z < x; z++) {
+                this.writeMemoryInBinFormat(data, offset, 256, beginAddr);
+                offset = offset + 256;
+                beginAddr = beginAddr + 256;
+                if (progressListener != null) {
+                    totalBytesWrittenTillNow = totalBytesWrittenTillNow + 256;
+                    progressListener.onDataWriteProgressUpdate(totalBytesWrittenTillNow, numBytesToWrite);
                 }
             }
         }
+
+        /* send last or chunk of size less than 256 */
+        y = numBytesToWrite % 256;
+        if (y > 0) {
+            this.writeMemoryInBinFormat(data, offset, y, beginAddr);
+            if (progressListener != null) {
+                totalBytesWrittenTillNow = totalBytesWrittenTillNow + y;
+                progressListener.onDataWriteProgressUpdate(totalBytesWrittenTillNow, numBytesToWrite);
+            }
+        }
+
+        return 0;
     }
 
     /**
