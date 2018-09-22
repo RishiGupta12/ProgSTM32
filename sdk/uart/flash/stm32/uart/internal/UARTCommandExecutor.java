@@ -4,6 +4,10 @@
 
 package flash.stm32.uart.internal;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeoutException;
 
@@ -12,6 +16,7 @@ import com.serialpundit.serial.SerialComManager;
 
 import flash.stm32.core.Device;
 import flash.stm32.core.FileType;
+import flash.stm32.core.FlashUtils;
 import flash.stm32.core.ICmdProgressListener;
 import flash.stm32.core.REGTYPE;
 import flash.stm32.core.internal.CommandExecutor;
@@ -52,6 +57,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
     private final SerialComManager scm;
     private final ResourceBundle rb;
 
+    private FlashUtils flashUtils;
     private long comPortHandle;
     private int supportedCmds;
     private Device curDev;
@@ -587,10 +593,44 @@ public final class UARTCommandExecutor extends CommandExecutor {
         return 0;
     }
 
+    public int writeMemory(final int fileType, final File fwFile, final int startAddr,
+            ICmdProgressListener progressListener) throws TimeoutException, IOException {
+
+        int x = 0;
+        int offset = 0;
+        int numBytesToRead = 0;
+        int numBytesActuallyRead = 0;
+        int totalBytesReadTillNow = 0;
+        BufferedInputStream inStream = null;
+        byte[] data;
+
+        try {
+            int lengthOfFileContents = (int) fwFile.length();
+
+            data = new byte[lengthOfFileContents];
+
+            inStream = new BufferedInputStream(new FileInputStream(fwFile));
+
+            numBytesToRead = lengthOfFileContents;
+            for (x = 0; x < lengthOfFileContents; x = totalBytesReadTillNow) {
+                numBytesActuallyRead = inStream.read(data, offset, numBytesToRead);
+                totalBytesReadTillNow = totalBytesReadTillNow + numBytesActuallyRead;
+                offset = totalBytesReadTillNow;
+            }
+
+            inStream.close();
+        } catch (IOException e) {
+            inStream.close();
+            throw e;
+        }
+
+        return this.writeMemory(fileType, data, startAddr, progressListener);
+    }
+
     /**
      * 
      * 
-     * TODO handle two NACK
+     * TODO handle two NACK progressListener can be null.
      * 
      * @return
      * @throws SerialComException
@@ -606,6 +646,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
         int offset = 0;
         int beginAddr = startAddr;
         int totalBytesWrittenTillNow = 0;
+        byte[] fwBuf;
 
         if (data == null) {
             throw new IllegalArgumentException(rb.getString("null.data.buffer"));
@@ -617,10 +658,15 @@ public final class UARTCommandExecutor extends CommandExecutor {
         }
 
         if (fileType == FileType.HEX) {
-
+            if (flashUtils == null) {
+                flashUtils = new FlashUtils();
+            }
+            fwBuf = flashUtils.hexToBinFwFormat(data);
+            numBytesToWrite = fwBuf.length;
         } else if (fileType == FileType.DETECT) {
-
+            fwBuf = data;
         } else if (fileType == FileType.BIN) {
+            fwBuf = data;
         } else {
             throw new IllegalArgumentException(rb.getString("invalid.filetype"));
         }
@@ -629,7 +675,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
         x = numBytesToWrite / 256;
         if (x > 0) {
             for (z = 0; z < x; z++) {
-                this.writeMemoryInBinFormat(data, offset, 256, beginAddr);
+                this.writeMemoryInBinFormat(fwBuf, offset, 256, beginAddr);
                 offset = offset + 256;
                 beginAddr = beginAddr + 256;
                 if (progressListener != null) {
@@ -642,7 +688,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
         /* send last or chunk of size less than 256 */
         y = numBytesToWrite % 256;
         if (y > 0) {
-            this.writeMemoryInBinFormat(data, offset, y, beginAddr);
+            this.writeMemoryInBinFormat(fwBuf, offset, y, beginAddr);
             if (progressListener != null) {
                 totalBytesWrittenTillNow = totalBytesWrittenTillNow + y;
                 progressListener.onDataWriteProgressUpdate(totalBytesWrittenTillNow, numBytesToWrite);
