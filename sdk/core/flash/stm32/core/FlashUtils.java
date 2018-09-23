@@ -32,6 +32,7 @@ public final class FlashUtils {
 
         int x = 0;
         int val = 0;
+
         StringBuilder sBuilder = new StringBuilder();
 
         for (x = 0; x < length; x = x + 2) {
@@ -43,7 +44,32 @@ public final class FlashUtils {
             sBuilder.setLength(0);
         }
 
-        return 0;
+        if (val > 0xFF) {
+            sBuilder.setLength(0);
+            /* convert to binary representation */
+            String s1 = Integer.toBinaryString(val);
+
+            /* replace 0's and 1's */
+            int strLen = s1.length();
+            for (x = 0; x < strLen; x++) {
+                if (s1.charAt(x) == '0') {
+                    sBuilder.append('1');
+                } else {
+                    sBuilder.append('0');
+                }
+            }
+            String s2 = sBuilder.toString();
+
+            /* add 1 to get final 2's complement */
+            val = Integer.valueOf(s2, 2) + 1;
+
+            /* drop everything except last byte */
+            val = 0x000000FF & val;
+        } else {
+            val = 256 - val;
+        }
+
+        return val;
     }
 
     private int hexAsciiToByteArray(final byte[] data, int offset, int length, final ByteArrayOutputStream outbuf) {
@@ -103,7 +129,7 @@ public final class FlashUtils {
             curChkSum = this.hexAsciiToIntValue(hexbuf, x + (2 * curRecordLength) + 8, 2);
             y = this.calCheckSum(hexbuf, x + 1, (2 * curRecordLength) + 8);
             if (y != curChkSum) {
-                throw new IllegalArgumentException(rb.getString("invalid.checksum") + "at record" + x);
+                throw new IllegalArgumentException(rb.getString("invalid.checksum") + "at record " + x);
             }
 
             switch (curRecordType) {
