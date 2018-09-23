@@ -659,11 +659,12 @@ public final class UARTCommandExecutor extends CommandExecutor {
 
         if (fileType == FileType.HEX) {
             if (flashUtils == null) {
-                flashUtils = new FlashUtils();
+                flashUtils = new FlashUtils(rb);
             }
             fwBuf = flashUtils.hexToBinFwFormat(data);
             numBytesToWrite = fwBuf.length;
         } else if (fileType == FileType.DETECT) {
+            // TODO
             fwBuf = data;
         } else if (fileType == FileType.BIN) {
             fwBuf = data;
