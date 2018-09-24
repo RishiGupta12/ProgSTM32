@@ -629,6 +629,11 @@ public final class UARTCommandExecutor extends CommandExecutor {
 
     /**
      * 
+     * <p>
+     * Selection of address from where the given firmware should be written has to
+     * be chosen carefully. For example; if IAP (in-application circuit) programming
+     * is used, few memory from the beginning of flash may not be available.
+     * </p>
      * 
      * TODO handle two NACK progressListener can be null.
      * 
