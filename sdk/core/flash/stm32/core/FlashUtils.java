@@ -144,10 +144,17 @@ public final class FlashUtils {
                 curDataOffset = this.hexAsciiToIntValue(tmpbuf, 0, 4);
                 curAbsAddr = curBaseAddr + curDataOffset;
 
-                fillerData = curAbsAddr - prevAbsAddr + prevRecordLength;
-                if (fillerData > 0) {
-                    for (y = 0; y < fillerData; y++) {
-                        binbuf.write(FILLER);
+                /*
+                 * if the very 1st data record comes before very 1st address record which sets
+                 * base address than padding must not be done. the exact start address is
+                 * specified by caller in write command already.
+                 */
+                if ((prevAbsAddr != 0) && (prevRecordLength != 0)) {
+                    fillerData = curAbsAddr - prevAbsAddr + prevRecordLength;
+                    if (fillerData > 0) {
+                        for (y = 0; y < fillerData; y++) {
+                            binbuf.write(FILLER);
+                        }
                     }
                 }
 
