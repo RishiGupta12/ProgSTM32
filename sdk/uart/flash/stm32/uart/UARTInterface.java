@@ -60,6 +60,9 @@ public final class UARTInterface extends CommunicationInterface {
 
     /**
      * 
+     * Although most of the devices uses even parity, few devices may use no parity,
+     * therefore proper documents should be referred for such devices.
+     * 
      * @param port
      * @param baudRate
      * @param dataBits
