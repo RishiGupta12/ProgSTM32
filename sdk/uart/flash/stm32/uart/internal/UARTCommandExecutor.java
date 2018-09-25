@@ -314,7 +314,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
     public int getChipID() throws SerialComException, TimeoutException {
 
         int res;
-        byte[] buf = new byte[16];
+        byte[] buf = new byte[8];
 
         res = sendCmdOrCmdData(CMD_GET_ID, 0);
         if (res == -1) {
@@ -326,6 +326,10 @@ public final class UARTCommandExecutor extends CommandExecutor {
             return 0;
         }
 
+        /*
+         * note some device may send more than two bytes in response to get chip id
+         * command, we ignore extra two bytes sent,as they are of no use to us.
+         */
         res = 0;
         res = res | (buf[1] << 8);
         res = res | buf[2];
