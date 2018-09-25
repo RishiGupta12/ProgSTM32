@@ -160,23 +160,26 @@ public final class UARTCommandExecutor extends CommandExecutor {
     }
 
     /**
-     * @return number of bytes read including length of data, ACK at end.
+     * @return number of bytes read including length of data, ACK/N at end.
      */
     private int receiveResponse(byte[] res) throws SerialComException {
 
-        int x;
+        int x = 0;
+        int y = 0;
         int index = 0;
-        int numBytes = res.length;
+        int numBytesToRead = res.length;
 
-        // TODO add total op timeout, consider lenth of response
-        while (true) {
-            x = scm.readBytes(comPortHandle, res, index, numBytes, -1, null);
+        for (y = 0; y < 3; y++) {
+            x = scm.readBytes(comPortHandle, res, index, numBytesToRead, -1, null);
             if (x > 0) {
-                if (res[x - 1] == ACK) {
+                index = index + x;
+                numBytesToRead = numBytesToRead - x;
+                if ((res[index - 1] == ACK) || (res[index - 1] == NACK)) {
                     break;
                 }
-                index = index + x;
-                numBytes = numBytes - x;
+                if (numBytesToRead <= 0) {
+                    break;
+                }
             }
         }
 
