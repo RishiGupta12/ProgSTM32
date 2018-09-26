@@ -200,8 +200,8 @@ public final class UARTCommandExecutor extends CommandExecutor {
         byte[] buf = new byte[32];
 
         res = sendCmdOrCmdData(CMD_GET_ALLOWED_CMDS, 0);
-        if (res == 0) {
-            throw new TimeoutException(rb.getString("no.response.from.stm.cmd"));
+        if (res != 0) {
+            throw new TimeoutException(rb.getString("operation.timedout"));
         }
 
         res = receiveResponse(buf);
@@ -282,8 +282,8 @@ public final class UARTCommandExecutor extends CommandExecutor {
         byte[] buf = new byte[32];
 
         res = sendCmdOrCmdData(CMD_GET_ALLOWED_CMDS, 0);
-        if (res == 0) {
-            throw new TimeoutException(rb.getString("no.response.from.stm.cmd"));
+        if (res != 0) {
+            throw new TimeoutException(rb.getString("operation.timedout"));
         }
 
         res = receiveResponse(buf);
@@ -317,13 +317,13 @@ public final class UARTCommandExecutor extends CommandExecutor {
         byte[] buf = new byte[8];
 
         res = sendCmdOrCmdData(CMD_GET_ID, 0);
-        if (res == -1) {
-            return 0;
+        if (res != 0) {
+            throw new TimeoutException(rb.getString("operation.timedout"));
         }
 
         res = receiveResponse(buf);
-        if (res == -1) {
-            return 0;
+        if (res == 0) {
+            throw new TimeoutException(rb.getString("no.response.from.stm"));
         }
 
         /*
@@ -349,13 +349,13 @@ public final class UARTCommandExecutor extends CommandExecutor {
         byte[] buf = new byte[16];
 
         res = sendCmdOrCmdData(CMD_GET_VRPS, 0);
-        if (res == -1) {
-            return 0;
+        if (res != 0) {
+            throw new TimeoutException(rb.getString("operation.timedout"));
         }
 
         res = receiveResponse(buf);
-        if (res == -1) {
-            return 0;
+        if (res == 0) {
+            throw new TimeoutException(rb.getString("no.response.from.stm"));
         }
 
         // TODO exact purpose of byte1,2
@@ -374,8 +374,8 @@ public final class UARTCommandExecutor extends CommandExecutor {
         byte[] addrbuf = new byte[5];
 
         res = sendCmdOrCmdData(CMD_READ_MEMORY, 0);
-        if (res == -1) {
-            return 0;
+        if (res != 0) {
+            throw new TimeoutException(rb.getString("operation.timedout"));
         }
 
         addrbuf[0] = (byte) ((startAddr >> 24) & 0x000000FF);
@@ -385,16 +385,16 @@ public final class UARTCommandExecutor extends CommandExecutor {
         addrbuf[4] = (byte) (addrbuf[0] ^ addrbuf[1] ^ addrbuf[2] ^ addrbuf[3]);
 
         res = sendCmdOrCmdData(addrbuf, 0);
-        if (res == -1) {
-            return 0;
+        if (res != 0) {
+            throw new TimeoutException(rb.getString("operation.timedout"));
         }
 
         numbuf[0] = (byte) numBytesToRead;
         numbuf[1] = (byte) (numBytesToRead ^ 0xFF);
 
         res = sendCmdOrCmdData(numbuf, 0);
-        if (res == -1) {
-            return 0;
+        if (res != 0) {
+            throw new TimeoutException(rb.getString("operation.timedout"));
         }
 
         for (res = 0; res < 2; res++) {
@@ -485,8 +485,8 @@ public final class UARTCommandExecutor extends CommandExecutor {
         byte[] addrbuf = new byte[5];
 
         res = sendCmdOrCmdData(CMD_GO, 0);
-        if (res == -1) {
-            return 0;
+        if (res != 0) {
+            throw new TimeoutException(rb.getString("operation.timedout"));
         }
 
         addrbuf[0] = (byte) ((addrToJumpTo >> 24) & 0x000000FF);
@@ -496,8 +496,8 @@ public final class UARTCommandExecutor extends CommandExecutor {
         addrbuf[4] = (byte) (addrbuf[0] ^ addrbuf[1] ^ addrbuf[2] ^ addrbuf[3]);
 
         res = sendCmdOrCmdData(addrbuf, 0);
-        if (res == -1) {
-            return 0;
+        if (res != 0) {
+            throw new TimeoutException(rb.getString("operation.timedout"));
         }
 
         // TODO timeout
@@ -537,8 +537,8 @@ public final class UARTCommandExecutor extends CommandExecutor {
 
         /* send write memory command */
         res = sendCmdOrCmdData(CMD_WRITE_MEMORY, 0);
-        if (res == -1) {
-            return 0;
+        if (res != 0) {
+            throw new TimeoutException(rb.getString("operation.timedout"));
         }
 
         addrBuf[0] = (byte) ((startAddr >> 24) & 0x000000FF);
@@ -549,8 +549,8 @@ public final class UARTCommandExecutor extends CommandExecutor {
 
         /* send address and checksum of address */
         res = sendCmdOrCmdData(addrBuf, 0);
-        if (res == -1) {
-            return 0;
+        if (res != 0) {
+            throw new TimeoutException(rb.getString("operation.timedout"));
         }
 
         numPaddingBytes = length % 4;
@@ -771,8 +771,8 @@ public final class UARTCommandExecutor extends CommandExecutor {
         }
 
         res = sendCmdOrCmdData(CMD_ERASE, 0);
-        if (res == -1) {
-            return 0;
+        if (res != 0) {
+            throw new TimeoutException(rb.getString("operation.timedout"));
         }
 
         /* mass erase case */
@@ -781,8 +781,8 @@ public final class UARTCommandExecutor extends CommandExecutor {
             erasePagesInfo[0] = (byte) 0xFF;
             erasePagesInfo[1] = (byte) 0x00;
             res = sendCmdOrCmdData(erasePagesInfo, ERASE_TIMEOUT);
-            if (res == -1) {
-                return 0;
+            if (res != 0) {
+                throw new TimeoutException(rb.getString("operation.timedout"));
             }
             return 0;
         }
@@ -809,8 +809,8 @@ public final class UARTCommandExecutor extends CommandExecutor {
         erasePagesInfo[i] = (byte) res;
 
         res = sendCmdOrCmdData(erasePagesInfo, ERASE_TIMEOUT);
-        if (res == -1) {
-            return 0;
+        if (res != 0) {
+            throw new TimeoutException(rb.getString("operation.timedout"));
         }
 
         return 0;
@@ -864,8 +864,8 @@ public final class UARTCommandExecutor extends CommandExecutor {
         }
 
         res = sendCmdOrCmdData(CMD_EXTD_ERASE, 0);
-        if (res == -1) {
-            return 0;
+        if (res != 0) {
+            throw new TimeoutException(rb.getString("operation.timedout"));
         }
 
         /* global mass erase case */
@@ -875,8 +875,8 @@ public final class UARTCommandExecutor extends CommandExecutor {
             erasePagesInfo[1] = (byte) 0xFF;
             erasePagesInfo[2] = (byte) 0x00;
             res = sendCmdOrCmdData(erasePagesInfo, 0);
-            if (res == -1) {
-                return 0;
+            if (res != 0) {
+                throw new TimeoutException(rb.getString("operation.timedout"));
             }
             return 0;
         }
@@ -888,8 +888,8 @@ public final class UARTCommandExecutor extends CommandExecutor {
             erasePagesInfo[1] = (byte) 0xFE;
             erasePagesInfo[2] = (byte) 0x01;
             res = sendCmdOrCmdData(erasePagesInfo, 0);
-            if (res == -1) {
-                return 0;
+            if (res != 0) {
+                throw new TimeoutException(rb.getString("operation.timedout"));
             }
             return 0;
         }
@@ -901,8 +901,8 @@ public final class UARTCommandExecutor extends CommandExecutor {
             erasePagesInfo[1] = (byte) 0xFD;
             erasePagesInfo[2] = (byte) 0x02;
             res = sendCmdOrCmdData(erasePagesInfo, 0);
-            if (res == -1) {
-                return 0;
+            if (res != 0) {
+                throw new TimeoutException(rb.getString("operation.timedout"));
             }
             return 0;
         }
@@ -931,8 +931,8 @@ public final class UARTCommandExecutor extends CommandExecutor {
         erasePagesInfo[i] = (byte) res;
 
         res = sendCmdOrCmdData(erasePagesInfo, ERASE_TIMEOUT);
-        if (res == -1) {
-            return 0;
+        if (res != 0) {
+            throw new TimeoutException(rb.getString("operation.timedout"));
         }
 
         return 0;
@@ -961,8 +961,8 @@ public final class UARTCommandExecutor extends CommandExecutor {
         }
 
         res = sendCmdOrCmdData(CMD_WRITE_PROTECT, 0);
-        if (res == -1) {
-            return 0;
+        if (res != 0) {
+            throw new TimeoutException(rb.getString("operation.timedout"));
         }
 
         // TODO what if numOfPages = 0xFF
@@ -983,8 +983,8 @@ public final class UARTCommandExecutor extends CommandExecutor {
         erasePagesInfo[i] = (byte) res;
 
         res = sendCmdOrCmdData(erasePagesInfo, TIMEOUT_ONE);
-        if (res == -1) {
-            return 0;
+        if (res != 0) {
+            throw new TimeoutException(rb.getString("operation.timedout"));
         }
 
         return 0;
@@ -997,8 +997,8 @@ public final class UARTCommandExecutor extends CommandExecutor {
         byte[] buf = new byte[2];
 
         res = sendCmdOrCmdData(CMD_WRITE_UNPROTECT, 0);
-        if (res == -1) {
-            return 0;
+        if (res != 0) {
+            throw new TimeoutException(rb.getString("operation.timedout"));
         }
 
         /* one loop is 500 ms, so two loops for 1 second timeout */
@@ -1024,8 +1024,8 @@ public final class UARTCommandExecutor extends CommandExecutor {
         byte[] buf = new byte[2];
 
         res = sendCmdOrCmdData(CMD_READOUT_PROTECT, 0);
-        if (res == -1) {
-            return 0;
+        if (res != 0) {
+            throw new TimeoutException(rb.getString("operation.timedout"));
         }
 
         /* one loop is 500 ms, so two loops for 1 second timeout */
@@ -1051,8 +1051,8 @@ public final class UARTCommandExecutor extends CommandExecutor {
         byte[] buf = new byte[2];
 
         res = sendCmdOrCmdData(CMD_READOUT_UNPROTECT, 0);
-        if (res == -1) {
-            return 0;
+        if (res != 0) {
+            throw new TimeoutException(rb.getString("operation.timedout"));
         }
 
         /* one loop is 500 ms, so two loops for 1.5 second timeout */
