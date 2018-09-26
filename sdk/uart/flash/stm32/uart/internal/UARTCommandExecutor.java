@@ -282,13 +282,13 @@ public final class UARTCommandExecutor extends CommandExecutor {
         byte[] buf = new byte[32];
 
         res = sendCmdOrCmdData(CMD_GET_ALLOWED_CMDS, 0);
-        if (res == -1) {
-            return null;
+        if (res == 0) {
+            throw new TimeoutException(rb.getString("no.response.from.stm.cmd"));
         }
 
         res = receiveResponse(buf);
-        if (res == -1) {
-            return null;
+        if (res == 0) {
+            throw new TimeoutException(rb.getString("no.response.from.stm"));
         }
 
         if (buf[1] == 0x31) {
