@@ -8,6 +8,7 @@ extlib_sptty="sp-tty.jar"
 
 dbgfile = core/flash/stm32/core/internal/Debug.java
 
+# If D=1 passed set debug variable to true in java src file
 define check_dbg
 	( if [ "x$(D)" == "x1" ]; \
 	  then \
@@ -17,6 +18,7 @@ define check_dbg
 	  fi )
 endef
 
+# Build UART SDK (generates, class and jar files)
 uartsdk:
 	$(call pry,"Building UART SDK ..............")
 	ant clean

@@ -19,6 +19,7 @@ import flash.stm32.core.FileType;
 import flash.stm32.core.FlashUtils;
 import flash.stm32.core.ICmdProgressListener;
 import flash.stm32.core.REGTYPE;
+import flash.stm32.core.Reset;
 import flash.stm32.core.internal.CommandExecutor;
 
 /**
@@ -56,6 +57,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
 
     private final SerialComManager scm;
     private final ResourceBundle rb;
+    private final Reset rst;
 
     private FlashUtils flashUtils;
     private long comPortHandle;
@@ -67,6 +69,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
         super();
         this.scm = scm;
         this.rb = rb;
+        rst = new Reset();
     }
 
     public Device connectAndIdentifyDevice(long comPortHandle) throws SerialComException, TimeoutException {
@@ -600,7 +603,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
         return 0;
     }
 
-    public int writeMemory(final int fileType, final File fwFile, final int startAddr,
+    public int writeMemory(final int fwType, final File fwFile, final int startAddr,
             ICmdProgressListener progressListener) throws TimeoutException, IOException {
 
         int x = 0;
@@ -631,7 +634,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
             throw e;
         }
 
-        return this.writeMemory(fileType, data, startAddr, progressListener);
+        return this.writeMemory(fwType, data, startAddr, progressListener);
     }
 
     /**
@@ -648,7 +651,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
      * @throws SerialComException
      * @throws TimeoutException
      */
-    public int writeMemory(final int fileType, final byte[] data, final int startAddr,
+    public int writeMemory(final int fwType, final byte[] data, final int startAddr,
             ICmdProgressListener progressListener) throws SerialComException, TimeoutException {
 
         int x;
@@ -669,16 +672,16 @@ public final class UARTCommandExecutor extends CommandExecutor {
             throw new IllegalArgumentException(rb.getString("invalid.datawrite.length"));
         }
 
-        if (fileType == FileType.HEX) {
+        if (fwType == FileType.HEX) {
             if (flashUtils == null) {
                 flashUtils = new FlashUtils(rb);
             }
             fwBuf = flashUtils.hexToBinFwFormat(data);
             numBytesToWrite = fwBuf.length;
-        } else if (fileType == FileType.DETECT) {
+        } else if (fwType == FileType.DETECT) {
             // TODO
             fwBuf = data;
-        } else if (fileType == FileType.BIN) {
+        } else if (fwType == FileType.BIN) {
             fwBuf = data;
         } else {
             throw new IllegalArgumentException(rb.getString("invalid.filetype"));
@@ -1069,5 +1072,12 @@ public final class UARTCommandExecutor extends CommandExecutor {
         }
 
         return -1;
+    }
+
+    public void triggerSystemReset(int RAMMemStartAddr) throws SerialComException, TimeoutException {
+
+        byte[] resetcode = rst.getResetCode();
+        this.writeMemory(FileType.BIN, resetcode, RAMMemStartAddr, null);
+        this.goJump(RAMMemStartAddr);
     }
 }

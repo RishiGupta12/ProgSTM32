@@ -57,4 +57,6 @@ public abstract class CommandExecutor {
     public abstract int readoutprotectMemoryRegion() throws SerialComException, TimeoutException;
 
     public abstract int readoutUnprotectMemoryRegion() throws SerialComException, TimeoutException;
+
+    public abstract void triggerSystemReset(int RAMMemStartAddr) throws SerialComException, TimeoutException;
 }

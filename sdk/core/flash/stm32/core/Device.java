@@ -138,4 +138,8 @@ public abstract class Device {
     public int readoutUnprotectMemoryRegion() throws SerialComException, TimeoutException {
         return cmdExtr.readoutUnprotectMemoryRegion();
     }
+
+    public void triggerSystemReset() throws SerialComException, TimeoutException {
+        cmdExtr.triggerSystemReset(RAMMemStartAddr);
+    }
 }
