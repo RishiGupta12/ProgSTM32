@@ -11,7 +11,7 @@ if [[ $EUID -eq 0 ]]; then
 fi
 
 rm -rf INSTALL m4 configure Makefile.in depcomp config.guess config.sub >/dev/null 2>&1
-rm -rf missing aclocal.m4 install-sh ltmain.sh config.h config.h.in >/dev/null 2>&1
+rm -rf missing aclocal.m4 install-sh ltmain.sh config.h config.h.in compile >/dev/null 2>&1
 rm -rf config.h.in~ configdata.pm autom4te.cache config.status config.log stamp-h1 >/dev/null 2>&1
 
 mkdir m4

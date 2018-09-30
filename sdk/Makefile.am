@@ -29,8 +29,8 @@ uartsdk:
 	cp $(top_srcdir)/sdk/$(extlib_sptty) $(top_srcdir)/build
 	rm $(top_srcdir)/sdk/$(uart_jar)
 
-javadoc:
-	ant doc -Ddocdir=$(top_srcdir)/documentation/uartsdk-javadocs -Duartjarname=$(uart_jar)
+javadoc: uartsdk
+	ant doc -Ddocdir=$(top_srcdir)/documentation/uartsdk-javadocs
 
 all: uartsdk
 

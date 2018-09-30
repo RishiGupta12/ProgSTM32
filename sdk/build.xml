@@ -22,7 +22,7 @@
 		</jar>
     </target>
 
-	<target name="doc" depends="uartsdk" description="generate documentation">
+	<target name="doc" description="generate documentation">
 		<mkdir dir="${docdir}"/>
 		<javadoc sourcepath="core:uart" destdir="${docdir}"/>
 	</target>

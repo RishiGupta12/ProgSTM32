@@ -1,10 +1,10 @@
 #### Triggering system reset programatically
 --------------------------------------------
-ARM CPU provides a facility to trigger system reset programatically through its AIRCR (Application Interrupt and Reset Control Register). To trigger reset, we should write 0x5FA to the VECTKEY field (otherwise the processor ignores the write) and 1 to the SYSRESETREQ field.
+ARM CPU provides a feature to trigger system reset programatically through its AIRCR (Application Interrupt and Reset Control Register). To trigger reset, we should write 0x5FA to the VECTKEY field (otherwise the processor ignores the write) and 1 to the SYSRESETREQ field. This feature combined with in-system programming (ISP) can be very useful.
 
 #### Using above concept
 ------------------------
-Once the firmware has been flashed, we need to reset stm32 microcontroller. So we load a small program in RAM and execute it by using 'GO' command of bootloader. This program actually updates fields in AIRCR as explained above. The program is as follows:
+Once the firmware has been flashed, we need to reset stm32 microcontroller. To do this, we load a small program in RAM and execute it by using 'GO' command of bootloader. This program actually updates fields in AIRCR as explained above. The program is as follows:
 ```assembly
 .global _start
 _start:
