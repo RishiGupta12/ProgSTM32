@@ -12,6 +12,7 @@ import java.util.ResourceBundle;
 import java.util.concurrent.TimeoutException;
 
 import com.serialpundit.core.SerialComException;
+import com.serialpundit.core.util.SerialComUtil;
 import com.serialpundit.serial.SerialComManager;
 
 import flash.stm32.core.Device;
@@ -20,6 +21,7 @@ import flash.stm32.core.FlashUtils;
 import flash.stm32.core.ICmdProgressListener;
 import flash.stm32.core.REGTYPE;
 import flash.stm32.core.Reset;
+import flash.stm32.core.internal.BLCMDS;
 import flash.stm32.core.internal.CommandExecutor;
 
 /**
@@ -64,6 +66,15 @@ public final class UARTCommandExecutor extends CommandExecutor {
 	private int supportedCmds;
 	private Device curDev;
 
+	/**
+	 * Allocates an instance of UARTCommandExecutor class.
+	 * 
+	 * @param scm
+	 *            an instance of SerialComManager to communicate through serial port
+	 * @param rb
+	 *            an instance of ResourceBundle to get appropriate messages and
+	 *            resources
+	 */
 	public UARTCommandExecutor(SerialComManager scm, ResourceBundle rb) {
 
 		super();
@@ -72,6 +83,21 @@ public final class UARTCommandExecutor extends CommandExecutor {
 		rst = new Reset();
 	}
 
+	/**
+	 * This method sends init byte 0x7F data frame to stm32 so that stm32 can
+	 * configure its UART interface. It then wait to receive response from stm32
+	 * expecting ACK (0x79) or NACK (0x1F). Once some response is received it sends
+	 * command to get the PID of stm32. Based on the PID value received it creates
+	 * corresponding device instance and return to caller.
+	 * 
+	 * @param comPortHandle
+	 *            handle of serial port to which stm32 is connected.
+	 * @return an instance of Device class representing stm32 device.
+	 * @throws SerialComException
+	 *             if an error happens when communicating through serial port.
+	 * @throws TimeoutException
+	 *             when bootloader sends NACK or timeout happens.
+	 */
 	public Device connectAndIdentifyDevice(long comPortHandle) throws SerialComException, TimeoutException {
 
 		int x;
@@ -189,11 +215,14 @@ public final class UARTCommandExecutor extends CommandExecutor {
 	}
 
 	/**
+	 * Sends command (0x00) to stm32 to get commands supported by this bootloader.
 	 * 
 	 * @return 0 if operation fails or bit mask of commands supported by given
 	 *         bootloader.
 	 * @throws SerialComException
+	 *             if an error happens when communicating through serial port.
 	 * @throws TimeoutException
+	 *             when bootloader sends NACK or timeout happens.
 	 */
 	public int getAllowedCommands() throws SerialComException, TimeoutException {
 
@@ -210,6 +239,8 @@ public final class UARTCommandExecutor extends CommandExecutor {
 		if (res == 0) {
 			throw new TimeoutException(rb.getString("no.response.from.stm"));
 		}
+
+		System.out.println("cmdss = " + SerialComUtil.byteArrayToHexString(buf, ":"));
 
 		supportedCmds = 0;
 		x = 2;
@@ -272,10 +303,14 @@ public final class UARTCommandExecutor extends CommandExecutor {
 	}
 
 	/**
+	 * Sends command (0x00) to know commands supported by this bootloader and then
+	 * extracts bootloader version for the received response.
 	 * 
-	 * @return
+	 * @return bootloader version in human readable format.
 	 * @throws SerialComException
+	 *             if an error happens when communicating through serial port.
 	 * @throws TimeoutException
+	 *             when bootloader sends NACK or timeout happens.
 	 */
 	public String getBootloaderVersion() throws SerialComException, TimeoutException {
 
@@ -307,11 +342,13 @@ public final class UARTCommandExecutor extends CommandExecutor {
 	}
 
 	/**
-	 * STM32 product codes are defined in AN2606 application note.
+	 * Sends command (0x02) to stm32 to get product id.
 	 * 
-	 * @return
+	 * @return product id of the stm32 as reported by bootloader.
 	 * @throws SerialComException
+	 *             if an error happens when communicating through serial port.
 	 * @throws TimeoutException
+	 *             when bootloader sends NACK or timeout happens.
 	 */
 	public int getChipID() throws SerialComException, TimeoutException {
 
@@ -330,7 +367,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
 
 		/*
 		 * note some device may send more than two bytes in response to get chip id
-		 * command, we ignore extra two bytes sent,as they are of no use to us.
+		 * command, we ignore extra two or more bytes sent,as they are of no use to us.
 		 */
 		res = 0;
 		res = res | (buf[1] << 8);
