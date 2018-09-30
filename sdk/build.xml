@@ -22,6 +22,11 @@
 		</jar>
     </target>
 
+	<target name="doc" depends="uartsdk" description="generate documentation">
+		<mkdir dir="${docdir}"/>
+		<javadoc sourcepath="core:uart" destdir="${docdir}"/>
+	</target>
+
 	<target name="clean">
 		<delete dir="bin" />
 		<delete file="${uartjarname}" />

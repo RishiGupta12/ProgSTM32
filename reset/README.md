@@ -6,6 +6,8 @@ ARM CPU provides a facility to trigger system reset programatically through its 
 ------------------------
 Once the firmware has been flashed, we need to reset stm32 microcontroller. So we load a small program in RAM and execute it by using 'GO' command of bootloader. This program actually updates fields in AIRCR as explained above. The program is as follows:
 ```assembly
+.global _start
+_start:
 LDR R1,=0xE000ED0C
 LDR R2,=0x05FA0004
 STR R2,[R1]

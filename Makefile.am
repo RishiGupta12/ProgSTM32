@@ -11,6 +11,9 @@ include flashstm32.mk
 uartsdk:
 	$(MAKE) -C $(top_srcdir)/sdk -$(MAKEFLAGS)
 
+javadoc:
+	$(MAKE) -C $(top_srcdir)/sdk -$(MAKEFLAGS) $@
+
 clean-local:
 	[ -n "$(top_srcdir)" ] && rm -rf $(top_srcdir)/doc
 
