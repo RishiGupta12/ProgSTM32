@@ -12,7 +12,7 @@ import flash.stm32.uart.UARTInterface;
 
 /**
  * <p>
- * Entry point to the flashstm32 sdk. Application must obtain an instance of
+ * Entry point to the progstm32 sdk. Application must obtain an instance of
  * this class and call methods in it.
  * </p>
  * 

@@ -1,6 +1,6 @@
 include $(top_srcdir)/progstm32.mk
 
-uart_jar="flashstm32uart.jar"
+uart_jar="progstm32uart.jar"
 extlib_spcore="sp-core.jar"
 extlib_sptty="sp-tty.jar"
 
@@ -30,7 +30,7 @@ uartsdk:
 	rm $(top_srcdir)/sdk/$(uart_jar)
 
 javadoc:
-	ant doc -Ddocdir=$(top_srcdir)/documentation/javadocs -Duartjarname=$(uart_jar)
+	ant doc -Ddocdir=$(top_srcdir)/documentation/uartsdk-javadocs -Duartjarname=$(uart_jar)
 
 all: uartsdk
 

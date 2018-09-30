@@ -8,7 +8,7 @@
   clean artifcats as required.
 -->
 
-<project name="flashstm32"  default="compile">
+<project name="progstm32"  default="compile">
 
     <target name="uartsdk">
         <mkdir dir="bin"/>

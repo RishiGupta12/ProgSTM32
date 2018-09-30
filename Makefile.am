@@ -15,7 +15,7 @@ javadoc:
 	$(MAKE) -C $(top_srcdir)/sdk -$(MAKEFLAGS) $@
 
 clean-local:
-	[ -n "$(top_srcdir)" ] && rm -rf $(top_srcdir)/documentation
+	[ -n "$(top_srcdir)" ] && rm -rf $(top_srcdir)/documentation/uartsdk-javadocs
 
 FILES = INSTALL m4 configure Makefile.in depcomp config.guess config.sub missing aclocal.m4 install-sh ltmain.sh config.h config.h.in config.h.in~ configdata.pm autom4te.cache config.status config.log stamp-h1 compile
 
