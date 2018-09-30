@@ -1,4 +1,4 @@
-include $(top_srcdir)/flashstm32.mk
+include $(top_srcdir)/progstm32.mk
 
 uart_jar="flashstm32uart.jar"
 extlib_spcore="sp-core.jar"
