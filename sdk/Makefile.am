@@ -1,8 +1,8 @@
 include $(top_srcdir)/progstm32.mk
 
-uart_jar="progstm32uart.jar"
-extlib_spcore="sp-core.jar"
-extlib_sptty="sp-tty.jar"
+uart_jar=progstm32uart.jar
+extlib_spcore=sp-core.jar
+extlib_sptty=sp-tty.jar
 
 .PHONY: uartsdk
 

@@ -22,9 +22,13 @@
 		</jar>
     </target>
 
-	<target name="doc" description="generate documentation">
+	<target name="doc" description="generate javdocs">
 		<mkdir dir="${docdir}"/>
-		<javadoc sourcepath="core:uart" destdir="${docdir}"/>
+		<javadoc sourcepath="core:uart" destdir="${docdir}">
+			<classpath>
+				<pathelement path="sp-core.jar:sp-tty.jar"/>
+			</classpath>
+		</javadoc>
 	</target>
 
 	<target name="clean">
