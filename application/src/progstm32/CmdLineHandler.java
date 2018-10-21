@@ -20,6 +20,8 @@
 
 package progstm32;
 
+import flash.stm32.core.FileType;
+
 /**
  * <p>
  * If the application is executing in commandline mode, it extracts arguments
@@ -44,6 +46,7 @@ public final class CmdLineHandler {
         int totalPageNum = 0;
         int baudrate = 0;
         String device = null;
+        int fileType = -1;
 
         for (int i = 0; i < numArgs; i++) {
 
@@ -69,9 +72,11 @@ public final class CmdLineHandler {
                 break;
 
             case "-ih":
+                fileType = FileType.HEX;
                 break;
 
             case "-b":
+                fileType = FileType.BIN;
                 break;
 
             case "-br":
@@ -86,11 +91,13 @@ public final class CmdLineHandler {
 
             case "-h":
                 break;
+
             default:
                 throw new IllegalArgumentException("Invalid option");
             }
         }
 
-        System.out.println("Option : " + action + " " + startPageNum + " " + totalPageNum);
+        System.out.println("Option1 : " + action + " " + startPageNum + " " + totalPageNum);
+        System.out.println("Option2 : " + fileType + " " + device + " " + baudrate);
     }
 }
