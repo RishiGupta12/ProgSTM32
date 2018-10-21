@@ -22,16 +22,12 @@ package progstm32;
 
 /**
  * <p>
- * Entry class to the ProgSTM32 application.
+ * If the application is executing in commandline mode, it extracts arguments
+ * and execute the user given command.
  * </p>
  * 
  * @author Rishi Gupta
  */
-public final class ProgSTM32 {
+public final class CmdLineHandler {
 
-    public static void main(String[] args) {
-        for (int i = 0; i < args.length; i++) {
-            System.out.println(args[i]);
-        }
-    }
 }
