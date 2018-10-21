@@ -8,6 +8,8 @@ extlib_sptty=sp-tty.jar
 
 .PHONY: app
 
+all: app
+
 # Build java application
 app:
 	$(call pry,"Building application ..............")
@@ -15,8 +17,6 @@ app:
 	ant app -Dspcore=$(extlib_spcore) -Dsptty=$(extlib_sptty) -Duartsdk=$(extlib_uartsdk) -Dappjarname=$(app_jarname) -Dextlibpath=$(top_srcdir)/build
 	cp $(top_srcdir)/application/$(app_jarname) $(top_srcdir)/build
 	rm $(top_srcdir)/application/$(app_jarname)
-
-all: app
 
 clean:
 	ant clean

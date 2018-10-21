@@ -6,6 +6,8 @@ extlib_sptty=sp-tty.jar
 
 .PHONY: uartsdk
 
+all: uartsdk
+
 dbgfile = core/flash/stm32/core/internal/Debug.java
 
 # If D=1 passed set debug variable to true in java src file
@@ -31,8 +33,6 @@ uartsdk:
 
 javadoc: uartsdk
 	ant doc -Ddocdir=$(top_srcdir)/documentation/uartsdk-javadocs
-
-all: uartsdk
 
 clean:
 	ant -Duartjarname=$(uart_jar) clean
