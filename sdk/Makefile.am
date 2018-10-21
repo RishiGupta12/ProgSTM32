@@ -10,7 +10,7 @@ all: uartsdk
 
 dbgfile = core/flash/stm32/core/internal/Debug.java
 
-# If D=1 passed set debug variable to true in java src file
+# If D=1 passed set debug variable to true in java src file (dbgfile)
 define check_dbg
 	( if [ "x$(D)" == "x1" ]; \
 	  then \
@@ -25,11 +25,9 @@ uartsdk:
 	$(call pry,"Building UART SDK ..............")
 	ant clean
 	$(call check_dbg)
-	ant uartsdk -Duartjarname=$(uart_jar)
-	cp $(top_srcdir)/sdk/$(uart_jar) $(top_srcdir)/build
+	ant uartsdk -Duartjarname=$(uart_jar) -Dextlibpath=$(top_srcdir)/build
 	cp $(top_srcdir)/sdk/$(extlib_spcore) $(top_srcdir)/build
 	cp $(top_srcdir)/sdk/$(extlib_sptty) $(top_srcdir)/build
-	rm $(top_srcdir)/sdk/$(uart_jar)
 
 javadoc: uartsdk
 	ant doc -Ddocdir=$(top_srcdir)/documentation/uartsdk-javadocs

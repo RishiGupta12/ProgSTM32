@@ -30,4 +30,14 @@ package progstm32;
  */
 public final class CmdLineHandler {
 
+    public void process(String[] args) {
+        
+        System.out.println(args.length);
+        
+        for (int i = 0; i < args.length; i++) {
+            System.out.println(args[i]);
+        }
+        
+    }
+
 }

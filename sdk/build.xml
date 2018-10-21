@@ -17,7 +17,7 @@
 				<pathelement path="sp-core.jar:sp-tty.jar"/>
 			</classpath>
 		</javac>
-		<jar destfile="${uartjarname}" basedir="bin" >
+		<jar destfile="${extlibpath}/${uartjarname}" basedir="bin" >
 			<fileset dir="resources" />
 		</jar>
     </target>

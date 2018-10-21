@@ -29,9 +29,21 @@ package progstm32;
  */
 public final class ProgSTM32 {
 
+    /**
+     * <p>
+     * Entry point to the progstm32 application.
+     * </p>
+     * 
+     * @param args
+     *            user supplied arguments
+     */
     public static void main(String[] args) {
-        for (int i = 0; i < args.length; i++) {
-            System.out.println(args[i]);
+
+        if (args.length > 1) {
+            CmdLineHandler cmdlhdlr = new CmdLineHandler();
+            cmdlhdlr.process(args);
+            return;
         }
     }
+
 }
