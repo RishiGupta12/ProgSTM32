@@ -42,6 +42,7 @@ public final class CmdLineHandler {
         int action = 0;
         int startPageNum = 0;
         int totalPageNum = 0;
+        int baudrate = 0;
 
         for (int i = 0; i < numArgs; i++) {
 
@@ -73,6 +74,8 @@ public final class CmdLineHandler {
                 break;
 
             case "-br":
+                i++;
+                baudrate = Integer.parseInt(args[i]);
                 break;
 
             case "-d":
