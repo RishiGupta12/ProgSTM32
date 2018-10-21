@@ -20,6 +20,7 @@
 		<jar destfile="${extlibpath}/${appjarname}" basedir="bin" >
 			<fileset dir="resources" />
 			<manifest>
+				<attribute name="Main-Class" value="progstm32.ProgSTM32"/>
 			</manifest>
 		</jar>
     </target>
