@@ -43,6 +43,7 @@ public final class CmdLineHandler {
         int startPageNum = 0;
         int totalPageNum = 0;
         int baudrate = 0;
+        String device = null;
 
         for (int i = 0; i < numArgs; i++) {
 
@@ -79,6 +80,8 @@ public final class CmdLineHandler {
                 break;
 
             case "-d":
+                i++;
+                device = args[i];
                 break;
 
             case "-h":
