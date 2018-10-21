@@ -17,8 +17,10 @@
 				<pathelement path="${extlibpath}/sp-core.jar:${extlibpath}/sp-tty.jar:${extlibpath}/${uartsdk}"/>
 			</classpath>
 		</javac>
-		<jar destfile="${appjarname}" basedir="bin" >
+		<jar destfile="${extlibpath}/${appjarname}" basedir="bin" >
 			<fileset dir="resources" />
+			<manifest>
+			</manifest>
 		</jar>
     </target>
 
