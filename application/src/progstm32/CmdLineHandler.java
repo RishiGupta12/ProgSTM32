@@ -30,14 +30,61 @@ package progstm32;
  */
 public final class CmdLineHandler {
 
-    public void process(String[] args) {
-        
-        System.out.println(args.length);
-        
-        for (int i = 0; i < args.length; i++) {
-            System.out.println(args[i]);
-        }
-        
-    }
+    int ACT_WRITE = 0x01;
+    int ACT_ERASE = 0x02;
+    int ACT_MASS_ERASE = 0x03;
+    int ACT_READ = 0x02;
+    int ACT_SHOW_HELP = 0x01;
 
+    public void process(String[] args) {
+
+        int numArgs = args.length;
+        int action = 0;
+        int startPageNum = 0;
+        int totalPageNum = 0;
+
+        for (int i = 0; i < numArgs; i++) {
+
+            switch (args[i]) {
+
+            case "-w":
+                action = ACT_WRITE;
+                break;
+
+            case "-e":
+                i++;
+                if (args[i].equals("m")) {
+                    action = ACT_MASS_ERASE;
+                } else {
+                    action = ACT_ERASE;
+                    startPageNum = Integer.parseInt(args[i]);
+                    i++;
+                    totalPageNum = Integer.parseInt(args[i]);
+                }
+                break;
+
+            case "-r":
+                break;
+
+            case "-ih":
+                break;
+
+            case "-b":
+                break;
+
+            case "-br":
+                break;
+
+            case "-d":
+                break;
+
+            case "-h":
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid option");
+            }
+        }
+
+        System.out.println("Option : " + action + " " + startPageNum + " " + totalPageNum);
+    }
 }
