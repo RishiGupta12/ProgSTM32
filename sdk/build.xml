@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 
 <!--
-	Copyright (C) 2018, Rishi Gupta. All rights reserved.
+  Copyright (C) 2018, Rishi Gupta. All rights reserved.
 
   :build.xml:
   An Ant script to compile java source files, build jar and
   clean artifcats as required.
 -->
 
-<project name="progstm32"  default="compile">
+<project name="progstm32" default="compile">
 
     <target name="uartsdk">
         <mkdir dir="bin"/>

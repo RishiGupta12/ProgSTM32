@@ -1,4 +1,3 @@
-#!/bin/bash
 # 
 # This file is part of progstm32.
 # 
@@ -105,6 +104,7 @@ dnl List of makefiles that automake should generate
 AC_CONFIG_FILES([
 Makefile
 sdk/Makefile
+application/Makefile
 ])
 
 dnl Generate config.status and launch it, run the configuration action
