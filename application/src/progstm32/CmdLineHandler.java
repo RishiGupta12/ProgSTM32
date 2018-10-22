@@ -231,13 +231,24 @@ public final class CmdLineHandler {
             }
         }
 
-        /* Get product id of the stm32 device */
+        /* Disable read protection */
         if ((action & ACT_READ_UNPROTECT) == ACT_READ_UNPROTECT) {
             try {
                 dev.readoutUnprotectMemoryRegion();
                 // TODO resync or return
             } catch (Exception e) {
-                System.out.println("Get PID failed: " + e.getMessage());
+                System.out.println("Can't disable read protection: " + e.getMessage());
+                closeDevice();
+            }
+        }
+
+        /* Disable write protection */
+        if ((action & ACT_WRITE_UNPROTECT) == ACT_WRITE_UNPROTECT) {
+            try {
+                dev.writeUnprotectMemoryRegion();
+                // TODO resync or return
+            } catch (Exception e) {
+                System.out.println("Can't disable write protection: " + e.getMessage());
                 closeDevice();
             }
         }
