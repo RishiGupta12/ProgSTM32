@@ -24,7 +24,7 @@ import flash.stm32.core.FileType;
 
 /**
  * <p>
- * If the application is executing in commandline mode, it extracts arguments
+ * If the application is executing in command line mode, it extracts arguments
  * and execute the user given command.
  * </p>
  * 
@@ -32,11 +32,17 @@ import flash.stm32.core.FileType;
  */
 public final class CmdLineHandler {
 
-    int ACT_WRITE = 0x01;
-    int ACT_ERASE = 0x02;
-    int ACT_MASS_ERASE = 0x03;
-    int ACT_READ = 0x02;
-    int ACT_SHOW_HELP = 0x01;
+    final int ACT_WRITE = 0x01;
+    final int ACT_ERASE = 0x02;
+    final int ACT_MASS_ERASE = 0x04;
+    final int ACT_READ = 0x08;
+    final int ACT_SHOW_HELP = 0x10;
+    final int ACT_GO = 0x20;
+    final int ACT_READ_PROTECT = 0x40;
+    final int ACT_READ_UNPROTECT = 0x80;
+    final int ACT_WRITE_PROTECT = 0x100;
+    final int ACT_WRITE_UNPROTECT = 0x200;
+    final int ACT_GET_PID = 0x400;
 
     public void process(String[] args) {
 
@@ -45,8 +51,11 @@ public final class CmdLineHandler {
         int startPageNum = 0;
         int totalPageNum = 0;
         int baudrate = 0;
-        String device = null;
         int fileType = -1;
+        int startAddress = -1;
+        int length = -1;
+        String device = null;
+        boolean verify_write = false;
 
         for (int i = 0; i < numArgs; i++) {
 
@@ -54,21 +63,6 @@ public final class CmdLineHandler {
 
             case "-w":
                 action = ACT_WRITE;
-                break;
-
-            case "-e":
-                i++;
-                if (args[i].equals("m")) {
-                    action = ACT_MASS_ERASE;
-                } else {
-                    action = ACT_ERASE;
-                    startPageNum = Integer.parseInt(args[i]);
-                    i++;
-                    totalPageNum = Integer.parseInt(args[i]);
-                }
-                break;
-
-            case "-r":
                 break;
 
             case "-ih":
@@ -79,9 +73,54 @@ public final class CmdLineHandler {
                 fileType = FileType.BIN;
                 break;
 
+            case "-s":
+                i++;
+                try {
+                    startAddress = Integer.parseInt(args[i]);
+                } catch (Exception e) {
+                    System.out.println("Invalid start address " + e.getMessage());
+                    return;
+                }
+                break;
+
+            case "-l":
+                i++;
+                try {
+                    length = Integer.parseInt(args[i]);
+                } catch (Exception e) {
+                    System.out.println("Invalid length " + e.getMessage());
+                    return;
+                }
+                break;
+
+            case "-e":
+                i++;
+                if (args[i].equals("m")) {
+                    action = ACT_MASS_ERASE;
+                } else {
+                    action = ACT_ERASE;
+                    try {
+                        startPageNum = Integer.parseInt(args[i]);
+                        i++;
+                        totalPageNum = Integer.parseInt(args[i]);
+                    } catch (Exception e) {
+                        System.out.println("Invalid erase option " + e.getMessage());
+                        return;
+                    }
+                }
+                break;
+
+            case "-r":
+                break;
+
             case "-br":
                 i++;
-                baudrate = Integer.parseInt(args[i]);
+                try {
+                    baudrate = Integer.parseInt(args[i]);
+                } catch (Exception e) {
+                    System.out.println("Invalid erase option " + e.getMessage());
+                    return;
+                }
                 break;
 
             case "-d":
@@ -89,12 +128,59 @@ public final class CmdLineHandler {
                 device = args[i];
                 break;
 
+            case "-g":
+                action = ACT_GO;
+                break;
+
+            case "-v":
+                verify_write = true;
+                break;
+
+            case "-j":
+                action = ACT_READ_PROTECT;
+                break;
+
+            case "-k":
+                action = ACT_READ_UNPROTECT;
+                break;
+
+            case "-n":
+                action = ACT_WRITE_PROTECT;
+                try {
+                    startPageNum = Integer.parseInt(args[i]);
+                    i++;
+                    totalPageNum = Integer.parseInt(args[i]);
+                } catch (Exception e) {
+                    System.out.println("Invalid write protect option " + e.getMessage());
+                    return;
+                }
+                break;
+
+            case "-o":
+                action = ACT_WRITE_UNPROTECT;
+                break;
+
+            case "-p":
+                action = ACT_GET_PID;
+                break;
+
             case "-h":
                 break;
 
             default:
-                throw new IllegalArgumentException("Invalid option");
+                System.out.println("Invalid option");
+                return;
             }
+        }
+
+        /*
+         * All option has been parsed, let us execute user given command. The action
+         * must contain only one primary action and other info given is supplement to
+         * the primary command.
+         */
+        switch (action) {
+        case ACT_WRITE:
+            break;
         }
 
         System.out.println("Option1 : " + action + " " + startPageNum + " " + totalPageNum);
