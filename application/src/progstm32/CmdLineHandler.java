@@ -20,7 +20,22 @@
 
 package progstm32;
 
+import java.util.Locale;
+import java.util.concurrent.TimeoutException;
+
+import flash.stm32.core.Device;
+import flash.stm32.core.DeviceManager;
+import flash.stm32.core.DeviceManager.IFace;
 import flash.stm32.core.FileType;
+
+import flash.stm32.uart.UARTInterface;
+
+import com.serialpundit.core.SerialComException;
+import com.serialpundit.serial.SerialComManager.BAUDRATE;
+import com.serialpundit.serial.SerialComManager.DATABITS;
+import com.serialpundit.serial.SerialComManager.FLOWCONTROL;
+import com.serialpundit.serial.SerialComManager.PARITY;
+import com.serialpundit.serial.SerialComManager.STOPBITS;
 
 /**
  * <p>
@@ -43,6 +58,11 @@ public final class CmdLineHandler {
     final int ACT_WRITE_PROTECT = 0x100;
     final int ACT_WRITE_UNPROTECT = 0x200;
     final int ACT_GET_PID = 0x400;
+
+    private DeviceManager devMgr;
+    private UARTInterface uci;
+    private Device dev;
+    private boolean opened = false;
 
     public void process(String[] args) {
 
@@ -78,7 +98,7 @@ public final class CmdLineHandler {
                 try {
                     startAddress = Integer.parseInt(args[i]);
                 } catch (Exception e) {
-                    System.out.println("Invalid start address " + e.getMessage());
+                    System.out.println("Invalid start address, " + e.getMessage());
                     return;
                 }
                 break;
@@ -88,7 +108,7 @@ public final class CmdLineHandler {
                 try {
                     length = Integer.parseInt(args[i]);
                 } catch (Exception e) {
-                    System.out.println("Invalid length " + e.getMessage());
+                    System.out.println("Invalid length, " + e.getMessage());
                     return;
                 }
                 break;
@@ -104,7 +124,7 @@ public final class CmdLineHandler {
                         i++;
                         totalPageNum = Integer.parseInt(args[i]);
                     } catch (Exception e) {
-                        System.out.println("Invalid erase option " + e.getMessage());
+                        System.out.println("Invalid erase option, " + e.getMessage());
                         return;
                     }
                 }
@@ -118,7 +138,7 @@ public final class CmdLineHandler {
                 try {
                     baudrate = Integer.parseInt(args[i]);
                 } catch (Exception e) {
-                    System.out.println("Invalid erase option " + e.getMessage());
+                    System.out.println("Invalid erase option, " + e.getMessage());
                     return;
                 }
                 break;
@@ -151,7 +171,7 @@ public final class CmdLineHandler {
                     i++;
                     totalPageNum = Integer.parseInt(args[i]);
                 } catch (Exception e) {
-                    System.out.println("Invalid write protect option " + e.getMessage());
+                    System.out.println("Invalid write protect option, " + e.getMessage());
                     return;
                 }
                 break;
@@ -173,14 +193,44 @@ public final class CmdLineHandler {
             }
         }
 
+        /* Mandatory option check */
+        if ((device == null) || (device.length() == 0)) {
+            System.out.println("Communication port not given");
+            return;
+        }
+
         /*
          * All option has been parsed, let us execute user given command. The action
          * must contain only one primary action and other info given is supplement to
          * the primary command.
          */
+        try {
+            devMgr = new DeviceManager(new Locale("English", "EN"));
+            uci = (UARTInterface) devMgr.getCommunicationIface(IFace.UART, "progstm32jqix7");
+            uci.open(device, BAUDRATE.B115200, DATABITS.DB_8, STOPBITS.SB_1, PARITY.P_EVEN, FLOWCONTROL.NONE);
+            opened = true;
+            dev = uci.initAndIdentifyDevice();
+        } catch (Exception e) {
+            System.out.println("Failed: " + e.getMessage());
+            return;
+        }
+
         switch (action) {
+
         case ACT_WRITE:
             break;
+
+        case ACT_GET_PID:
+            try {
+                dev.getChipID();
+            } catch (Exception e) {
+                System.out.println("Get PID failed: " + e.getMessage());
+            }
+            return;
+
+        default:
+            System.out.println("Invalid action");
+            return;
         }
 
         System.out.println("Option1 : " + action + " " + startPageNum + " " + totalPageNum);
