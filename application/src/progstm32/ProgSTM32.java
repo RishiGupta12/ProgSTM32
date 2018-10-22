@@ -39,7 +39,7 @@ public final class ProgSTM32 {
      */
     public static void main(String[] args) {
 
-        if (args.length > 1) {
+        if (args.length > 0) {
             CmdLineHandler cmdlhdlr = new CmdLineHandler();
             cmdlhdlr.process(args);
             return;

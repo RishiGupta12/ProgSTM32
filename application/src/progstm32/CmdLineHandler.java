@@ -21,7 +21,6 @@
 package progstm32;
 
 import java.util.Locale;
-import java.util.concurrent.TimeoutException;
 
 import flash.stm32.core.Device;
 import flash.stm32.core.DeviceManager;
@@ -30,21 +29,14 @@ import flash.stm32.core.FileType;
 
 import flash.stm32.uart.UARTInterface;
 
-import com.serialpundit.core.SerialComException;
 import com.serialpundit.serial.SerialComManager.BAUDRATE;
 import com.serialpundit.serial.SerialComManager.DATABITS;
 import com.serialpundit.serial.SerialComManager.FLOWCONTROL;
 import com.serialpundit.serial.SerialComManager.PARITY;
 import com.serialpundit.serial.SerialComManager.STOPBITS;
 
-/**
- * <p>
- * If the application is executing in command line mode, it extracts arguments
- * and execute the user given command.
- * </p>
- * 
- * @author Rishi Gupta
- */
+/* If the application is executing in command line mode, it extracts arguments
+ * and execute the user given command. */
 public final class CmdLineHandler {
 
     final int ACT_WRITE = 0x01;
@@ -188,7 +180,7 @@ public final class CmdLineHandler {
                 break;
 
             default:
-                System.out.println("Invalid option");
+                System.out.println("Invalid option " + args[i]);
                 return;
             }
         }
@@ -207,33 +199,55 @@ public final class CmdLineHandler {
         try {
             devMgr = new DeviceManager(new Locale("English", "EN"));
             uci = (UARTInterface) devMgr.getCommunicationIface(IFace.UART, "progstm32jqix7");
-            uci.open(device, BAUDRATE.B115200, DATABITS.DB_8, STOPBITS.SB_1, PARITY.P_EVEN, FLOWCONTROL.NONE);
-            opened = true;
-            dev = uci.initAndIdentifyDevice();
         } catch (Exception e) {
             System.out.println("Failed: " + e.getMessage());
             return;
         }
 
-        switch (action) {
-
-        case ACT_WRITE:
-            break;
-
-        case ACT_GET_PID:
-            try {
-                dev.getChipID();
-            } catch (Exception e) {
-                System.out.println("Get PID failed: " + e.getMessage());
-            }
-            return;
-
-        default:
-            System.out.println("Invalid action");
+        try {
+            uci.open(device, BAUDRATE.B115200, DATABITS.DB_8, STOPBITS.SB_1, PARITY.P_EVEN, FLOWCONTROL.NONE);
+            opened = true;
+        } catch (Exception e) {
+            System.out.println("Can't open device: " + e.getMessage());
             return;
         }
 
-        System.out.println("Option1 : " + action + " " + startPageNum + " " + totalPageNum);
-        System.out.println("Option2 : " + fileType + " " + device + " " + baudrate);
+        try {
+            dev = uci.initAndIdentifyDevice();
+        } catch (Exception e) {
+            System.out.println("Can't identify device: " + e.getMessage());
+            closeDevice();
+            return;
+        }
+
+        /* Get product id of the stm32 device */
+        if ((action & ACT_GET_PID) == ACT_GET_PID) {
+            try {
+                System.out.println(dev.getChipID());
+                return;
+            } catch (Exception e) {
+                System.out.println("Get PID failed: " + e.getMessage());
+                closeDevice();
+            }
+        }
+
+        /* Get product id of the stm32 device */
+        if ((action & ACT_READ_UNPROTECT) == ACT_READ_UNPROTECT) {
+            try {
+                dev.readoutUnprotectMemoryRegion();
+                // TODO resync or return
+            } catch (Exception e) {
+                System.out.println("Get PID failed: " + e.getMessage());
+                closeDevice();
+            }
+        }
+
+    }
+
+    void closeDevice() {
+        try {
+            uci.close();
+        } catch (Exception e1) {
+        }
     }
 }
