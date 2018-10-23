@@ -434,6 +434,18 @@ public final class CmdLineHandler {
                 closeDevice();
             }
         }
+
+        /* Make program counter jump to the user given address */
+        if ((action & ACT_SOFT_RESET) == ACT_SOFT_RESET) {
+            try {
+                dev.triggerSystemReset();
+                System.out.println("Soft reset done");
+                return;
+            } catch (Exception e) {
+                System.out.println("Can't soft reset: " + e.getMessage());
+                closeDevice();
+            }
+        }
     }
 
     /*
