@@ -20,6 +20,7 @@
 
 package progstm32;
 
+import java.io.File;
 import java.util.Locale;
 
 import flash.stm32.core.BLCMDS;
@@ -27,6 +28,7 @@ import flash.stm32.core.Device;
 import flash.stm32.core.DeviceManager;
 import flash.stm32.core.DeviceManager.IFace;
 import flash.stm32.core.FileType;
+import flash.stm32.core.ICmdProgressListener;
 import flash.stm32.core.REGTYPE;
 import flash.stm32.uart.UARTInterface;
 
@@ -38,7 +40,7 @@ import com.serialpundit.serial.SerialComManager.STOPBITS;
 
 /* If the application is executing in command line mode, it extracts arguments
  * and execute the user given command. */
-public final class CmdLineHandler {
+public final class CmdLineHandler implements ICmdProgressListener {
 
     final int ACT_BL_ENTRY = 0x01;
     final int ACT_READ_UNPROTECT = 0x02;
@@ -80,6 +82,7 @@ public final class CmdLineHandler {
         int entryRTSstate = -1;
         int exitDTRstate = -1;
         int exitRTSstate = -1;
+        File fwFile = null;
 
         for (int i = 0; i < numArgs; i++) {
 
@@ -87,6 +90,17 @@ public final class CmdLineHandler {
 
             case "-w":
                 action |= ACT_WRITE;
+                i++;
+                try {
+                    fwFile = new File(args[i]);
+                    if ((fwFile.exists() == false) || (fwFile.isFile() == false)) {
+                        System.out.println("Invalid firmware file");
+                        return;
+                    }
+                } catch (Exception e) {
+                    System.out.println("Invalid start address, " + e.getMessage());
+                    return;
+                }
                 break;
 
             case "-v":
@@ -94,11 +108,11 @@ public final class CmdLineHandler {
                 break;
 
             case "-ih":
-                fileType |= FileType.HEX;
+                fileType = FileType.HEX;
                 break;
 
-            case "-b":
-                fileType |= FileType.BIN;
+            case "-bn":
+                fileType = FileType.BIN;
                 break;
 
             case "-s":
@@ -385,7 +399,7 @@ public final class CmdLineHandler {
                 if (action <= ACT_MASS_ERASE) {
                     return;
                 }
-                System.out.println("User flash mass erased");
+                System.out.println("Mass erase done");
             } catch (Exception e) {
                 System.out.println("Can't disable read protection: " + e.getMessage());
                 closeDevice();
@@ -403,9 +417,25 @@ public final class CmdLineHandler {
                 if (action <= ACT_MASS_ERASE) {
                     return;
                 }
-                System.out.println("User flash mass erased");
+                System.out.println("Erase done");
             } catch (Exception e) {
                 System.out.println("Can't disable read protection: " + e.getMessage());
+                closeDevice();
+            }
+        }
+
+        /* Write given firmware in stm32 memory */
+        if ((action & ACT_WRITE) == ACT_WRITE) {
+            try {
+                if ((fileType != -1) && (fileType != FileType.HEX) && (fileType != FileType.BIN)) {
+                    System.out.println("Invalid file type");
+                    return;
+                }
+                System.out.println("Writing...");
+                dev.writeMemory(fileType, fwFile, startAddress, this);
+                System.out.println("Write done");
+            } catch (Exception e) {
+                System.out.println("Can't write: " + e.getMessage());
                 closeDevice();
             }
         }
@@ -435,7 +465,7 @@ public final class CmdLineHandler {
             }
         }
 
-        /* Make program counter jump to the user given address */
+        /* Do soft system reset */
         if ((action & ACT_SOFT_RESET) == ACT_SOFT_RESET) {
             try {
                 dev.triggerSystemReset();
@@ -517,5 +547,16 @@ public final class CmdLineHandler {
     private void showHelp() {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public void onDataReadProgressUpdate(int totalBytesReadTillNow, int numBytesToRead) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void onDataWriteProgressUpdate(int totalBytesWrittenTillNow, int numBytesToWrite) {
+        System.out.println("Total bytes written : " + totalBytesWrittenTillNow);
     }
 }

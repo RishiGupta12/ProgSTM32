@@ -55,7 +55,7 @@ public interface ICmdProgressListener {
      * @param totalBytesToWrite
      *            total number of bytes to be sent to stm32
      */
-    public abstract void onDataWriteProgressUpdate(long totalBytesSentTillNow, int totalBytesToWrite);
+    public abstract void onDataWriteProgressUpdate(int totalBytesSentTillNow, int totalBytesToWrite);
 
     /**
      * <p>
