@@ -29,6 +29,8 @@ package progstm32;
  */
 public final class ProgSTM32 {
 
+    private final static String AppVersion = "v1.0";
+
     /**
      * <p>
      * Entry point to the progstm32 application.
@@ -38,6 +40,8 @@ public final class ProgSTM32 {
      *            user supplied arguments
      */
     public static void main(String[] args) {
+
+        System.out.println("progstm32 " + AppVersion);
 
         if (args.length > 0) {
             CmdLineHandler cmdlhdlr = new CmdLineHandler();

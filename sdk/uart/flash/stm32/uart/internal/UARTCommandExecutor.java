@@ -134,6 +134,12 @@ public final class UARTCommandExecutor extends CommandExecutor {
      * instance and return to the caller.
      * </p>
      * 
+     * <p>
+     * If the stm32 can't determine baudrate and initialize its serial port, we
+     * can't get into bootloader mode. In this case user must give correct baudrate
+     * for his particular device.
+     * </p>
+     * 
      * @param comPortHandle
      *            handle of serial port to which stm32 is connected
      * @return an instance of Device class representing stm32 device

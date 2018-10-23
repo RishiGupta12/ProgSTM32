@@ -22,11 +22,12 @@ package progstm32;
 
 import java.util.Locale;
 
+import flash.stm32.core.BLCMDS;
 import flash.stm32.core.Device;
 import flash.stm32.core.DeviceManager;
 import flash.stm32.core.DeviceManager.IFace;
 import flash.stm32.core.FileType;
-
+import flash.stm32.core.REGTYPE;
 import flash.stm32.uart.UARTInterface;
 
 import com.serialpundit.serial.SerialComManager.BAUDRATE;
@@ -39,22 +40,28 @@ import com.serialpundit.serial.SerialComManager.STOPBITS;
  * and execute the user given command. */
 public final class CmdLineHandler {
 
-    final int ACT_WRITE = 0x01;
-    final int ACT_ERASE = 0x02;
-    final int ACT_MASS_ERASE = 0x04;
-    final int ACT_READ = 0x08;
-    final int ACT_SHOW_HELP = 0x10;
-    final int ACT_GO = 0x20;
-    final int ACT_READ_PROTECT = 0x40;
-    final int ACT_READ_UNPROTECT = 0x80;
-    final int ACT_WRITE_PROTECT = 0x100;
-    final int ACT_WRITE_UNPROTECT = 0x200;
-    final int ACT_GET_PID = 0x400;
+    final int ACT_BL_ENTRY = 0x01;
+    final int ACT_READ_UNPROTECT = 0x02;
+    final int ACT_WRITE_UNPROTECT = 0x04;
+    final int ACT_GET_PID = 0x08;
+    final int ACT_GET_BLID = 0x10;
+    final int ACT_READ = 0x20;
+    final int ACT_ERASE = 0x40;
+    final int ACT_MASS_ERASE = 0x80;
+    final int ACT_WRITE = 0x100;
+    final int ACT_VERIFY_WRITE = 0x200;
+    final int ACT_WRITE_PROTECT = 0x400;
+    final int ACT_READ_PROTECT = 0x800;
+    final int ACT_GO = 0x1000;
+    final int ACT_SOFT_RESET = 0x2000;
+    final int ACT_BL_EXIT = 0x4000;
+    final int ACT_SHOW_HELP = 0x8000;
 
     private DeviceManager devMgr;
     private UARTInterface uci;
     private Device dev;
     private boolean opened = false;
+    private int allowedCmds = 0;
 
     public void process(String[] args) {
 
@@ -63,32 +70,41 @@ public final class CmdLineHandler {
         int startPageNum = 0;
         int totalPageNum = 0;
         int baudrate = 0;
+        BAUDRATE brate = null;
         int fileType = -1;
         int startAddress = -1;
         int length = -1;
         String device = null;
         boolean verify_write = false;
+        int entryDTRstate = -1;
+        int entryRTSstate = -1;
+        int exitDTRstate = -1;
+        int exitRTSstate = -1;
 
         for (int i = 0; i < numArgs; i++) {
 
             switch (args[i]) {
 
             case "-w":
-                action = ACT_WRITE;
+                action |= ACT_WRITE;
+                break;
+
+            case "-v":
+                action |= ACT_VERIFY_WRITE;
                 break;
 
             case "-ih":
-                fileType = FileType.HEX;
+                fileType |= FileType.HEX;
                 break;
 
             case "-b":
-                fileType = FileType.BIN;
+                fileType |= FileType.BIN;
                 break;
 
             case "-s":
                 i++;
                 try {
-                    startAddress = Integer.parseInt(args[i]);
+                    startAddress = Integer.parseInt(args[i], 16);
                 } catch (Exception e) {
                     System.out.println("Invalid start address, " + e.getMessage());
                     return;
@@ -108,9 +124,9 @@ public final class CmdLineHandler {
             case "-e":
                 i++;
                 if (args[i].equals("m")) {
-                    action = ACT_MASS_ERASE;
+                    action |= ACT_MASS_ERASE;
                 } else {
-                    action = ACT_ERASE;
+                    action |= ACT_ERASE;
                     try {
                         startPageNum = Integer.parseInt(args[i]);
                         i++;
@@ -123,6 +139,21 @@ public final class CmdLineHandler {
                 break;
 
             case "-r":
+                action |= ACT_READ;
+                i++;
+                try {
+                    startAddress = Integer.parseInt(args[i], 16);
+                } catch (Exception e) {
+                    System.out.println("Invalid read address, " + e.getMessage());
+                    return;
+                }
+                i++;
+                try {
+                    length = Integer.parseInt(args[i], 16);
+                } catch (Exception e) {
+                    System.out.println("Invalid read length, " + e.getMessage());
+                    return;
+                }
                 break;
 
             case "-br":
@@ -130,7 +161,7 @@ public final class CmdLineHandler {
                 try {
                     baudrate = Integer.parseInt(args[i]);
                 } catch (Exception e) {
-                    System.out.println("Invalid erase option, " + e.getMessage());
+                    System.out.println("Invalid baudrate, " + e.getMessage());
                     return;
                 }
                 break;
@@ -141,23 +172,26 @@ public final class CmdLineHandler {
                 break;
 
             case "-g":
-                action = ACT_GO;
-                break;
-
-            case "-v":
-                verify_write = true;
+                action |= ACT_GO;
+                i++;
+                try {
+                    startAddress = Integer.parseInt(args[i], 16);
+                } catch (Exception e) {
+                    System.out.println("Invalid go address, " + e.getMessage());
+                    return;
+                }
                 break;
 
             case "-j":
-                action = ACT_READ_PROTECT;
+                action |= ACT_READ_PROTECT;
                 break;
 
             case "-k":
-                action = ACT_READ_UNPROTECT;
+                action |= ACT_READ_UNPROTECT;
                 break;
 
             case "-n":
-                action = ACT_WRITE_PROTECT;
+                action |= ACT_WRITE_PROTECT;
                 try {
                     startPageNum = Integer.parseInt(args[i]);
                     i++;
@@ -169,15 +203,57 @@ public final class CmdLineHandler {
                 break;
 
             case "-o":
-                action = ACT_WRITE_UNPROTECT;
+                action |= ACT_WRITE_UNPROTECT;
                 break;
 
             case "-p":
-                action = ACT_GET_PID;
+                action |= ACT_GET_PID;
+                break;
+
+            case "-i":
+                action |= ACT_GET_BLID;
+                break;
+
+            case "-er":
+                action |= ACT_BL_ENTRY;
+                i++;
+                if (args[i].equals("dtr")) {
+                    i++;
+                    if (args[i].equals("1")) {
+                        entryDTRstate = 1;
+                    } else if (args[i].equals("0")) {
+                        entryDTRstate = 0;
+                    } else {
+                        System.out.println("Invalid dtr value: " + args[i]);
+                        return;
+                    }
+                } else if (args[i].equals("rts")) {
+                    i++;
+                    if (args[i].equals("1")) {
+                        entryRTSstate = 1;
+                    } else if (args[i].equals("0")) {
+                        entryRTSstate = 0;
+                    } else {
+                        System.out.println("Invalid rts value: " + args[i]);
+                        return;
+                    }
+                } else {
+                    System.out.println("dtr/rts not specified: " + args[i]);
+                    return;
+                }
+                break;
+
+            case "-ex":
+                action |= ACT_BL_EXIT;
+                break;
+
+            case "-R":
+                action |= ACT_SOFT_RESET;
                 break;
 
             case "-h":
-                break;
+                showHelp();
+                return;
 
             default:
                 System.out.println("Invalid option " + args[i]);
@@ -185,7 +261,7 @@ public final class CmdLineHandler {
             }
         }
 
-        /* Mandatory option check */
+        /* Check mandatory options has been supplied by user */
         if ((device == null) || (device.length() == 0)) {
             System.out.println("Communication port not given");
             return;
@@ -204,8 +280,9 @@ public final class CmdLineHandler {
             return;
         }
 
+        brate = translateBaudrate(baudrate);
         try {
-            uci.open(device, BAUDRATE.B115200, DATABITS.DB_8, STOPBITS.SB_1, PARITY.P_EVEN, FLOWCONTROL.NONE);
+            uci.open(device, brate, DATABITS.DB_8, STOPBITS.SB_1, PARITY.P_EVEN, FLOWCONTROL.NONE);
             opened = true;
         } catch (Exception e) {
             System.out.println("Can't open device: " + e.getMessage());
@@ -215,18 +292,18 @@ public final class CmdLineHandler {
         try {
             dev = uci.initAndIdentifyDevice();
         } catch (Exception e) {
-            System.out.println("Can't identify device: " + e.getMessage());
+            System.out.println("Can't init device: " + e.getMessage());
             closeDevice();
             return;
         }
 
-        /* Get product id of the stm32 device */
-        if ((action & ACT_GET_PID) == ACT_GET_PID) {
+        /* Make stm32 enter bootloader mode by applying sequence as specified by user */
+        if ((action & ACT_BL_ENTRY) == ACT_BL_ENTRY) {
             try {
-                System.out.println(dev.getChipID());
-                return;
+                System.out.println("Enter bootloader mode...");
+                System.out.println("Entered bootloader mode.");
             } catch (Exception e) {
-                System.out.println("Get PID failed: " + e.getMessage());
+                System.out.println("Can't enter bootloader mode: " + e.getMessage());
                 closeDevice();
             }
         }
@@ -235,30 +312,198 @@ public final class CmdLineHandler {
         if ((action & ACT_READ_UNPROTECT) == ACT_READ_UNPROTECT) {
             try {
                 dev.readoutUnprotectMemoryRegion();
-                // TODO resync or return
+                System.out.println("Disabled read protection");
+                if ((action > ACT_READ_UNPROTECT) && (reinit() == -1)) {
+                    return;
+                }
             } catch (Exception e) {
                 System.out.println("Can't disable read protection: " + e.getMessage());
                 closeDevice();
             }
         }
 
+        /* Get commands supported by bootloader in connected stm32 device */
+        try {
+            allowedCmds = dev.getAllowedCommands();
+        } catch (Exception e) {
+            System.out.println("Can't get commands supported by bootloader: " + e.getMessage());
+            closeDevice();
+        }
+
         /* Disable write protection */
         if ((action & ACT_WRITE_UNPROTECT) == ACT_WRITE_UNPROTECT) {
+            if ((allowedCmds & BLCMDS.WRITE_UNPROTECT) != BLCMDS.WRITE_UNPROTECT) {
+                System.out.println("Bootloader doesn't support disabling write protection");
+                return;
+            }
             try {
                 dev.writeUnprotectMemoryRegion();
-                // TODO resync or return
+                System.out.println("Disabled write protection");
+                if ((action > ACT_WRITE_UNPROTECT) && (reinit() == -1)) {
+                    return;
+                }
             } catch (Exception e) {
                 System.out.println("Can't disable write protection: " + e.getMessage());
                 closeDevice();
             }
         }
 
+        /* Get product id of the stm32 device */
+        if ((action & ACT_GET_PID) == ACT_GET_PID) {
+            if ((allowedCmds & BLCMDS.GET_ID) != BLCMDS.GET_ID) {
+                System.out.println("Bootloader doesn't reading product id");
+                return;
+            }
+            try {
+                System.out.println(dev.getChipID());
+                return;
+            } catch (Exception e) {
+                System.out.println("Can't get product ID: " + e.getMessage());
+                closeDevice();
+            }
+        }
+
+        /* Get bootloader id of the stm32 device */
+        if ((action & ACT_GET_BLID) == ACT_GET_BLID) {
+            try {
+                System.out.println(dev.getBootloaderID());
+                return;
+            } catch (Exception e) {
+                System.out.println("Can't get bootloader ID: " + e.getMessage());
+                closeDevice();
+            }
+        }
+
+        /* Do mass erase */
+        if ((action & ACT_MASS_ERASE) == ACT_MASS_ERASE) {
+            try {
+                if ((allowedCmds & BLCMDS.ERASE) == BLCMDS.ERASE) {
+                    dev.eraseMemoryRegion(REGTYPE.MAIN, -1, -1);
+                } else {
+                    dev.extendedEraseMemoryRegion(REGTYPE.MAIN, -1, -1);
+                }
+                if (action <= ACT_MASS_ERASE) {
+                    return;
+                }
+                System.out.println("User flash mass erased");
+            } catch (Exception e) {
+                System.out.println("Can't disable read protection: " + e.getMessage());
+                closeDevice();
+            }
+        }
+
+        /* Do page by page erase */
+        if ((action & ACT_ERASE) == ACT_ERASE) {
+            try {
+                if ((allowedCmds & BLCMDS.ERASE) == BLCMDS.ERASE) {
+                    dev.eraseMemoryRegion(REGTYPE.MAIN, startPageNum, totalPageNum);
+                } else {
+                    dev.extendedEraseMemoryRegion(REGTYPE.MAIN, startPageNum, totalPageNum);
+                }
+                if (action <= ACT_MASS_ERASE) {
+                    return;
+                }
+                System.out.println("User flash mass erased");
+            } catch (Exception e) {
+                System.out.println("Can't disable read protection: " + e.getMessage());
+                closeDevice();
+            }
+        }
+
+        /* Make stm32 exit bootloader mode by applying sequence as specified by user */
+        if ((action & ACT_BL_EXIT) == ACT_BL_EXIT) {
+            try {
+                System.out.println("Exiting bootloader mode...");
+                System.out.println("Exited bootloader mode.");
+                return;
+            } catch (Exception e) {
+                System.out.println("Can't exit bootloader mode: " + e.getMessage());
+                closeDevice();
+            }
+        }
+
+        /* Make program counter jump to the user given address */
+        if ((action & ACT_GO) == ACT_GO) {
+            System.out.println("Starting execution at address 0x" + Integer.toHexString(startAddress));
+            try {
+                dev.goJump(startAddress);
+                System.out.println("Started execution at address 0x" + Integer.toHexString(startAddress));
+                return;
+            } catch (Exception e) {
+                System.out.println("Can't jump/execute: " + e.getMessage());
+                closeDevice();
+            }
+        }
     }
 
+    /*
+     * Translate baudrate to a form as expected by serialpundit sdk. If the stm32
+     * can't determine baudrate and initialize its serial port, we can't get into
+     * bootloader mode. In this case user must give correct baudrate explicitly for
+     * his particular device.
+     */
+    BAUDRATE translateBaudrate(int baudrate) {
+        switch (baudrate) {
+        case 9600:
+            return BAUDRATE.B9600;
+        case 115200:
+            return BAUDRATE.B115200;
+        case 2400:
+            return BAUDRATE.B2400;
+        case 4800:
+            return BAUDRATE.B4800;
+        case 14400:
+            return BAUDRATE.B14400;
+        case 19200:
+            return BAUDRATE.B19200;
+        case 28800:
+            return BAUDRATE.B28800;
+        case 38400:
+            return BAUDRATE.B38400;
+        case 56000:
+            return BAUDRATE.B56000;
+        case 57600:
+            return BAUDRATE.B57600;
+        default:
+            return BAUDRATE.B115200;
+        }
+    }
+
+    /*
+     * Some command trigger system reset after they have been executed, so we need
+     * to reinit (handshake with bootloader) again so that next commands if given by
+     * user can be sent to it.
+     */
+    int reinit() {
+        try {
+            Thread.sleep(300);
+            dev = uci.initAndIdentifyDevice();
+        } catch (Exception e) {
+            System.out.println("Can't reinit device: " + e.getMessage());
+            closeDevice();
+            return -1;
+        }
+        return 0;
+    }
+
+    /*
+     * Close serial port
+     */
     void closeDevice() {
         try {
-            uci.close();
-        } catch (Exception e1) {
+            if (opened == true) {
+                uci.close();
+            }
+        } catch (Exception e) {
+            System.out.println("Closing serial port failed: " + e.getMessage());
         }
+    }
+
+    /*
+     * Prints usage of command line options on stdout
+     */
+    private void showHelp() {
+        // TODO Auto-generated method stub
+
     }
 }

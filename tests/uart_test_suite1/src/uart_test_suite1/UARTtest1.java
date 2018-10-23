@@ -42,6 +42,8 @@ public final class UARTtest1 {
 	private DeviceManager devMgr;
 	private UARTInterface uci;
 	private boolean opened = false;
+	
+	private String PORT = "/dev/ttyACM0";
 
 	protected void begin() throws SerialComException {
 
@@ -53,7 +55,7 @@ public final class UARTtest1 {
 			uci = (UARTInterface) devMgr.getCommunicationIface(IFace.UART, "proguartx3971");
 
 			System.out.println("----------- Test 3 uart open -----------");
-			uci.open("/dev/ttyACM0", BAUDRATE.B115200, DATABITS.DB_8, STOPBITS.SB_1, PARITY.P_EVEN, FLOWCONTROL.NONE);
+			uci.open(PORT, BAUDRATE.B115200, DATABITS.DB_8, STOPBITS.SB_1, PARITY.P_EVEN, FLOWCONTROL.NONE);
 			opened = true;
 
 			System.out.println("----------- Test 4 initAndIdentifyDevice -----------");
