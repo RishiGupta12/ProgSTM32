@@ -9,14 +9,14 @@ Usage: progstm32 -d port [-{r|w} filename] [-{bn|ih}] [-e {m | start total] [-s 
 -v                    Verify after flashing firmware in memory
 -e   m                Do mass erase
 -e   start total      Erase total pages given by 'total', starting with 'start' page number
--s   address          Address in stm32 memory (address from where flashing will start or from where data will be read)
+-s   address          Address in hexadecimal format of stm32 memory (address from where flashing will start or from where data will be read)
 -l   length           Number of bytes
 -i                    Get bootloader ID
 -p                    Get stm32product ID
 -k                    Disable read protection 
 -j                    Enable read protection
 -o                    Disable write protection
--n                    Enable write protection
+-n   start total      Enable write protection on total pages starting from start page
 -R                    Do software based system reset
 -g   address          Make program counter jump to the given address
 -h                    Show this help
