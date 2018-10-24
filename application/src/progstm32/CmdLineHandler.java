@@ -230,6 +230,7 @@ public final class CmdLineHandler implements ICmdProgressListener {
 
             case "-n":
                 action |= ACT_WRITE_PROTECT;
+                i++;
                 try {
                     startPageNum = Integer.parseInt(args[i]);
                     i++;
