@@ -1,0 +1,32 @@
+Usage: progstm32 -d port [-{r|w} filename] [-{bn|ih}] [-e {m | start total] [-s address] [-l length] [-kopjnivhR] [-br baudrate] [-g address]
+
+-d   port             Serial port to which stm32 is connected (/dev/ttyUSB0 or COM9)
+-br  baudrate         Serial port speed (default 115200, supported 2400, 4800, 9600, 14400, 19200, 28800, 38400, 56000, 57600, 115200)
+-r   filename|stdout  Reads length bytes specified by -l from the address specified by -s and stores in file or stdout
+-w   filename         Firmware file to be flashed into memory
+-bn                   Indicates file specified with -w is in plain binary format
+-ih                   Indicates file specified with -w is in intel hex format and needs conversion into binary format
+-v                    Verify after flashing firmware in memory
+-e   m                Do mass erase
+-e   start total      Erase total pages given by 'total', starting with 'start' page number
+-s   address          Address in stm32 memory (address from where flashing will start or from where data will be read)
+-l   length           Number of bytes
+-i                    Get bootloader ID
+-p                    Get stm32product ID
+-k                    Disable read protection 
+-j                    Enable read protection
+-o                    Disable write protection
+-n                    Enable write protection
+-R                    Do software based system reset
+-g   address          Make program counter jump to the given address
+-h                    Show this help
+
+Examples:
+  1. Get stm32 product id
+     progstm32 -d /dev/ttyUSB0 -p
+  2. Disable read protection
+     progstm32 -d /dev/ttyUSB0 -k
+  3. Flash firmware file
+     progstm32 -d /dev/ttyUSB0 -w /home/demo.bin -s 08000000 -bn
+  4. Mass erase
+     progstm32 -d /dev/ttyUSB0 -e m

@@ -21,8 +21,11 @@
 package progstm32;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Locale;
 
 import flash.stm32.core.BLCMDS;
@@ -72,6 +75,7 @@ public final class CmdLineHandler implements ICmdProgressListener {
     public void process(String[] args) {
 
         int numArgs = args.length;
+
         int action = 0;
         int startPageNum = 0;
         int totalPageNum = 0;
@@ -100,6 +104,13 @@ public final class CmdLineHandler implements ICmdProgressListener {
         byte[] readBuf = null;
         int lengthOfFileContents = 0;
         String readFile = null;
+
+        if (numArgs == 0) {
+            System.out.println(
+                    "Usage: progstm32 -d port [-{r|w} filename] [-{bn|ih}] [-e {m | start total] [-s address] [-l length] [-kopjnivhR] [-br baudrate] [-g address]");
+            System.out.println("Try 'progstm32 --help' for more information.");
+            return;
+        }
 
         for (int i = 0; i < numArgs; i++) {
 
@@ -731,8 +742,20 @@ public final class CmdLineHandler implements ICmdProgressListener {
      * Prints usage of command line options on stdout
      */
     private void showHelp() {
-        // TODO Auto-generated method stub
-
+        try {
+            String LINE_SEPARATOR = System.getProperty("line.separator");
+            String FILE_SEPARATOR = System.getProperty("file.separator");
+            InputStream in = CmdLineHandler.class.getResourceAsStream(FILE_SEPARATOR + "help.txt");
+            StringBuilder sb = new StringBuilder();
+            BufferedReader r = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+            String line = null;
+            while ((line = r.readLine()) != null) {
+                sb.append(line).append(LINE_SEPARATOR);
+            }
+            System.out.println(sb.toString());
+        } catch (Exception e) {
+            System.out.println("Can't read help text");
+        }
     }
 
     @Override

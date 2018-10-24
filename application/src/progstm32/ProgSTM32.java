@@ -43,10 +43,8 @@ public final class ProgSTM32 {
 
         System.out.println("progstm32 " + AppVersion);
 
-        if (args.length > 0) {
-            CmdLineHandler cmdlhdlr = new CmdLineHandler();
-            cmdlhdlr.process(args);
-            return;
-        }
+        CmdLineHandler cmdlhdlr = new CmdLineHandler();
+        cmdlhdlr.process(args);
+        return;
     }
 }
