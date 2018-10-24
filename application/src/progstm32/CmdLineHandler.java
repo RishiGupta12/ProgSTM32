@@ -99,6 +99,7 @@ public final class CmdLineHandler implements ICmdProgressListener {
         int numBytesRead = 0;
         byte[] readBuf = null;
         int lengthOfFileContents = 0;
+        String readFile = null;
 
         for (int i = 0; i < numArgs; i++) {
 
@@ -177,6 +178,8 @@ public final class CmdLineHandler implements ICmdProgressListener {
                 i++;
                 if (args[i].equals("stdout")) {
                     stdout = true;
+                } else {
+                    readFile = args[i];
                 }
                 break;
 
@@ -527,13 +530,13 @@ public final class CmdLineHandler implements ICmdProgressListener {
         if ((action & ACT_READ) == ACT_READ) {
             System.out.println("Reading...");
             try {
-                readBuf = new byte[length];
-                numBytesRead = dev.readMemory(readBuf, startAddress, length, this);
                 if (stdout == true) {
-                    String str = SerialComUtil.byteArrayToHexString(readBuf, null);
+                    readBuf = new byte[length];
+                    numBytesRead = dev.readMemory(readBuf, startAddress, length, this);
+                    String str = SerialComUtil.byteArrayToHexString(readBuf, " ");
                     System.out.println(str);
                 } else {
-
+                    dev.readMemory(readFile, startAddress, length, this);
                 }
                 System.out.println("Read done");
             } catch (Exception e) {
@@ -544,12 +547,24 @@ public final class CmdLineHandler implements ICmdProgressListener {
 
         /* Make stm32 exit bootloader mode by applying sequence as specified by user */
         if ((action & ACT_BL_EXIT) == ACT_BL_EXIT) {
+            System.out.println("Exiting bootloader mode...");
             try {
-                System.out.println("Exiting bootloader mode...");
                 System.out.println("Exited bootloader mode.");
                 return;
             } catch (Exception e) {
                 System.out.println("Can't exit bootloader mode: " + e.getMessage());
+                closeDevice();
+            }
+        }
+
+        /* Do soft system reset */
+        if ((action & ACT_SOFT_RESET) == ACT_SOFT_RESET) {
+            System.out.println("Soft resetting...");
+            try {
+                dev.triggerSystemReset();
+                System.out.println("Soft reset done");
+            } catch (Exception e) {
+                System.out.println("Can't soft reset: " + e.getMessage());
                 closeDevice();
             }
         }
@@ -563,18 +578,6 @@ public final class CmdLineHandler implements ICmdProgressListener {
                 return;
             } catch (Exception e) {
                 System.out.println("Can't jump/execute: " + e.getMessage());
-                closeDevice();
-            }
-        }
-
-        /* Do soft system reset */
-        if ((action & ACT_SOFT_RESET) == ACT_SOFT_RESET) {
-            try {
-                dev.triggerSystemReset();
-                System.out.println("Soft reset done");
-                return;
-            } catch (Exception e) {
-                System.out.println("Can't soft reset: " + e.getMessage());
                 closeDevice();
             }
         }
