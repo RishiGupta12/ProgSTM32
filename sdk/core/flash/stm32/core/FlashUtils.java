@@ -17,7 +17,7 @@
  * along with this library; if not, write to the Free Software Foundation,Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
-package flash.stm32.core.internal;
+package flash.stm32.core;
 
 import java.util.ResourceBundle;
 
@@ -31,7 +31,16 @@ import java.io.IOException;
 
 public final class FlashUtils {
 
-    private final ResourceBundle rb;
+    private ResourceBundle rb;
+
+    /**
+     * <p>
+     * Allocate an instance of FlashUtils using the given resource bundle. This does
+     * not alter the resource bundle hence language.
+     * </p>
+     */
+    public FlashUtils() {
+    }
 
     /**
      * <p>

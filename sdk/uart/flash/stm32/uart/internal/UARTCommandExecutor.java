@@ -34,13 +34,13 @@ import com.serialpundit.serial.SerialComManager;
 import flash.stm32.core.BLCMDS;
 import flash.stm32.core.Device;
 import flash.stm32.core.FileType;
+import flash.stm32.core.FlashUtils;
 import flash.stm32.core.HexFirmware;
 import flash.stm32.core.ICmdProgressListener;
 import flash.stm32.core.REGTYPE;
 import flash.stm32.core.Reset;
 import flash.stm32.core.internal.CommandExecutor;
 import flash.stm32.core.internal.Debug;
-import flash.stm32.core.internal.FlashUtils;
 
 /**
  * <p>

@@ -23,6 +23,7 @@ package flash.stm32.uart;
 import flash.stm32.uart.internal.UARTCommandExecutor;
 import flash.stm32.core.CommunicationInterface;
 import flash.stm32.core.Device;
+import flash.stm32.core.FlashUtils;
 
 import com.serialpundit.core.SerialComException;
 import com.serialpundit.serial.SerialComManager;
@@ -30,7 +31,6 @@ import com.serialpundit.serial.SerialComManager;
 import java.io.IOException;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeoutException;
-import flash.stm32.core.internal.FlashUtils;
 
 /**
  * <p>

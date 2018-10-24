@@ -30,10 +30,13 @@ import flash.stm32.core.Device;
 import flash.stm32.core.DeviceManager;
 import flash.stm32.core.DeviceManager.IFace;
 import flash.stm32.core.FileType;
+import flash.stm32.core.FlashUtils;
+import flash.stm32.core.HexFirmware;
 import flash.stm32.core.ICmdProgressListener;
 import flash.stm32.core.REGTYPE;
 import flash.stm32.uart.UARTInterface;
 
+import com.serialpundit.core.util.SerialComUtil;
 import com.serialpundit.serial.SerialComManager.BAUDRATE;
 import com.serialpundit.serial.SerialComManager.DATABITS;
 import com.serialpundit.serial.SerialComManager.FLOWCONTROL;
@@ -84,6 +87,7 @@ public final class CmdLineHandler implements ICmdProgressListener {
         int exitDTRstate = -1;
         int exitRTSstate = -1;
         File fwFile = null;
+        boolean stdout = false;
 
         int x = 0;
         int offset = 0;
@@ -105,7 +109,11 @@ public final class CmdLineHandler implements ICmdProgressListener {
                 i++;
                 try {
                     fwFile = new File(args[i]);
-                    if ((fwFile.exists() == false) || (fwFile.isFile() == false)) {
+                    if (fwFile.exists() == false) {
+                        System.out.println("Firmware file doesn't exist");
+                        return;
+                    }
+                    if (fwFile.isFile() == false) {
                         System.out.println("Invalid firmware file");
                         return;
                     }
@@ -167,18 +175,8 @@ public final class CmdLineHandler implements ICmdProgressListener {
             case "-r":
                 action |= ACT_READ;
                 i++;
-                try {
-                    startAddress = Integer.parseInt(args[i], 16);
-                } catch (Exception e) {
-                    System.out.println("Invalid read address, " + e.getMessage());
-                    return;
-                }
-                i++;
-                try {
-                    length = Integer.parseInt(args[i], 16);
-                } catch (Exception e) {
-                    System.out.println("Invalid read length, " + e.getMessage());
-                    return;
+                if (args[i].equals("stdout")) {
+                    stdout = true;
                 }
                 break;
 
@@ -454,53 +452,93 @@ public final class CmdLineHandler implements ICmdProgressListener {
 
             /* Verify data written if requested by user */
             if (verifyWrite == true) {
+                System.out.println("Verifying data written...");
                 try {
-                    System.out.println("Verifying data written...");
-                    if (fileType == FileType.HEX) {
-                        /* Hex format firmware */
-                    } else {
-                        /* Binary format firmware */
-                        lengthOfFileContents = (int) fwFile.length();
-                        wrtBuf = new byte[lengthOfFileContents];
-                        inStream = new BufferedInputStream(new FileInputStream(fwFile));
-                        numBytesToRead = lengthOfFileContents;
-                        for (x = 0; x < lengthOfFileContents; x = totalBytesReadTillNow) {
-                            numBytesActuallyRead = inStream.read(wrtBuf, offset, numBytesToRead);
-                            totalBytesReadTillNow = totalBytesReadTillNow + numBytesActuallyRead;
-                            offset = totalBytesReadTillNow;
-                            numBytesToRead = lengthOfFileContents - totalBytesReadTillNow;
-                        }
-                        inStream.close();
+                    lengthOfFileContents = (int) fwFile.length();
+                    wrtBuf = new byte[lengthOfFileContents];
+                    inStream = new BufferedInputStream(new FileInputStream(fwFile));
+                    numBytesToRead = lengthOfFileContents;
+                    for (x = 0; x < lengthOfFileContents; x = totalBytesReadTillNow) {
+                        numBytesActuallyRead = inStream.read(wrtBuf, offset, numBytesToRead);
+                        totalBytesReadTillNow = totalBytesReadTillNow + numBytesActuallyRead;
+                        offset = totalBytesReadTillNow;
+                        numBytesToRead = lengthOfFileContents - totalBytesReadTillNow;
                     }
+                    inStream.close();
+                    x = 1;
                 } catch (Exception e) {
-                    System.out.println("Can't verify: " + e.getMessage());
+                    System.out.println("Can't read fw file in host PC: " + e.getMessage());
                     closeDevice();
                     try {
                         inStream.close();
                     } catch (Exception e1) {
                     }
+                    x = 0;
                 }
 
-                /* Read data written to flash */
-                try {
-                    readBuf = new byte[lengthOfFileContents];
-                    numBytesRead = dev.readMemory(readBuf, startAddress, lengthOfFileContents, null);
-                    System.out.println("Read from flash:" + numBytesRead);
-                } catch (Exception e) {
-                    System.out.println("Can't read flash: " + e.getMessage());
-                    closeDevice();
-                }
-
-                /* Data byte written must be equal to the data byte read */
-                for (x = 0; x < numBytesRead; x++) {
-                    if (wrtBuf[x] != readBuf[x]) {
-                        System.out.println(
-                                "Mismatch at byte number " + x + " expected " + wrtBuf[x] + " found " + readBuf[x]);
-                        return;
+                if (x == 1) {
+                    /* Convert from Hex format to bin format if needed */
+                    try {
+                        if (fileType == FileType.HEX) {
+                            FlashUtils fu = new FlashUtils();
+                            HexFirmware hf = fu.hexToBinFwFormat(wrtBuf);
+                            wrtBuf = hf.fwInBinFormat;
+                        } else {
+                        }
+                        x = 1;
+                    } catch (Exception e) {
+                        System.out.println("Can't convert from hex to bin format: " + e.getMessage());
+                        closeDevice();
+                        x = 0;
                     }
                 }
 
-                System.out.println("Verification done");
+                if (x == 1) {
+                    /* Read data written to flash */
+                    try {
+                        readBuf = new byte[lengthOfFileContents];
+                        numBytesRead = dev.readMemory(readBuf, startAddress, lengthOfFileContents, null);
+                        System.out.println("Read from flash : " + numBytesRead);
+                        x = 1;
+                    } catch (Exception e) {
+                        System.out.println("Can't read flash: " + e.getMessage());
+                        closeDevice();
+                        x = 0;
+                    }
+                }
+
+                if (x == 1) {
+                    /* Data byte written must be equal to the data byte read */
+                    lengthOfFileContents = wrtBuf.length;
+                    for (x = 0; x < lengthOfFileContents; x++) {
+                        if (wrtBuf[x] != readBuf[x]) {
+                            System.out.println(
+                                    "Mismatch at byte number " + x + " expected " + wrtBuf[x] + " found " + readBuf[x]);
+                            return;
+                        }
+                    }
+
+                    System.out.println("Verification done");
+                }
+            }
+        }
+
+        /* Read from stm32 memory */
+        if ((action & ACT_READ) == ACT_READ) {
+            System.out.println("Reading...");
+            try {
+                readBuf = new byte[length];
+                numBytesRead = dev.readMemory(readBuf, startAddress, length, this);
+                if (stdout == true) {
+                    String str = SerialComUtil.byteArrayToHexString(readBuf, null);
+                    System.out.println(str);
+                } else {
+
+                }
+                System.out.println("Read done");
+            } catch (Exception e) {
+                System.out.println("Can't read flash: " + e.getMessage());
+                closeDevice();
             }
         }
 

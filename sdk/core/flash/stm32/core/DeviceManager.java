@@ -26,7 +26,8 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import flash.stm32.uart.UARTInterface;
-import flash.stm32.core.internal.FlashUtils;
+
+import flash.stm32.core.FlashUtils;
 
 /**
  * <p>
