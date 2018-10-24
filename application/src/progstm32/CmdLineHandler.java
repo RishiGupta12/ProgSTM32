@@ -361,40 +361,40 @@ public final class CmdLineHandler implements ICmdProgressListener {
         /* Disable write protection */
         if ((action & ACT_WRITE_UNPROTECT) == ACT_WRITE_UNPROTECT) {
             if ((allowedCmds & BLCMDS.WRITE_UNPROTECT) != BLCMDS.WRITE_UNPROTECT) {
-                System.out.println("Bootloader doesn't support disabling write protection");
-                return;
-            }
-            try {
-                dev.writeUnprotectMemoryRegion();
-                System.out.println("Disabled write protection");
-                if ((action > ACT_WRITE_UNPROTECT) && (reinit() == -1)) {
-                    return;
+                try {
+                    dev.writeUnprotectMemoryRegion();
+                    System.out.println("Disabled write protection");
+                    if ((action > ACT_WRITE_UNPROTECT) && (reinit() == -1)) {
+                        return;
+                    }
+                } catch (Exception e) {
+                    System.out.println("Can't disable write protection: " + e.getMessage());
+                    closeDevice();
                 }
-            } catch (Exception e) {
-                System.out.println("Can't disable write protection: " + e.getMessage());
-                closeDevice();
+            } else {
+                System.out.println("Bootloader doesn't support disabling write protection");
             }
         }
 
         /* Get product id of the stm32 device */
         if ((action & ACT_GET_PID) == ACT_GET_PID) {
             if ((allowedCmds & BLCMDS.GET_ID) != BLCMDS.GET_ID) {
+                try {
+                    System.out.println("Pid : " + dev.getChipID());
+                    return;
+                } catch (Exception e) {
+                    System.out.println("Can't get product ID: " + e.getMessage());
+                    closeDevice();
+                }
+            } else {
                 System.out.println("Bootloader doesn't reading product id");
-                return;
-            }
-            try {
-                System.out.println(dev.getChipID());
-                return;
-            } catch (Exception e) {
-                System.out.println("Can't get product ID: " + e.getMessage());
-                closeDevice();
             }
         }
 
         /* Get bootloader id of the stm32 device */
         if ((action & ACT_GET_BLID) == ACT_GET_BLID) {
             try {
-                System.out.println(dev.getBootloaderID());
+                System.out.println("Blid : " + dev.getBootloaderID());
                 return;
             } catch (Exception e) {
                 System.out.println("Can't get bootloader ID: " + e.getMessage());
@@ -404,36 +404,42 @@ public final class CmdLineHandler implements ICmdProgressListener {
 
         /* Do mass erase */
         if ((action & ACT_MASS_ERASE) == ACT_MASS_ERASE) {
+            System.out.println("Doing mass erase...");
             try {
                 if ((allowedCmds & BLCMDS.ERASE) == BLCMDS.ERASE) {
                     dev.eraseMemoryRegion(REGTYPE.MAIN, -1, -1);
-                } else {
+                } else if ((allowedCmds & BLCMDS.EXTENDED_ERASE) == BLCMDS.EXTENDED_ERASE) {
                     dev.extendedEraseMemoryRegion(REGTYPE.MAIN, -1, -1);
+                } else {
+                    System.out.println("Bootloader doesn't support mass erase");
                 }
                 if (action <= ACT_MASS_ERASE) {
                     return;
                 }
                 System.out.println("Mass erase done");
             } catch (Exception e) {
-                System.out.println("Can't disable read protection: " + e.getMessage());
+                System.out.println("Can't do mass erase: " + e.getMessage());
                 closeDevice();
             }
         }
 
         /* Do page by page erase */
         if ((action & ACT_ERASE) == ACT_ERASE) {
+            System.out.println("Doing erase...");
             try {
                 if ((allowedCmds & BLCMDS.ERASE) == BLCMDS.ERASE) {
                     dev.eraseMemoryRegion(REGTYPE.MAIN, startPageNum, totalPageNum);
-                } else {
+                } else if ((allowedCmds & BLCMDS.EXTENDED_ERASE) == BLCMDS.EXTENDED_ERASE) {
                     dev.extendedEraseMemoryRegion(REGTYPE.MAIN, startPageNum, totalPageNum);
+                } else {
+                    System.out.println("Bootloader doesn't support erase");
                 }
-                if (action <= ACT_MASS_ERASE) {
+                if (action <= ACT_ERASE) {
                     return;
                 }
                 System.out.println("Erase done");
             } catch (Exception e) {
-                System.out.println("Can't disable read protection: " + e.getMessage());
+                System.out.println("Can't erase: " + e.getMessage());
                 closeDevice();
             }
         }
@@ -529,24 +535,29 @@ public final class CmdLineHandler implements ICmdProgressListener {
         /* Read from stm32 memory */
         if ((action & ACT_READ) == ACT_READ) {
             System.out.println("Reading...");
-            try {
-                if (stdout == true) {
-                    readBuf = new byte[length];
-                    numBytesRead = dev.readMemory(readBuf, startAddress, length, this);
-                    String str = SerialComUtil.byteArrayToHexString(readBuf, " ");
-                    System.out.println(str);
-                } else {
-                    dev.readMemory(readFile, startAddress, length, this);
+            if ((allowedCmds & BLCMDS.READ_MEMORY) == BLCMDS.READ_MEMORY) {
+                try {
+                    if (stdout == true) {
+                        readBuf = new byte[length];
+                        numBytesRead = dev.readMemory(readBuf, startAddress, length, this);
+                        String str = SerialComUtil.byteArrayToHexString(readBuf, " ");
+                        System.out.println(str);
+                    } else {
+                        dev.readMemory(readFile, startAddress, length, this);
+                    }
+                    System.out.println("Read done");
+                } catch (Exception e) {
+                    System.out.println("Can't read flash: " + e.getMessage());
+                    closeDevice();
                 }
-                System.out.println("Read done");
-            } catch (Exception e) {
-                System.out.println("Can't read flash: " + e.getMessage());
-                closeDevice();
+            } else {
+                System.out.println("Bootloader doesn't support reading memory");
             }
         }
 
         /* Enable write protection */
         if ((action & ACT_WRITE_PROTECT) == ACT_WRITE_PROTECT) {
+            System.out.println("Enabling write protection...");
             if ((allowedCmds & BLCMDS.WRITE_PROTECT) == BLCMDS.WRITE_PROTECT) {
                 try {
                     dev.writeProtectMemoryRegion(startPageNum, totalPageNum);
@@ -560,6 +571,25 @@ public final class CmdLineHandler implements ICmdProgressListener {
                 }
             } else {
                 System.out.println("Bootloader doesn't support enabling write protection");
+            }
+        }
+
+        /* Enable read protection */
+        if ((action & ACT_READ_PROTECT) == ACT_READ_PROTECT) {
+            System.out.println("Enabling read protection...");
+            if ((allowedCmds & BLCMDS.READOUT_PROTECT) == BLCMDS.READOUT_PROTECT) {
+                try {
+                    dev.readoutprotectMemoryRegion();
+                    System.out.println("Enabled read protection");
+                    if ((action > ACT_READ_PROTECT) && (reinit() == -1)) {
+                        return;
+                    }
+                } catch (Exception e) {
+                    System.out.println("Can't enable read protection: " + e.getMessage());
+                    closeDevice();
+                }
+            } else {
+                System.out.println("Bootloader doesn't support enabling read protection");
             }
         }
 
@@ -578,13 +608,17 @@ public final class CmdLineHandler implements ICmdProgressListener {
         /* Make program counter jump to the user given address */
         if ((action & ACT_GO) == ACT_GO) {
             System.out.println("Starting execution at address 0x" + Integer.toHexString(startAddress));
-            try {
-                dev.goJump(startAddress);
-                System.out.println("Started execution at address 0x" + Integer.toHexString(startAddress));
-                return;
-            } catch (Exception e) {
-                System.out.println("Can't jump/execute: " + e.getMessage());
-                closeDevice();
+            if ((allowedCmds & BLCMDS.GO) == BLCMDS.GO) {
+                try {
+                    dev.goJump(startAddress);
+                    System.out.println("Started execution at address 0x" + Integer.toHexString(startAddress));
+                    return;
+                } catch (Exception e) {
+                    System.out.println("Can't jump/execute: " + e.getMessage());
+                    closeDevice();
+                }
+            } else {
+                System.out.println("Bootloader doesn't support go command");
             }
         }
 
