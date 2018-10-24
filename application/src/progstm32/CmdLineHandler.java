@@ -20,7 +20,9 @@
 
 package progstm32;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.Locale;
 
 import flash.stm32.core.BLCMDS;
@@ -51,7 +53,6 @@ public final class CmdLineHandler implements ICmdProgressListener {
     final int ACT_ERASE = 0x40;
     final int ACT_MASS_ERASE = 0x80;
     final int ACT_WRITE = 0x100;
-    final int ACT_VERIFY_WRITE = 0x200;
     final int ACT_WRITE_PROTECT = 0x400;
     final int ACT_READ_PROTECT = 0x800;
     final int ACT_GO = 0x1000;
@@ -77,12 +78,23 @@ public final class CmdLineHandler implements ICmdProgressListener {
         int startAddress = -1;
         int length = -1;
         String device = null;
-        boolean verify_write = false;
+        boolean verifyWrite = false;
         int entryDTRstate = -1;
         int entryRTSstate = -1;
         int exitDTRstate = -1;
         int exitRTSstate = -1;
         File fwFile = null;
+
+        int x = 0;
+        int offset = 0;
+        int numBytesToRead = 0;
+        int numBytesActuallyRead = 0;
+        int totalBytesReadTillNow = 0;
+        BufferedInputStream inStream = null;
+        byte[] wrtBuf = null;
+        int numBytesRead = 0;
+        byte[] readBuf = null;
+        int lengthOfFileContents = 0;
 
         for (int i = 0; i < numArgs; i++) {
 
@@ -104,7 +116,7 @@ public final class CmdLineHandler implements ICmdProgressListener {
                 break;
 
             case "-v":
-                action |= ACT_VERIFY_WRITE;
+                verifyWrite = true;
                 break;
 
             case "-ih":
@@ -294,6 +306,7 @@ public final class CmdLineHandler implements ICmdProgressListener {
             return;
         }
 
+        /* If user has given baudrate use it, if not than use default 115200 */
         brate = translateBaudrate(baudrate);
         try {
             uci.open(device, brate, DATABITS.DB_8, STOPBITS.SB_1, PARITY.P_EVEN, FLOWCONTROL.NONE);
@@ -438,6 +451,57 @@ public final class CmdLineHandler implements ICmdProgressListener {
                 System.out.println("Can't write: " + e.getMessage());
                 closeDevice();
             }
+
+            /* Verify data written if requested by user */
+            if (verifyWrite == true) {
+                try {
+                    System.out.println("Verifying data written...");
+                    if (fileType == FileType.HEX) {
+                        /* Hex format firmware */
+                    } else {
+                        /* Binary format firmware */
+                        lengthOfFileContents = (int) fwFile.length();
+                        wrtBuf = new byte[lengthOfFileContents];
+                        inStream = new BufferedInputStream(new FileInputStream(fwFile));
+                        numBytesToRead = lengthOfFileContents;
+                        for (x = 0; x < lengthOfFileContents; x = totalBytesReadTillNow) {
+                            numBytesActuallyRead = inStream.read(wrtBuf, offset, numBytesToRead);
+                            totalBytesReadTillNow = totalBytesReadTillNow + numBytesActuallyRead;
+                            offset = totalBytesReadTillNow;
+                            numBytesToRead = lengthOfFileContents - totalBytesReadTillNow;
+                        }
+                        inStream.close();
+                    }
+                } catch (Exception e) {
+                    System.out.println("Can't verify: " + e.getMessage());
+                    closeDevice();
+                    try {
+                        inStream.close();
+                    } catch (Exception e1) {
+                    }
+                }
+
+                /* Read data written to flash */
+                try {
+                    readBuf = new byte[lengthOfFileContents];
+                    numBytesRead = dev.readMemory(readBuf, startAddress, lengthOfFileContents, null);
+                    System.out.println("Read from flash:" + numBytesRead);
+                } catch (Exception e) {
+                    System.out.println("Can't read flash: " + e.getMessage());
+                    closeDevice();
+                }
+
+                /* Data byte written must be equal to the data byte read */
+                for (x = 0; x < numBytesRead; x++) {
+                    if (wrtBuf[x] != readBuf[x]) {
+                        System.out.println(
+                                "Mismatch at byte number " + x + " expected " + wrtBuf[x] + " found " + readBuf[x]);
+                        return;
+                    }
+                }
+
+                System.out.println("Verification done");
+            }
         }
 
         /* Make stm32 exit bootloader mode by applying sequence as specified by user */
@@ -513,8 +577,8 @@ public final class CmdLineHandler implements ICmdProgressListener {
 
     /*
      * Some command trigger system reset after they have been executed, so we need
-     * to reinit (handshake with bootloader) again so that next commands if given by
-     * user can be sent to it.
+     * to re-init (handshake with bootloader) again so that next commands if given
+     * by user can be sent to it.
      */
     int reinit() {
         try {
@@ -551,8 +615,7 @@ public final class CmdLineHandler implements ICmdProgressListener {
 
     @Override
     public void onDataReadProgressUpdate(int totalBytesReadTillNow, int numBytesToRead) {
-        // TODO Auto-generated method stub
-
+        System.out.println("Total bytes read : " + totalBytesReadTillNow);
     }
 
     @Override
