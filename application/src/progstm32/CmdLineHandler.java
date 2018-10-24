@@ -545,15 +545,21 @@ public final class CmdLineHandler implements ICmdProgressListener {
             }
         }
 
-        /* Make stm32 exit bootloader mode by applying sequence as specified by user */
-        if ((action & ACT_BL_EXIT) == ACT_BL_EXIT) {
-            System.out.println("Exiting bootloader mode...");
-            try {
-                System.out.println("Exited bootloader mode.");
-                return;
-            } catch (Exception e) {
-                System.out.println("Can't exit bootloader mode: " + e.getMessage());
-                closeDevice();
+        /* Enable write protection */
+        if ((action & ACT_WRITE_PROTECT) == ACT_WRITE_PROTECT) {
+            if ((allowedCmds & BLCMDS.WRITE_PROTECT) == BLCMDS.WRITE_PROTECT) {
+                try {
+                    dev.writeProtectMemoryRegion(startPageNum, totalPageNum);
+                    System.out.println("Enabled write protection");
+                    if ((action > ACT_WRITE_PROTECT) && (reinit() == -1)) {
+                        return;
+                    }
+                } catch (Exception e) {
+                    System.out.println("Can't enable write protection: " + e.getMessage());
+                    closeDevice();
+                }
+            } else {
+                System.out.println("Bootloader doesn't support enabling write protection");
             }
         }
 
@@ -581,6 +587,20 @@ public final class CmdLineHandler implements ICmdProgressListener {
                 closeDevice();
             }
         }
+
+        /* Make stm32 exit bootloader mode by applying sequence as specified by user */
+        if ((action & ACT_BL_EXIT) == ACT_BL_EXIT) {
+            System.out.println("Exiting bootloader mode...");
+            try {
+                System.out.println("Exited bootloader mode.");
+            } catch (Exception e) {
+                System.out.println("Can't exit bootloader mode: " + e.getMessage());
+                closeDevice();
+            }
+        }
+
+        /* Processing completed, let's go back home */
+        return;
     }
 
     /*
