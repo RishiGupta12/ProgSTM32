@@ -21,8 +21,10 @@
 package flash.stm32.uart.internal;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeoutException;
@@ -903,6 +905,71 @@ public final class UARTCommandExecutor extends CommandExecutor {
         }
 
         return index;
+    }
+
+    /**
+     * <p>
+     * This API read data from any valid memory address in RAM, main flash memory
+     * and the information block (system memory or option byte areas). It may be
+     * used by GUI programs where input address is taken from user. If the read
+     * protection is active bootloader may return NACK.
+     * </p>
+     * 
+     * <p>
+     * Sends command 'Read Memory command' (0x11) to stm32 to read the data from
+     * address till specified length.
+     * </p>
+     * 
+     * @param file
+     *            absolute path to file which will be written by this method
+     * @param startAddr
+     *            address from where 1st byte will be read
+     * @param numBytesToRead
+     *            number of bytes to be read
+     * @param progressListener
+     *            instance of class which implements callback to know reading
+     *            progress or null if not required
+     * 
+     * @return number of bytes read from stm32 device
+     * @throws SerialComException
+     *             if an error happens when communicating through serial port.
+     * @throws TimeoutException
+     *             when bootloader declines this command, fails to execute this
+     *             command or sends no response at all
+     */
+    public int readMemory(String file, int startAddr, final int numBytesToRead, ICmdProgressListener progressListener)
+            throws SerialComException, TimeoutException {
+
+        int x = 0;
+        FileOutputStream fout = null;
+
+        if (file == null) {
+            throw new IllegalArgumentException(rb.getString("inval.file"));
+        }
+
+        try {
+            fout = new FileOutputStream(file, false);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(rb.getString("inval.file"));
+        }
+
+        BufferedOutputStream bout = new BufferedOutputStream(fout);
+
+        byte[] data = new byte[numBytesToRead];
+        x = readMemory(data, startAddr, numBytesToRead, progressListener);
+
+        try {
+            bout.write(data);
+            bout.flush();
+            bout.close();
+        } catch (Exception e) {
+            try {
+                bout.close();
+            } catch (IOException e1) {
+            }
+        }
+
+        return x;
     }
 
     /**
