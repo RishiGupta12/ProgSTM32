@@ -52,16 +52,16 @@ public final class CmdLineHandler implements ICmdProgressListener {
     final int ACT_WRITE_UNPROTECT = 0x04;
     final int ACT_GET_PID = 0x08;
     final int ACT_GET_BLID = 0x10;
-    final int ACT_READ = 0x20;
+    final int ACT_MASS_ERASE = 0x20;
     final int ACT_ERASE = 0x40;
-    final int ACT_MASS_ERASE = 0x80;
-    final int ACT_WRITE = 0x100;
-    final int ACT_WRITE_PROTECT = 0x400;
-    final int ACT_READ_PROTECT = 0x800;
+    final int ACT_WRITE = 0x80;
+    final int ACT_READ = 0x100;
+    final int ACT_WRITE_PROTECT = 0x200;
+    final int ACT_READ_PROTECT = 0x400;
+    final int ACT_SOFT_RESET = 0x800;
     final int ACT_GO = 0x1000;
-    final int ACT_SOFT_RESET = 0x2000;
-    final int ACT_BL_EXIT = 0x4000;
-    final int ACT_SHOW_HELP = 0x8000;
+    final int ACT_BL_EXIT = 0x2000;
+    final int ACT_SHOW_HELP = 0x4000;
 
     private DeviceManager devMgr;
     private UARTInterface uci;
@@ -279,6 +279,7 @@ public final class CmdLineHandler implements ICmdProgressListener {
                 break;
 
             case "-h":
+            case "--help":
                 showHelp();
                 return;
 
@@ -327,8 +328,8 @@ public final class CmdLineHandler implements ICmdProgressListener {
 
         /* Make stm32 enter bootloader mode by applying sequence as specified by user */
         if ((action & ACT_BL_ENTRY) == ACT_BL_ENTRY) {
+            System.out.println("Enter bootloader mode...");
             try {
-                System.out.println("Enter bootloader mode...");
                 System.out.println("Entered bootloader mode.");
             } catch (Exception e) {
                 System.out.println("Can't enter bootloader mode: " + e.getMessage());
@@ -348,6 +349,9 @@ public final class CmdLineHandler implements ICmdProgressListener {
                 System.out.println("Can't disable read protection: " + e.getMessage());
                 closeDevice();
             }
+            if (action <= ACT_READ_UNPROTECT) {
+                return;
+            }
         }
 
         /* Get commands supported by bootloader in connected stm32 device */
@@ -360,7 +364,7 @@ public final class CmdLineHandler implements ICmdProgressListener {
 
         /* Disable write protection */
         if ((action & ACT_WRITE_UNPROTECT) == ACT_WRITE_UNPROTECT) {
-            if ((allowedCmds & BLCMDS.WRITE_UNPROTECT) != BLCMDS.WRITE_UNPROTECT) {
+            if ((allowedCmds & BLCMDS.WRITE_UNPROTECT) == BLCMDS.WRITE_UNPROTECT) {
                 try {
                     dev.writeUnprotectMemoryRegion();
                     System.out.println("Disabled write protection");
@@ -374,14 +378,16 @@ public final class CmdLineHandler implements ICmdProgressListener {
             } else {
                 System.out.println("Bootloader doesn't support disabling write protection");
             }
+            if (action <= ACT_WRITE_UNPROTECT) {
+                return;
+            }
         }
 
         /* Get product id of the stm32 device */
         if ((action & ACT_GET_PID) == ACT_GET_PID) {
-            if ((allowedCmds & BLCMDS.GET_ID) != BLCMDS.GET_ID) {
+            if ((allowedCmds & BLCMDS.GET_ID) == BLCMDS.GET_ID) {
                 try {
                     System.out.println("Pid : " + dev.getChipID());
-                    return;
                 } catch (Exception e) {
                     System.out.println("Can't get product ID: " + e.getMessage());
                     closeDevice();
@@ -389,16 +395,21 @@ public final class CmdLineHandler implements ICmdProgressListener {
             } else {
                 System.out.println("Bootloader doesn't reading product id");
             }
+            if (action <= ACT_GET_PID) {
+                return;
+            }
         }
 
         /* Get bootloader id of the stm32 device */
         if ((action & ACT_GET_BLID) == ACT_GET_BLID) {
             try {
                 System.out.println("Blid : " + dev.getBootloaderID());
-                return;
             } catch (Exception e) {
                 System.out.println("Can't get bootloader ID: " + e.getMessage());
                 closeDevice();
+            }
+            if (action <= ACT_GET_BLID) {
+                return;
             }
         }
 
@@ -413,13 +424,13 @@ public final class CmdLineHandler implements ICmdProgressListener {
                 } else {
                     System.out.println("Bootloader doesn't support mass erase");
                 }
-                if (action <= ACT_MASS_ERASE) {
-                    return;
-                }
                 System.out.println("Mass erase done");
             } catch (Exception e) {
                 System.out.println("Can't do mass erase: " + e.getMessage());
                 closeDevice();
+            }
+            if (action <= ACT_MASS_ERASE) {
+                return;
             }
         }
 
@@ -434,13 +445,13 @@ public final class CmdLineHandler implements ICmdProgressListener {
                 } else {
                     System.out.println("Bootloader doesn't support erase");
                 }
-                if (action <= ACT_ERASE) {
-                    return;
-                }
                 System.out.println("Erase done");
             } catch (Exception e) {
                 System.out.println("Can't erase: " + e.getMessage());
                 closeDevice();
+            }
+            if (action <= ACT_ERASE) {
+                return;
             }
         }
 
@@ -530,6 +541,9 @@ public final class CmdLineHandler implements ICmdProgressListener {
                     System.out.println("Verification done");
                 }
             }
+            if (action <= ACT_WRITE) {
+                return;
+            }
         }
 
         /* Read from stm32 memory */
@@ -553,6 +567,9 @@ public final class CmdLineHandler implements ICmdProgressListener {
             } else {
                 System.out.println("Bootloader doesn't support reading memory");
             }
+            if (action <= ACT_READ) {
+                return;
+            }
         }
 
         /* Enable write protection */
@@ -572,6 +589,9 @@ public final class CmdLineHandler implements ICmdProgressListener {
             } else {
                 System.out.println("Bootloader doesn't support enabling write protection");
             }
+            if (action <= ACT_WRITE_PROTECT) {
+                return;
+            }
         }
 
         /* Enable read protection */
@@ -590,6 +610,9 @@ public final class CmdLineHandler implements ICmdProgressListener {
                 }
             } else {
                 System.out.println("Bootloader doesn't support enabling read protection");
+            }
+            if (action <= ACT_READ_PROTECT) {
+                return;
             }
         }
 
@@ -620,6 +643,9 @@ public final class CmdLineHandler implements ICmdProgressListener {
             } else {
                 System.out.println("Bootloader doesn't support go command");
             }
+            if (action <= ACT_GO) {
+                return;
+            }
         }
 
         /* Make stm32 exit bootloader mode by applying sequence as specified by user */
@@ -634,6 +660,7 @@ public final class CmdLineHandler implements ICmdProgressListener {
         }
 
         /* Processing completed, let's go back home */
+        closeDevice();
         return;
     }
 
