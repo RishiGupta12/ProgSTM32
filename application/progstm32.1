@@ -207,6 +207,22 @@ progstm32 \-d /dev/ttyS0 \-o
 .PD
 .RE
 
+15. Make program counter jump to hexadecimal address 08000000 through go command
+.RS
+.PD 0
+.P
+progstm32 \-d /dev/ttyS0 \-g 08000000
+.PD
+.RE
+
+16. Trigger system reset through software ARM instruction
+.RS
+.PD 0
+.P
+progstm32 \-d /dev/ttyS0 \-R
+.PD
+.RE
+
 .SH REPORTING BUGS
 Bugs can be reported by creating issues in the issues section of the source code repository.
 
