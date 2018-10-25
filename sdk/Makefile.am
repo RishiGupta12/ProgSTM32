@@ -1,9 +1,5 @@
 include $(top_srcdir)/progstm32.mk
 
-uart_jar=progstm32uart.jar
-extlib_spcore=sp-core.jar
-extlib_sptty=sp-tty.jar
-
 .PHONY: uartsdk
 
 all: uartsdk
@@ -25,12 +21,12 @@ uartsdk:
 	$(call pry,"Building UART SDK ..............")
 	ant clean
 	$(call check_dbg)
-	ant uartsdk -Duartjarname=$(uart_jar) -Dextlibpath=$(top_srcdir)/build
+	ant uartsdk -Duartjarname=$(progstm32uart_jar) -Dextlibpath=$(top_srcdir)/build
 	cp $(top_srcdir)/sdk/$(extlib_spcore) $(top_srcdir)/build
 	cp $(top_srcdir)/sdk/$(extlib_sptty) $(top_srcdir)/build
 
 javadoc: uartsdk
 	ant doc -Ddocdir=$(top_srcdir)/documentation/uartsdk-javadocs
 
-clean:
-	ant -Duartjarname=$(uart_jar) clean
+clean-local:
+	ant -Duartjarname=$(progstm32uart_jar) clean

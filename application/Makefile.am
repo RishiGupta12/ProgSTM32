@@ -1,11 +1,5 @@
 include $(top_srcdir)/progstm32.mk
 
-app_jarname=progstm32app.jar
-
-extlib_uartsdk=progstm32uart.jar
-extlib_spcore=sp-core.jar
-extlib_sptty=sp-tty.jar
-
 .PHONY: app
 
 all: app
@@ -14,7 +8,7 @@ all: app
 app:
 	$(call pry,"Building application ..............")
 	ant clean
-	ant app -Dspcore=$(extlib_spcore) -Dsptty=$(extlib_sptty) -Duartsdk=$(extlib_uartsdk) -Dappjarname=$(app_jarname) -Dextlibpath=$(top_srcdir)/build
+	ant app -Dspcore=$(extlib_spcore) -Dsptty=$(extlib_sptty) -Duartsdk=$(progstm32uart_jar) -Dappjarname=$(progstm32app_jar) -Dextlibpath=$(top_srcdir)/build
 
-clean:
+clean-local:
 	ant clean
