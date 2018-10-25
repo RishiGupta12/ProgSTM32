@@ -1,11 +1,14 @@
 ## Latest releases
 Date: 30/July/2017
 
-| Jar file       | Functions/Features                    | Comments     |
-| :------------: |:-------------:                        | :--------:   |
-| xx.jar         | UART based sdk                        |              |
-| yy.jar         |                                       |              |
-| zz.jar         | GUI application based on sdk          |              |
+- file progstm32.zip contents:
+| Jar file           | Functions/Features                    | Comments     |
+| :------------:     |:-------------:                        | :--------:   |
+| progstm32uart.jar  | UART based sdk                        |              |
+| sp-core.jar        | library from serialpundit project     |              |
+| sp-tty.jar         | library from serialpundit project     |              |
+
+- progstm32.zip md5sum : d9f7177d8ab0003dd59df89253231017
 
 ## Platforms supported
 
@@ -22,12 +25,11 @@ Above dependencies are mainly for SerialPundit SDK.
 
 ## Signature verification
 
-For Linux, change directory to where xxx.jar file is placed on your system and check as follows :
+For Linux, change directory to where progstm32.zip file is downloaded and rum md5sum command to calculate checksum of file.
 ```
-$ gpg --verify xx.jar.asc yy.jar
-gpg: Signature made Friday 29 May 2015 11:28:11 AM IST using RSA key ID 2B942F12
-gpg: Good signature from "rishigupta (xxxxxxxxxxx) <xxxx@gmail.com>"
-
+$ md5sum progstm32.zip
+d9f7177d8ab0003dd59df89253231017  progstm32.zip
+```
 
 ## Reference documents
 

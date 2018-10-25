@@ -1,4 +1,4 @@
-This folder contains binaries generated when make command is run.
+This folder will contain binaries generated when make command is run.
 
 ### Application
 - progstm32app.jar  : progstm32 application
