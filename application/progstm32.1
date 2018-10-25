@@ -1,0 +1,234 @@
+.TH PROGSTM32 1
+.SH NAME
+progstm32 \- flashes firmware in stm32 memory through serial port
+
+.SH SYNOPSIS
+.B progstm32
+-d port [\-{r|w} filename] [\-{bn|ih}] [\-e {m | start total}] [\-s address] [\-l length] [\-kopjnivhR] [\-br baudrate] [\-g address]
+
+.SH DESCRIPTION
+.B progstm32
+progstm32 utility is used to erase, write and read user flash memory and option 
+bytes in stm32 microcontollers. It is based on progstm32 sdk which is a java library 
+that can be included in any Java application. This SDK enables GUI programs to give 
+an option in menu to let user upgrade firmware in their product.
+
+.SH OPTIONS
+.TP
+.B \-d   port
+Serial port to which stm32 is connected (/dev/ttyUSB0 or COM9)
+
+.TP
+.B \-br  baudrate
+Serial port speed (default 115200, supported 2400, 4800, 9600, 14400, 19200, 28800, 38400, 56000, 57600, 115200)
+
+.TP
+.B \-r   filename|stdout
+Reads length bytes specified by -l from the address specified by -s and stores in file or stdout
+
+.TP
+.B \-w   filename
+Firmware file to be flashed into memory
+
+.TP
+.B \-bn
+Indicates file specified with -w is in plain binary format
+
+.TP
+.B \-ih
+Indicates file specified with -w is in intel hex format and needs conversion into binary format
+
+.TP
+.B \-v
+Verify after flashing firmware in memory
+
+.TP
+.B \-e   m		       
+Do mass erase of user flash memory
+
+.TP
+.B \-e   start total
+Erase total pages given by 'total', starting with 'start' page number
+
+.TP
+.B \-s   address
+Address in hexadecimal format of stm32 memory (address from where flashing will start or from where data will be read)
+
+.TP
+.B \-l   length
+Number of bytes
+
+.TP
+.B \-i
+Get bootloader ID
+
+.TP
+.B \-p
+Get stm32product ID
+
+.TP
+.B \-k
+Disable memory read protection 
+
+.TP
+.B \-j
+Enable memory read protection
+
+.TP
+.B \-o
+Disable memory write protection
+
+.TP
+.B \-n   start total
+Enable memory write protection on total 'pages' starting from 'start' page
+
+.TP
+.B \-R
+Do software based system reset
+
+.TP
+.B \-g   address
+Make program counter jump to the given address
+
+.TP
+.B \-h
+Show this help
+
+.SH EXAMPLES
+1. Get stm32 product ID
+.RS
+.PD 0
+.P
+progstm32 \-d /dev/ttyS0 \-p
+.PD
+.RE
+
+2. Get stm32 bootloader ID
+.RS
+.PD 0
+.P
+progstm32 \-d /dev/ttyS0 \-i
+.PD
+.RE
+
+3. Disable memory read protection of stm32
+.RS
+.PD 0
+.P
+progstm32 \-d /dev/ttyS0 \-k
+.PD
+.RE
+
+4. Disable memory write protection of stm32
+.RS
+.PD 0
+.P
+progstm32 \-d /dev/ttyS0 \-o
+.PD
+.RE
+
+5. Mass erase user flash
+.RS
+.PD 0
+.P
+progstm32 \-d /dev/ttyS0 \-e m
+.PD
+.RE
+
+6. Page by page erase; erase 5 pages starting with page number 0
+.RS
+.PD 0
+.P
+progstm32 \-d /dev/ttyS0 \-e 0 5
+.PD
+.RE
+
+7. Flash binary format firmware file fw.bin at hexadecimal address 08000000
+.RS
+.PD 0
+.P
+progstm32 \-d /dev/ttyS0 \-w fw.bin \-s 08000000 \-bn
+.PD
+.RE
+
+8. Flash intel hex format firmware file fw.hex at hexadecimal address 08000000
+.RS
+.PD 0
+.P
+progstm32 \-d /dev/ttyS0 \-w fw.hex \-s 08000000 \-ih
+.PD
+.RE
+
+9. Flash firmware and verify by reading memory back at hexadecimal address 08000000
+.RS
+.PD 0
+.P
+progstm32 \-d /dev/ttyS0 \-w fw.bin -s 08000000 \-bn \-v
+.PD
+.RE
+
+10. Fisr erase, than flash firmware file fw.hex and than verify
+.RS
+.PD 0
+.P
+progstm32 \-d /dev/ttyS0 \-e m \-w fw.hex \-s 08000000 \-ih \-v
+.PD
+.RE
+
+11. Read 1024 bytes from hexadecimal address 08000000 and print on stdout
+.RS
+.PD 0
+.P
+progstm32 \-d /dev/ttyS0 \-r stdout \-s 08000000 \-l 1024
+.PD
+.RE
+
+12. Read 1024 bytes from hexadecimal address 08000000 and save in file readfw.bin in file system
+.RS
+.PD 0
+.P
+progstm32 \-d /dev/ttyS0 \-r readfw.bin \-s 08000000 \-l 1024
+.PD
+.RE
+
+13. Enable memory read protection of stm32
+.RS
+.PD 0
+.P
+progstm32 \-d /dev/ttyS0 \-k
+.PD
+.RE
+
+14. Enable memory write protection of stm32
+.RS
+.PD 0
+.P
+progstm32 \-d /dev/ttyS0 \-o
+.PD
+.RE
+
+.SH REPORTING BUGS
+Bugs can be reported by creating issues in the issues section of the source code repository.
+
+.SH SEE ALSO
+Factory bootloader in stm32 uses a predefined protocol for communication with host computer. Following application notes should be consulted to know how to enter and exit bootloader mode, communication protocol, product specific requirements and behaviour of commands etc.
+
+.RS 0
+AN2606: STM32 microcontroller system memory boot mode
+.RE
+.RS 0
+AN3155: USART protocol used in the STM32 bootloader
+.RE
+
+.SH AUTHORS
+The
+.B progstm32
+is developed and maintained by
+.IR "Rishi Gupta <gupt21@gmail.com>"
+
+.SH COPYRIGHT
+Copyright (C) 2018, Rishi Gupta. All rights reserved.
+
+.SH LICENSE
+.B progstm32
+is distributed under GNU Lesser General Public License Version 2.1. Copy of the license is available in source code repository in the file "LICENSE".
