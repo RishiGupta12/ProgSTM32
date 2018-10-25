@@ -20,9 +20,9 @@
 #
 
 PORT=/dev/ttyACM0
-WRTBIN=/home/a/exp/demo.bin
-WRTHEX=/home/a/exp/demo.hex
-READFW=/home/a/exp/rd.bin
+WRTBIN="$(dirname '$0')"/../../workspace/testhex/demo.bin
+WRTHEX="$(dirname '$0')"/../../workspace/testhex/demo.hex
+READFW="$(dirname '$0')"/../../workspace/testhex/rd.bin
 
 ### Don't modify anything after this line, run this test from tests folder only ###
 cd "$(dirname '$0')"/../build
@@ -47,21 +47,29 @@ java -cp .:sp-tty.jar:sp-core.jar:progstm32uart.jar:progstm32app.jar progstm32.P
 echo -e "\n---> mass erase"
 java -cp .:sp-tty.jar:sp-core.jar:progstm32uart.jar:progstm32app.jar progstm32.ProgSTM32 -d $PORT -e m
 
-# erase
-echo -e "\n---> erase"
+# page by page erase
+echo -e "\n---> page by page erase"
 java -cp .:sp-tty.jar:sp-core.jar:progstm32uart.jar:progstm32app.jar progstm32.ProgSTM32 -d $PORT -e 2 5
 
-# write firmware file
-echo -e "\n---> write firmware file"
+# write bin firmware file
+echo -e "\n---> write bin firmware file"
 java -cp .:sp-tty.jar:sp-core.jar:progstm32uart.jar:progstm32app.jar progstm32.ProgSTM32 -d $PORT -w $WRTBIN -s 08000000 -bn
 
-# verify + write binary firmware file
-echo -e "\n---> verify + write binary firmware file"
+# verify + write bin firmware file
+echo -e "\n---> verify + write bin firmware file"
 java -cp .:sp-tty.jar:sp-core.jar:progstm32uart.jar:progstm32app.jar progstm32.ProgSTM32 -d $PORT -w $WRTBIN -s 08000000 -v -bn
+
+# write hex firmware file
+echo -e "\n---> write hex firmware file"
+java -cp .:sp-tty.jar:sp-core.jar:progstm32uart.jar:progstm32app.jar progstm32.ProgSTM32 -d $PORT -w $WRTHEX -s 08000000 -ih
 
 # verify + write hex firmware file
 echo -e "\n---> verify + write hex firmware file"
-java -cp .:sp-tty.jar:sp-core.jar:progstm32uart.jar:progstm32app.jar progstm32.ProgSTM32 -d $PORT -w $WRTHEX -s 08000000 -v -bn
+java -cp .:sp-tty.jar:sp-core.jar:progstm32uart.jar:progstm32app.jar progstm32.ProgSTM32 -d $PORT -w $WRTHEX -s 08000000 -v -ih
+
+# mass erase + verify + write hex firmware file
+echo -e "\n---> mass erase + verify + write hex firmware file"
+java -cp .:sp-tty.jar:sp-core.jar:progstm32uart.jar:progstm32app.jar progstm32.ProgSTM32 -d $PORT -e m -w $WRTHEX -s 08000000 -v -ih
 
 # read memory to stdout
 echo -e "\n---> read memory to stdout"

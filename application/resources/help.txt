@@ -1,4 +1,4 @@
-Usage: progstm32 -d port [-{r|w} filename] [-{bn|ih}] [-e {m | start total] [-s address] [-l length] [-kopjnivhR] [-br baudrate] [-g address]
+Usage: progstm32 -d port [-{r|w} filename] [-{bn|ih}] [-e {m | start total}] [-s address] [-l length] [-kopjnivhR] [-br baudrate] [-g address]
 
 -d   port             Serial port to which stm32 is connected (/dev/ttyUSB0 or COM9)
 -br  baudrate         Serial port speed (default 115200, supported 2400, 4800, 9600, 14400, 19200, 28800, 38400, 56000, 57600, 115200)
@@ -7,7 +7,7 @@ Usage: progstm32 -d port [-{r|w} filename] [-{bn|ih}] [-e {m | start total] [-s 
 -bn                   Indicates file specified with -w is in plain binary format
 -ih                   Indicates file specified with -w is in intel hex format and needs conversion into binary format
 -v                    Verify after flashing firmware in memory
--e   m                Do mass erase
+-e   m                Do mass erase of user flash memory
 -e   start total      Erase total pages given by 'total', starting with 'start' page number
 -s   address          Address in hexadecimal format of stm32 memory (address from where flashing will start or from where data will be read)
 -l   length           Number of bytes
@@ -16,7 +16,7 @@ Usage: progstm32 -d port [-{r|w} filename] [-{bn|ih}] [-e {m | start total] [-s 
 -k                    Disable read protection 
 -j                    Enable read protection
 -o                    Disable write protection
--n   start total      Enable write protection on total pages starting from start page
+-n   start total      Enable memory write protection on total 'pages' starting from 'start' page
 -R                    Do software based system reset
 -g   address          Make program counter jump to the given address
 -h                    Show this help
