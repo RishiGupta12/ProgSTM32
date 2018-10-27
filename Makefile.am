@@ -17,6 +17,9 @@ app:
 javadoc:
 	$(MAKE) -C $(top_srcdir)/sdk -$(MAKEFLAGS) $@
 
+install-exec-hook:
+	$(MAKE) install -C $(top_srcdir)/application
+
 clean:
 	$(MAKE) -C $(top_srcdir)/sdk clean-local
 	$(MAKE) -C $(top_srcdir)/application clean-local

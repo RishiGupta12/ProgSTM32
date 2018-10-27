@@ -326,7 +326,7 @@ public final class CmdLineHandler implements ICmdProgressListener {
             uci.open(device, brate, DATABITS.DB_8, STOPBITS.SB_1, PARITY.P_EVEN, FLOWCONTROL.NONE);
             opened = true;
         } catch (Exception e) {
-            System.out.println("Can't open device: " + e.getMessage());
+            System.out.println("Can't open device " + device + " : " + e.getMessage());
             return;
         }
 

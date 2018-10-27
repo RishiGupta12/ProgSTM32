@@ -1,0 +1,57 @@
+#!/bin/bash
+
+# This file is part of progstm32.
+# 
+# Copyright (C) 2018, Rishi Gupta. All rights reserved.
+# 
+# The progstm32 is free software; you can redistribute it and/or modify it 
+# under the terms of the GNU Lesser General Public License as published 
+# by the Free Software Foundation; either version 2.1 of the License, or 
+# (at your option) any later version.
+# 
+# The progstm32 is distributed in the hope that it will be useful, but 
+# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+# or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public 
+# License for more details.
+# 
+# You should have received a copy of the GNU Lesser General Public License 
+# along with this library; if not, write to the Free Software Foundation,Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+# If java home is set use 'java' from there otherwise find where is 'java'
+if [ -n "$JAVA_HOME"  ] ; then
+  if [ -x "$JAVA_HOME/bin/java" ] ; then
+    JAVACMD="$JAVA_HOME/bin/java"
+  elif [ -x "$JAVA_HOME/jre/bin/java" ] ; then
+    JAVACMD="$JAVA_HOME/jre/bin/java"
+  elif [ -x "$JAVA_HOME/jre/sh/java" ] ; then
+    JAVACMD="$JAVA_HOME/jre/sh/java"
+  else
+    echo "Java home is set but could not locate java executable"
+    echo "Searched: $JAVA_HOME/bin/java, $JAVA_HOME/jre/bin/java, $JAVA_HOME/jre/sh/java"
+    exit 1
+  fi
+else
+  JAVACMD=`which java 2> /dev/null`
+  if [ -z "$JAVACMD" ] ; then
+    JAVACMD=java
+  fi
+fi
+
+if [ ! -x "$JAVACMD" ] ; then
+  echo "Error: Neither JAVA_HOME is set nor java was found on path."
+  exit 1
+fi
+
+# Classpath; locate progstm32 jar files
+binexe_abspath=$(readlink -f "$0")
+x=${#binexe_abspath}
+y=$(($x-14))
+progstm32_home=$(echo $binexe_abspath | cut -c 1-$y)
+clpath=$progstm32_home/share/progstm32
+
+# Execute the command finally
+exec $JAVACMD -cp $clpath:$clpath/sp-tty.jar:$clpath/sp-core.jar:$clpath/progstm32uart.jar:$clpath/progstm32app.jar progstm32.ProgSTM32 $@
+
+exit 0
+

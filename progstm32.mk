@@ -27,3 +27,43 @@ define pry
 	@echo $1
 	@tput sgr0
 endef
+define pry
+	@tput setaf 11
+	@echo $1
+	@tput sgr0
+endef
+define pry
+	@tput setaf 11
+	@echo $1
+	@tput sgr0
+endef
+define pry
+	@tput setaf 11
+	@echo $1
+	@tput sgr0
+endef
+define pry
+	@tput setaf 11
+	@echo $1
+	@tput sgr0
+endef
+define pry
+	@tput setaf 11
+	@echo $1
+	@tput sgr0
+endef
+define pry
+	@tput setaf 11
+	@echo $1
+	@tput sgr0
+endef
+define pry
+	@tput setaf 11
+	@echo $1
+	@tput sgr0
+endef
+define pry
+	@tput setaf 11
+	@echo $1
+	@tput sgr0
+endef

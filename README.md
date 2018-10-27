@@ -62,4 +62,4 @@ make javadoc
   
 - ProgSTM32 is made available under the terms of the GNU Lesser General Public License (LGPL) v2.1. Please see LICENSE file in repository for full license text for LGPL v2.1.
 
-- The progstm32 uses [SerialPundit](https://github.com/RishiGupta12/SerialPundit) sdk for serial port communication, which is a separate project from the same author.
+- The ProgSTM32 uses [SerialPundit](https://github.com/RishiGupta12/SerialPundit) sdk for serial port communication, which is a separate project from the same author.

@@ -18,7 +18,7 @@ endef
 
 # Build UART SDK (generates, class and jar files)
 uartsdk:
-	$(call pry,"Building UART SDK ..............")
+	$(call pry,"Building UART SDK...............")
 	ant clean
 	$(call check_dbg)
 	ant uartsdk -Duartjarname=$(progstm32uart_jar) -Dextlibpath=$(top_srcdir)/build
