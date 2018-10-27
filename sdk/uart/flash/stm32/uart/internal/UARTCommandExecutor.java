@@ -675,7 +675,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
 
     /**
      * <p>
-     * Sends command 'Get Version & Read Protection Status' (0x01) to stm32 and
+     * Sends command 'Get Version and Read Protection Status' (0x01) to stm32 and
      * extracts read protection status from it.
      * </p>
      * 
@@ -1782,7 +1782,8 @@ public final class UARTCommandExecutor extends CommandExecutor {
      * @param startPageNum
      *            page number from which protection is to be activated
      * @param totalNumOfPages
-     *            total number of pages to be protected (0 < totalNumOfPages < 255)
+     *            total number of pages to be protected (0 &lt; totalNumOfPages &lt;
+     *            255)
      * 
      * @throws SerialComException
      *             if an error happens when communicating through serial port

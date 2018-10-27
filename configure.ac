@@ -82,20 +82,27 @@ AS_IF([test -f $pdir/scripts/colorchk.sh],
   [source $pdir/scripts/colorchk.sh]
   [chk_termcolor_support $pdir/progstm32.mk], [AC_MSG_ERROR([Couldn't find scripts/colorchk.sh])])
 
-dnl Check for Java and associated tools
-AC_PATH_PROG([JAVA], [java], [$JAVA])
-AC_PATH_PROG([JAVAC], [javac], [$JAVAC])
+dnl if JAVA HOME is set, locate jvm in that installation otherwise try to find it in PATH
+AS_IF([test "x$JAVA_HOME" == "x"],
+  [AC_PATH_PROG([JAVA], [java], [no])
+   AS_IF([test "x$JAVA" == "xno"], [AC_MSG_ERROR([Couldn't find java in path])])],
+  [AS_IF([test -e $JAVA_HOME/bin/java], [JAVA=$JAVA_HOME/bin/java], [AC_MSG_ERROR([Couldn't find $JAVA_HOME/bin/java])])])
 
-AC_ARG_VAR([JAVA_HOME], [location of Java Development Kit (JDK)])
-if test "x$JAVA_HOME" != "x"; then
-  echo ""
-fi
+dnl if JAVA HOME is set, locate javac compiler in that installation otherwise try to find it in PATH
+AS_IF([test "x$JAVA_HOME" == "x"],
+  [AC_PATH_PROG([JAVAC], [javac], [no])
+   AS_IF([test "x$JAVAC" == "xno"], [AC_MSG_ERROR([Couldn't find javac in path])])],
+  [AS_IF([test -e $JAVA_HOME/bin/javac], [JAVAC=$JAVA_HOME/bin/javac], [AC_MSG_ERROR([Couldn't find $JAVA_HOME/bin/javac])])])
+
+dnl if JAVA HOME is set, locate jar tool in that installation otherwise try to find it in PATH
+AS_IF([test "x$JAVA_HOME" == "x"],
+  [AC_PATH_PROG([JAR], [jar], [no])
+   AS_IF([test "x$JAR" == "xno"], [AC_MSG_ERROR([Couldn't find jar tool in path])])],
+  [AS_IF([test -e $JAVA_HOME/bin/jar], [JAR=$JAVA_HOME/bin/jar], [AC_MSG_ERROR([Couldn't find $JAVA_HOME/bin/jar])])])
 
 dnl Check for ant tool to build java source
-AC_CHECK_PROG(ANT, ant, ant, no)
-if test "$ANT" = "no"; then
-  AC_MSG_ERROR([ant not found])
-fi
+AC_PATH_PROG([ANT], [ant], [no])
+AS_IF([test "x$ANT" == "xno"], [AC_MSG_ERROR([Couldn't find ant tool])])
 
 dnl List of makefiles that automake should generate
 AC_CONFIG_FILES([
@@ -137,17 +144,19 @@ echo '  ------------------------------------------------'
 echo
 echo Configure date................ : $BUILD_DATE
 echo Package version............... : $PACKAGE-$VERSION
-echo C compiler.................... : $CC
 echo Build architecture............ : $BUILD_ARCH
-echo C compiler flags.............. : $CFLAGS
-echo
-echo Configure complete! Now proceed with:
+echo JVM........................... : $JAVA
+echo Java compiler................. : $JAVAC
+echo Jar tool...................... : $JAR
+echo Ant tool...................... : $ANT
+echo " "
+echo Configure complete, please proceed with:
 echo " - 'make'           builds sdk and app"
 echo " - 'make uartsdk'   builds sdk only"
 echo " - 'make app'       builds app only"
 echo " - 'make D=1'       builds sdk and app with extra logs enabled in sdk"
 echo " - 'make javadoc'   generates javadocs for sdk"
-echo " - 'make install'   installs the libraries/binaries/files"
+echo " - 'make install'   installs the progstm32 app,sdk,manpage"
 echo
 ])
 

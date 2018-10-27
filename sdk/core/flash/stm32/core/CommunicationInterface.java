@@ -101,6 +101,7 @@ public abstract class CommunicationInterface {
      *             if an error happens when communicating through serial port
      * @throws TimeoutException
      *             when bootloader sends NACK or timeout happens
+     * @return an instance of Device class representing stm32 device
      */
     public abstract Device initAndIdentifyDevice() throws SerialComException, TimeoutException;
 

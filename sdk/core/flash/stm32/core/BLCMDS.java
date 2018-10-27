@@ -40,7 +40,7 @@ public final class BLCMDS {
 
     /**
      * <p>
-     * This command corresponds to 'get version & read protection status' command
+     * This command corresponds to 'get version and read protection status' command
      * (0x01) of default STM32 bootloader. This command gets the bootloader version
      * and the read protection status of the flash memory.
      * </p>

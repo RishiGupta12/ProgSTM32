@@ -7,7 +7,7 @@ In STM32 (ARM Cortex-M based) microcontrollers, a default bootloader is programm
 
 **progstm32 app**: It is a commandline application based on progstm32 sdk. It can be used as an independent flashing utility for stm32 microcontrollers. More information about options and usage can be obtained from manpage.
 
-The progstm32 uses SerialPundit sdk for serial port communication, which is a separate project and can be found [here](https://github.com/RishiGupta12/SerialPundit).
+The progstm32 uses SerialPundit sdk for serial port communication, which is a separate project and can be [found here](https://github.com/RishiGupta12/SerialPundit).
 
 ## Features
 - Erase, read and write firmware in memory
@@ -21,12 +21,17 @@ The progstm32 uses SerialPundit sdk for serial port communication, which is a se
 - Fully documented and tested
 
 ## Build and Installation
-To build and install progstm32 sdk and progstm32 commandline application run the following commands.
+To build and install progstm32 sdk and application run the following commands.
 
 ```sh
 $ ./configure
 $ make
 $ sudo make install
+```
+
+In case you have custom installation of Java, set JAVA_HOME as shown below and then run ./configure script:
+```sh
+$ export JAVA_HOME=/home/a/packages/jdk1.8.0_31
 ```
 
 If debug build is desired pass D=1 as option to make during build. Debug builds generates extra logs when communicating with stm32 microcontroller.
@@ -45,7 +50,7 @@ $ make javadoc
 ```
 
 ## Documentation
-- Manpage can be read using standard command for ubix systems.
+- Manpage can be read using standard command for unix systems.
 ```sh
 $ man progstm32
 ```

@@ -193,7 +193,7 @@ public abstract class Device {
 
     /**
      * <p>
-     * Sends command 'Get Version & Read Protection Status' (0x01) to stm32 and
+     * Sends command 'Get Version and Read Protection Status' (0x01) to stm32 and
      * extracts read protection status from it.
      * </p>
      * 

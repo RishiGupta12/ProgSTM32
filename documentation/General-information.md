@@ -4,6 +4,12 @@ When using stm32 default bootloader checklist given below can expedite the debug
 
 2. Some of the memory areas are inaccesible during bootloader mode, so we should consult datasheets and reference manual of stm32 device in use in conjuction with AN2606 application note to find valid address ranges.
 
-3. Go command requires proper stack setup. If the stack is not setup properly and a jump is made to location where an executable instruction is written it may not work as expected.
+3. Go command requires setting proper stack setup. If the stack is not setup properly and a jump is made to location where an executable instruction is written it may not work as expected.
 
 4. Different stm32 have different minimum size of pages that can be erased together.
+
+5. There is no command using stm32 factory bootloader which helps in determining flash memory size if the given microcontroller.
+
+6. All command-response operation must be atomic.
+
+7. STM32 must be either in proper bootloader mode or out of it for consistent behaviour. 
