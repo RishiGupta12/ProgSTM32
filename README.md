@@ -24,25 +24,32 @@ The progstm32 uses SerialPundit sdk for serial port communication, which is a se
 To build and install progstm32 sdk and progstm32 commandline application run the following commands.
 
 ```sh
-./configure
-make
-sudo make install
+$ ./configure
+$ make
+$ sudo make install
 ```
 
 If debug build is desired pass D=1 as option to make during build. Debug builds generates extra logs when communicating with stm32 microcontroller.
 ```sh
-make D=1
+$ make D=1
 ```
 
 If you want to build only sdk run command given below. Prebuilt sdk jar file is present in release folder.
 ```sh
-make uartsdk
+$ make uartsdk
 ```
 
 If you want to build javadocs run command:
 ```sh
-make javadoc
+$ make javadoc
 ```
+
+## Documentation
+- Manpage can be read using standard command for ubix systems.
+```sh
+$ man progstm32
+```
+- Javadocs are found in documentation/uartsdk-javadocs folder.
 
 ## Testing and Bug reporting
 - Automated and manual test cases are [here](tests)
