@@ -646,6 +646,8 @@ ANT
 JAR
 JAVAC
 JAVA
+COLOR_SUPPORTED_FALSE
+COLOR_SUPPORTED_TRUE
 pdir
 M4
 CPP
@@ -12787,12 +12789,14 @@ if test ! -e $pdir/progstm32.mk; then :
   as_fn_error $? "Couldn't find progstm32.mk" "$LINENO" 5
 fi
 
-if test -f $pdir/scripts/colorchk.sh; then :
-  source $pdir/scripts/colorchk.sh
-  chk_termcolor_support $pdir/progstm32.mk
+ if command -v tput >/dev/null 2>&1; then
+  COLOR_SUPPORTED_TRUE=
+  COLOR_SUPPORTED_FALSE='#'
 else
-  as_fn_error $? "Couldn't find scripts/colorchk.sh" "$LINENO" 5
+  COLOR_SUPPORTED_TRUE='#'
+  COLOR_SUPPORTED_FALSE=
 fi
+
 
 if test "x$JAVA_HOME" == "x"; then :
   # Extract the first word of "java", so it can be a program name with args.
@@ -13136,6 +13140,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${am__fastdepCC_TRUE}" && test -z "${am__fastdepCC_FALSE}"; then
   as_fn_error $? "conditional \"am__fastdepCC\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${COLOR_SUPPORTED_TRUE}" && test -z "${COLOR_SUPPORTED_FALSE}"; then
+  as_fn_error $? "conditional \"COLOR_SUPPORTED\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 

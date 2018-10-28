@@ -76,11 +76,11 @@ AC_CHECK_PROGS([M4], gm4 m4, no)
 pdir=`pwd`
 AC_SUBST(pdir)
 
+dnl check if global common files exist or not for build infrastructure sanity
 AS_IF([test ! -e $pdir/progstm32.mk], [AC_MSG_ERROR([Couldn't find progstm32.mk])])
 
-AS_IF([test -f $pdir/scripts/colorchk.sh],
-  [source $pdir/scripts/colorchk.sh]
-  [chk_termcolor_support $pdir/progstm32.mk], [AC_MSG_ERROR([Couldn't find scripts/colorchk.sh])])
+dnl check if shell supports color, if yes use it in makefile
+AM_CONDITIONAL([COLOR_SUPPORTED], [command -v tput >/dev/null 2>&1])
 
 dnl if JAVA HOME is set, locate jvm in that installation otherwise try to find it in PATH
 AS_IF([test "x$JAVA_HOME" == "x"],

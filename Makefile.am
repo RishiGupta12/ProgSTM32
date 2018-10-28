@@ -4,7 +4,7 @@ ACLOCAL_AMFLAGS = -I m4
 
 include progstm32.mk
 
-.PHONY: uartsdk app clean-local maintainer-clean-local
+.PHONY: uartsdk app clean-local maintainer-clean-local javadoc
 
 all: uartsdk app
 
@@ -18,7 +18,10 @@ javadoc:
 	$(MAKE) -C $(top_srcdir)/sdk -$(MAKEFLAGS) $@
 
 install-exec-hook:
-	$(MAKE) install -C $(top_srcdir)/application
+	$(MAKE) install -C $(top_srcdir)/application -$(MAKEFLAGS) $@
+
+uninstall-local:
+	$(MAKE) uninstall -C $(top_srcdir)/application -$(MAKEFLAGS) $@
 
 clean:
 	$(MAKE) -C $(top_srcdir)/sdk clean-local
