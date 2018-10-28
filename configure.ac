@@ -48,6 +48,9 @@ AC_CONFIG_HEADERS([config.h])
 dnl Central place to that will contain all custom macros
 AC_CONFIG_MACRO_DIR([m4])
 
+dnl Look for various helper scripts
+AC_CONFIG_AUX_DIR([build-aux])
+
 dnl Automake options that should be applied to every Makefile.am 
 dnl in the tree
 AM_INIT_AUTOMAKE([foreign 1.11 serial-tests -Wall -Wno-portability subdir-objects silent-rules color-tests dist-xz tar-ustar])
