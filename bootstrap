@@ -18,10 +18,20 @@
 # along with this library; if not, write to the Free Software Foundation,Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+#1. 'autoconf' takes configure.ac and produces configure script.
+#2. 'automake' takes Makefile.am and produces Makefile.in.
+#3. 'autoheader' utility generates a C language header file template config.h.in 
+#   from configure.ac
+#4. 'autoreconf' execute the configuration tools in the Autoconf, Automake and 
+#   Libtool packages as required by the project in right order.
+#5. 'configure' script takes Makefile.in and produces final Makefile.
+#6. 'aclocal' generates aclocal.m4 based on the contents of configure.ac.
+#7. 'libtool' is generated from ltmain.sh.
+
 cd "$(dirname '$0')"
 
 if [[ $EUID -eq 0 ]]; then
-	echo "$(tput setaf 1)Non root user required.$(tput sgr0)" 1>&2
+	echo "$(tput setaf 1)Run as non root user.$(tput sgr0)" 1>&2
 	exit 1
 fi
 
@@ -29,7 +39,7 @@ rm -rf INSTALL m4 configure Makefile.in depcomp config.guess config.sub >/dev/nu
 rm -rf missing aclocal.m4 install-sh ltmain.sh config.h config.h.in compile >/dev/null 2>&1
 rm -rf config.h.in~ configdata.pm autom4te.cache config.status config.log stamp-h1 >/dev/null 2>&1
 
-mkdir m4
+mkdir -p m4
 
 command -v libtoolize >/dev/null 2>&1
 if  [ $? -ne 0 ]; then
@@ -53,6 +63,12 @@ if [ $? -ne 0 ]; then
 fi
 
 # sudo apt-get install autoconf-archive
+# Typical order of running auto tools by autoreconf is:
+# - aclocal --warnings=all -I m4
+# - libtoolize
+# - autoconf --warnings=all
+# - autoheader --warnings=all
+# - automake --add-missing --no-force --warnings=all
 autoreconf -vis -W all
 status=$?
 if [ $status -ne 0 ]; then

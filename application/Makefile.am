@@ -43,3 +43,4 @@ uninstall-local:
 # Let ant tool clean the generates class files
 clean-local:
 	ant clean
+	[ -n "$(top_srcdir)" ] && rm -rf $(top_srcdir)/build/$(progstm32app_jar)

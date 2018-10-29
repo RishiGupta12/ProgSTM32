@@ -9,13 +9,12 @@ extlib_sptty=sp-tty.jar
 # Decides color of text in console
 if COLOR_SUPPORTED
 define pry
-	@tput setaf 11
-	@echo $1
-	@tput sgr0
+@tput setaf 11
+@echo $1
+@tput sgr0
 endef
 else
 define pry
-	@echo $1
-	@tput sgr0
+@echo $1
 endef
 endif

@@ -23,13 +23,9 @@ install-exec-hook:
 uninstall-local:
 	$(MAKE) uninstall -C $(top_srcdir)/application -$(MAKEFLAGS) $@
 
-clean:
+clean-local:
 	$(MAKE) -C $(top_srcdir)/sdk clean-local
 	$(MAKE) -C $(top_srcdir)/application clean-local
-	[ -n "$(top_srcdir)" ] && rm -rf $(top_srcdir)/build/$(progstm32app_jar)
-	[ -n "$(top_srcdir)" ] && rm -rf $(top_srcdir)/build/$(progstm32uart_jar)
-	[ -n "$(top_srcdir)" ] && rm -rf $(top_srcdir)/build/$(extlib_spcore)
-	[ -n "$(top_srcdir)" ] && rm -rf $(top_srcdir)/build/$(extlib_sptty)
 
 AUTO_FILES_1 = INSTALL m4 configure Makefile.in depcomp config.guess config.sub missing aclocal.m4 install-sh ltmain.sh
 AUTO_FILES_2 = config.h config.h.in config.h.in~ configdata.pm autom4te.cache config.status config.log stamp-h1 compile

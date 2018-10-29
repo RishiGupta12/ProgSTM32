@@ -1,4 +1,7 @@
-# 
+# -*- Autoconf -*-
+# Process this file with autoconf to produce a configure script.
+
+#
 # This file is part of progstm32.
 # 
 # Copyright (C) 2018, Rishi Gupta. All rights reserved.
@@ -27,6 +30,9 @@ AC_COPYRIGHT(Copyright (C)2018 Rishi Gupta. All rights reserved.)
 dnl Specify minimum version of autoconf required
 AC_PREREQ(2.68)
 
+dnl Central place to that will contain all custom macros
+AC_CONFIG_MACRO_DIR([m4])
+
 dnl Package version will remain constant unless edited manually
 dnl by modifying package_version file
 m4_define([CURRENT_VERSION],
@@ -37,16 +43,12 @@ m4_define([CURRENT_VERSION],
                      printf "unknown"
                   fi ]))
 
-dnl Process any command-line arguments and perform initialization 
-dnl and verification
+dnl Process any command-line arguments and perform initialization and verification
 AC_INIT([progstm32], [CURRENT_VERSION], [gupt21@gmail.com])
 
 dnl Instantiating macro to generate config.h for passing #DEFINE
 dnl to source code
 AC_CONFIG_HEADERS([config.h])
-
-dnl Central place to that will contain all custom macros
-AC_CONFIG_MACRO_DIR([m4])
 
 dnl Look for various helper scripts
 AC_CONFIG_AUX_DIR([build-aux])
@@ -82,7 +84,7 @@ AC_SUBST(pdir)
 dnl check if global common files exist or not for build infrastructure sanity
 AS_IF([test ! -e $pdir/progstm32.mk], [AC_MSG_ERROR([Couldn't find progstm32.mk])])
 
-dnl check if shell supports color, if yes use it in makefile
+dnl check if shell supports color, if yes, use it when printing messages from makefile
 AM_CONDITIONAL([COLOR_SUPPORTED], [command -v tput >/dev/null 2>&1])
 
 dnl if JAVA HOME is set, locate jvm in that installation otherwise try to find it in PATH

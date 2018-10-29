@@ -30,3 +30,6 @@ javadoc: uartsdk
 
 clean-local:
 	ant -Duartjarname=$(progstm32uart_jar) clean
+	[ -n "$(top_srcdir)" ] && rm -rf $(top_srcdir)/build/$(progstm32uart_jar)
+	[ -n "$(top_srcdir)" ] && rm -rf $(top_srcdir)/build/$(extlib_spcore)
+	[ -n "$(top_srcdir)" ] && rm -rf $(top_srcdir)/build/$(extlib_sptty)
