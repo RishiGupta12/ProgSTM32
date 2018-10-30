@@ -25,4 +25,4 @@ cd "$(dirname '$0')"/../build
 
 # read unprotect
 echo -e "\n---> enter bootloader mode"
-java -cp .:sp-tty.jar:sp-core.jar:progstm32uart.jar:progstm32app.jar progstm32.ProgSTM32 -d $PORT -er -dtr 0 0 -rts 1 0 -p -i -t 5
+java -cp .:sp-tty.jar:sp-core.jar:progstm32uart.jar:progstm32app.jar progstm32.ProgSTM32 -d $PORT -er -dtr 0 0 -rts 1 0 -p -i -t 5 -ex -dtr 0 0 -rts 0 0

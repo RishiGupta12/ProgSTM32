@@ -4,7 +4,7 @@ progstm32 \- flashes firmware in stm32 memory through serial port
 
 .SH SYNOPSIS
 .B progstm32
--d port [\-{r|w} filename] [\-{bn|ih}] [\-e {m | start total}] [\-s address] [\-l length] [\-kopjnivhR] [\-br baudrate] [\-g address] [\-er {\-dtr|\-rts} a b {\-dtr|\-rts} c d]
+-d port [\-{r|w} filename] [\-{bn|ih}] [\-e {m | start total}] [\-s address] [\-l length] [\-kopjnivhR] [\-br baudrate] [\-g address] [\-{er|ex} \-{dtr|rts} a b \-{dtr|rts} c d] 
 
 .SH DESCRIPTION
 .B progstm32
@@ -79,7 +79,7 @@ Enable memory read protection
 Disable memory write protection
 
 .TP
-.B \-n   start total
+.B \-n  start total
 Enable memory write protection on total 'pages' starting from 'start' page
 
 .TP
@@ -89,6 +89,18 @@ Do software based system reset
 .TP
 .B \-g   address
 Make program counter jump to the given address
+
+.TP
+.B \-er \-dtr a b \-rts c d
+Sequence that should be executed to make stm32 enter bootloader mode. The a,b,c,d can be 1 or 0. If dtr is given before rts, DTR siganl will be set 1st otherwise RTS signal will be set first. A signal line is toggled only if its previous value was different. There is no restriction as to whether DTR or RTS is connected to BOOT0 or NRST pin.
+
+.TP
+.B \-ex \-dtr a b \-rts c d
+Sequence that should be executed to make stm32 exit bootloader mode. The a,b,c,d can be 1 or 0. If dtr is given before rts, DTR siganl will be set 1st otherwise RTS signal will be set first. A signal line is toggled only if its previous value was different. There is no restriction as to whether DTR or RTS is connected to BOOT0 or NRST pin.
+
+.TP
+.B \-t hold time
+Time in milli-seconds for which the DTR and RTS line will be kept in previous state when switching to next state. For example; for option like this "-er -dtr 0 0 -rts 1 0 -t 10", when RTS is switched from 1 to 0, RTS will be kept in state 1 and DTR will be kept in state 0 for 10 milli-seconds. Suppose RTS is connected to reset pin (NRST) of stm32, then reset will be asserted for 10 milli-seconds.
 
 .TP
 .B \-h

@@ -78,9 +78,10 @@ public final class CmdLineHandler implements ICmdProgressListener {
     private boolean entryRTSstate1 = false;
     private boolean entryDTRstate2 = false;
     private boolean entryRTSstate2 = false;
-    private boolean exitDTRstate = false;
-    private boolean exitRTSstate = false;
-
+    private boolean exitDTRstate1 = false;
+    private boolean exitRTSstate1 = false;
+    private boolean exitDTRstate2 = false;
+    private boolean exitRTSstate2 = false;
     private int i;
 
     public void process(String[] args) {
@@ -116,7 +117,7 @@ public final class CmdLineHandler implements ICmdProgressListener {
 
         if (numArgs == 0) {
             System.out.println(
-                    "Usage: progstm32 -d port [-{r|w} filename] [-{bn|ih}] [-e {m | start total}] [-s address] [-l length] [-kopjnivhR] [-br baudrate] [-g address] [-er {-dtr|-rts} a b {-dtr|-rts} c d]");
+                    "Usage: progstm32 -d port [-{r|w} filename] [-{bn|ih}] [-e {m | start total}] [-s address] [-l length] [-kopjnivhR] [-br baudrate] [-g address] [-{er|ex} -{dtr|rts} a b -{dtr|rts} c d]");
             System.out.println("Try 'progstm32 --help' for more information.");
             return;
         }
@@ -286,6 +287,14 @@ public final class CmdLineHandler implements ICmdProgressListener {
 
             case "-ex":
                 action |= ACT_BL_EXIT;
+                i++;
+                if (extractExitSequence(args) < 0) {
+                    return;
+                }
+                i++;
+                if (extractExitSequence(args) < 0) {
+                    return;
+                }
                 break;
 
             case "-R":
@@ -678,7 +687,6 @@ public final class CmdLineHandler implements ICmdProgressListener {
                 try {
                     dev.goJump(startAddress);
                     System.out.println("Started execution at address 0x" + Integer.toHexString(startAddress));
-                    return;
                 } catch (Exception e) {
                     System.out.println("Can't jump/execute: " + e.getMessage());
                     closeDevice();
@@ -693,9 +701,46 @@ public final class CmdLineHandler implements ICmdProgressListener {
 
         /* Make stm32 exit bootloader mode by applying sequence as specified by user */
         if ((action & ACT_BL_EXIT) == ACT_BL_EXIT) {
-            System.out.println("Exiting bootloader mode...");
+            System.out.println("Executing bootmode exit seq...");
             try {
-                System.out.println("Exited bootloader mode.");
+                if (firstSignalToSet == 1) {
+                    if (entryDTRstate2 != exitDTRstate1) {
+                        uci.setDTR(exitDTRstate1);
+                    }
+                    if (entryRTSstate2 != exitRTSstate1) {
+                        uci.setRTS(exitRTSstate1);
+                    }
+                } else {
+                    if (entryRTSstate2 != exitRTSstate1) {
+                        uci.setRTS(exitRTSstate1);
+                    }
+                    if (entryDTRstate2 != exitDTRstate1) {
+                        uci.setDTR(exitDTRstate1);
+                    }
+                }
+                try {
+                    time = System.currentTimeMillis() + holdTime;
+                    Thread.sleep(holdTime);
+                } catch (InterruptedException e) {
+                    long y = time - System.currentTimeMillis();
+                    System.out.println("Wokeup " + y + " milliseconds early during exit sequence");
+                }
+                if (firstSignalToSet == 1) {
+                    if (exitDTRstate2 != exitDTRstate1) {
+                        uci.setDTR(exitDTRstate2);
+                    }
+                    if (exitRTSstate2 != exitRTSstate1) {
+                        uci.setRTS(exitRTSstate2);
+                    }
+                } else {
+                    if (exitRTSstate2 != exitRTSstate1) {
+                        uci.setRTS(exitRTSstate2);
+                    }
+                    if (exitDTRstate2 != exitDTRstate1) {
+                        uci.setDTR(exitDTRstate2);
+                    }
+                }
+                System.out.println("Sequence done.");
             } catch (Exception e) {
                 System.out.println("Can't exit bootloader mode: " + e.getMessage());
                 closeDevice();
@@ -771,9 +816,60 @@ public final class CmdLineHandler implements ICmdProgressListener {
     }
 
     /*
-     * Extract DTR and RTS signal values and timings.
+     * Extract DTR and RTS signal values for exit bootloader mode sequence.
      */
-    int extractEntrySequence(String[] args, int firstCall) {
+    int extractExitSequence(final String[] args) {
+
+        if (args[i].equals("-dtr")) {
+            i++;
+            if (args[i].equals("1")) {
+                exitDTRstate1 = true;
+            } else if (args[i].equals("0")) {
+                exitDTRstate1 = false;
+            } else {
+                System.out.println("Invalid exit dtr value: " + args[i]);
+                return -1;
+            }
+            i++;
+            if (args[i].equals("1")) {
+                exitDTRstate2 = true;
+            } else if (args[i].equals("0")) {
+                exitDTRstate2 = false;
+            } else {
+                System.out.println("Invalid exit dtr value: " + args[i]);
+                return -1;
+            }
+        } else if (args[i].equals("-rts")) {
+            i++;
+            if (args[i].equals("1")) {
+                exitRTSstate1 = true;
+            } else if (args[i].equals("0")) {
+                exitRTSstate1 = false;
+            } else {
+                System.out.println("Invalid exit rts value: " + args[i]);
+                return -1;
+            }
+            i++;
+            if (args[i].equals("1")) {
+                exitRTSstate2 = true;
+            } else if (args[i].equals("0")) {
+                exitRTSstate2 = false;
+            } else {
+                System.out.println("Invalid exit rts value: " + args[i]);
+                return -1;
+            }
+        } else {
+            System.out.println("-ex given but dtr/rts not specified: " + args[i]);
+            return -1;
+        }
+
+        return 0;
+    }
+
+    /*
+     * Extract DTR and RTS signal values for entry bootloader mode sequence.
+     */
+    int extractEntrySequence(final String[] args, int firstCall) {
 
         if (args[i].equals("-dtr")) {
             if (firstCall == 1) {
@@ -785,7 +881,7 @@ public final class CmdLineHandler implements ICmdProgressListener {
             } else if (args[i].equals("0")) {
                 entryDTRstate1 = false;
             } else {
-                System.out.println("Invalid dtr value: " + args[i]);
+                System.out.println("Invalid entry dtr value: " + args[i]);
                 return -1;
             }
             i++;
@@ -794,7 +890,7 @@ public final class CmdLineHandler implements ICmdProgressListener {
             } else if (args[i].equals("0")) {
                 entryDTRstate2 = false;
             } else {
-                System.out.println("Invalid dtr value: " + args[i]);
+                System.out.println("Invalid entry dtr value: " + args[i]);
                 return -1;
             }
         } else if (args[i].equals("-rts")) {
@@ -807,7 +903,7 @@ public final class CmdLineHandler implements ICmdProgressListener {
             } else if (args[i].equals("0")) {
                 entryRTSstate1 = false;
             } else {
-                System.out.println("Invalid rts value: " + args[i]);
+                System.out.println("Invalid entry rts value: " + args[i]);
                 return -1;
             }
             i++;
@@ -816,7 +912,7 @@ public final class CmdLineHandler implements ICmdProgressListener {
             } else if (args[i].equals("0")) {
                 entryRTSstate2 = false;
             } else {
-                System.out.println("Invalid rts value: " + args[i]);
+                System.out.println("Invalid entry rts value: " + args[i]);
                 return -1;
             }
         } else {
