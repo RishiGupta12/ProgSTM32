@@ -147,6 +147,17 @@ public final class UARTInterface extends CommunicationInterface {
      * instance of Device class which represents connected stm32.
      * </p>
      * 
+     * <p>
+     * Receiving any other character different from 0x7F (or line glitches) will
+     * cause bootloader to start communication using a wrong baudrate. Bootloader
+     * measures the signal length between rising edge of first bit in 0x7F to the
+     * falling edge of the last 1 bit in 0x7F to deduce the baudrate value.
+     * Therefore the circuit must be protected against EMI. Further bootloader may
+     * not re-align itself to any standard baudrate. It is for this reason an
+     * appropriate value of the baudrate based on the crystal connected to stm32
+     * should be selected.
+     * </p>
+     * 
      * @throws SerialComException
      *             if an error happens when communicating through serial port
      * @throws TimeoutException
@@ -161,7 +172,33 @@ public final class UARTInterface extends CommunicationInterface {
         throw new IllegalStateException(rb.getString("uart.notopen"));
     }
 
-    public void disconnectFromDevice() {
-        // TODO reset needed or not
+    /**
+     * <p>
+     * Sets the DTR signal of the host side serial port to the given value.
+     * </p>
+     * 
+     * @param value
+     *            true or false corresponding to the voltage level desired at
+     *            hardware level
+     * @throws SerialComException
+     *             if an error happens when communicating through serial port
+     */
+    public void setDTR(boolean value) throws SerialComException {
+        scm.setDTR(comPortHandle, value);
+    }
+
+    /**
+     * <p>
+     * Sets the RTS signal of the host side serial port to the given value.
+     * </p>
+     * 
+     * @param value
+     *            true or false corresponding to the voltage level desired at
+     *            hardware level
+     * @throws SerialComException
+     *             if an error happens when communicating through serial port
+     */
+    public void setRTS(boolean value) throws SerialComException {
+        scm.setRTS(comPortHandle, value);
     }
 }

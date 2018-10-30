@@ -45,7 +45,10 @@
 ACTION=="remove", GOTO="usb_uart_end"
 SUBSYSTEM!="tty", GOTO="usb_uart_end"
 
+# FT232
 SUBSYSTEM=="tty", ATTRS{idVendor}=="0483", MODE="0666"
+# MCP2200
+SUBSYSTEM=="tty", ATTRS{idVendor}=="04d8", MODE="0666"
 
 LABEL="usb_uart_end"
 

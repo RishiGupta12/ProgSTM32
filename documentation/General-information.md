@@ -1,6 +1,15 @@
 When using stm32 default bootloader checklist given below can expedite the debugging process:
 
+##Entering nto bootloader mode
+
+1. The BOOT0 pin and nBOOT1 pins may be re-sampled when exiting from Standby mode. Consequently they must be kept in the required Boot mode configuration in Standby mode. Please refer reference manual for exact details.
+
+2. To minimize bootloader detection time, consider keeping USB_VBUS signal pin low if only USART is used for communication between host and bootloader. PLease refer AN2606 to identify exact action items applicable for particular stm32 family.
+
+# Memory size
 1. JTAG/SWD and bootloader may not work together due to hardware/software limitations. Therefore when if we want to use bootloader we should first disconnect JTAG. Enabling and disabling memory protection may interfere with the way JTAG works.
+
+# Others
 
 2. Some of the memory areas are inaccessible during bootloader mode, so we should consult datasheets and reference manual of stm32 device in use in conjunction with AN2606 application note to find valid address ranges.
 

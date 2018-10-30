@@ -105,6 +105,29 @@ public abstract class CommunicationInterface {
      */
     public abstract Device initAndIdentifyDevice() throws SerialComException, TimeoutException;
 
-    // TODO
-    public abstract void disconnectFromDevice();
+    /**
+     * <p>
+     * Sets the DTR signal of the host side serial port to the given value.
+     * </p>
+     * 
+     * @param value
+     *            true or false corresponding to the voltage level desired at
+     *            hardware level
+     * @throws SerialComException
+     *             if an error happens when communicating through serial port
+     */
+    public abstract void setDTR(boolean value) throws SerialComException;
+
+    /**
+     * <p>
+     * Sets the RTS signal of the host side serial port to the given value.
+     * </p>
+     * 
+     * @param value
+     *            true or false corresponding to the voltage level desired at
+     *            hardware level
+     * @throws SerialComException
+     *             if an error happens when communicating through serial port
+     */
+    public abstract void setRTS(boolean value) throws SerialComException;
 }

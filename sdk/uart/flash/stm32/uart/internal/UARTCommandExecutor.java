@@ -142,6 +142,17 @@ public final class UARTCommandExecutor extends CommandExecutor {
      * for his particular device.
      * </p>
      * 
+     * <p>
+     * Receiving any other character different from 0x7F (or line glitches) will
+     * cause bootloader to start communication using a wrong baudrate. Bootloader
+     * measures the signal length between rising edge of first bit in 0x7F to the
+     * falling edge of the last 1 bit in 0x7F to deduce the baudrate value.
+     * Therefore the circuit must be protected against EMI. Further bootloader may
+     * not re-align itself to any standard baudrate. It is for this reason an
+     * appropriate value of the baudrate based on the crystal connected to stm32
+     * should be selected.
+     * </p>
+     * 
      * @param comPortHandle
      *            handle of serial port to which stm32 is connected
      * @return an instance of Device class representing stm32 device

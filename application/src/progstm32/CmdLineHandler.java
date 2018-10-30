@@ -72,6 +72,17 @@ public final class CmdLineHandler implements ICmdProgressListener {
     private boolean opened = false;
     private int allowedCmds = 0;
 
+    /* 1 for DTR, 2 for RTS */
+    private int firstSignalToSet = -1;
+    private boolean entryDTRstate1 = false;
+    private boolean entryRTSstate1 = false;
+    private boolean entryDTRstate2 = false;
+    private boolean entryRTSstate2 = false;
+    private boolean exitDTRstate = false;
+    private boolean exitRTSstate = false;
+
+    private int i;
+
     public void process(String[] args) {
 
         int numArgs = args.length;
@@ -86,10 +97,6 @@ public final class CmdLineHandler implements ICmdProgressListener {
         int length = -1;
         String device = null;
         boolean verifyWrite = false;
-        int entryDTRstate = -1;
-        int entryRTSstate = -1;
-        int exitDTRstate = -1;
-        int exitRTSstate = -1;
         File fwFile = null;
         boolean stdout = false;
 
@@ -104,15 +111,17 @@ public final class CmdLineHandler implements ICmdProgressListener {
         byte[] readBuf = null;
         int lengthOfFileContents = 0;
         String readFile = null;
+        long time = 0;
+        int holdTime = 5;
 
         if (numArgs == 0) {
             System.out.println(
-                    "Usage: progstm32 -d port [-{r|w} filename] [-{bn|ih}] [-e {m | start total] [-s address] [-l length] [-kopjnivhR] [-br baudrate] [-g address]");
+                    "Usage: progstm32 -d port [-{r|w} filename] [-{bn|ih}] [-e {m | start total}] [-s address] [-l length] [-kopjnivhR] [-br baudrate] [-g address] [-er {-dtr|-rts} a b {-dtr|-rts} c d]");
             System.out.println("Try 'progstm32 --help' for more information.");
             return;
         }
 
-        for (int i = 0; i < numArgs; i++) {
+        for (i = 0; i < numArgs; i++) {
 
             switch (args[i]) {
 
@@ -256,28 +265,21 @@ public final class CmdLineHandler implements ICmdProgressListener {
             case "-er":
                 action |= ACT_BL_ENTRY;
                 i++;
-                if (args[i].equals("dtr")) {
-                    i++;
-                    if (args[i].equals("1")) {
-                        entryDTRstate = 1;
-                    } else if (args[i].equals("0")) {
-                        entryDTRstate = 0;
-                    } else {
-                        System.out.println("Invalid dtr value: " + args[i]);
-                        return;
-                    }
-                } else if (args[i].equals("rts")) {
-                    i++;
-                    if (args[i].equals("1")) {
-                        entryRTSstate = 1;
-                    } else if (args[i].equals("0")) {
-                        entryRTSstate = 0;
-                    } else {
-                        System.out.println("Invalid rts value: " + args[i]);
-                        return;
-                    }
-                } else {
-                    System.out.println("dtr/rts not specified: " + args[i]);
+                if (extractEntrySequence(args, 1) < 0) {
+                    return;
+                }
+                i++;
+                if (extractEntrySequence(args, 0) < 0) {
+                    return;
+                }
+                break;
+
+            case "-t":
+                i++;
+                try {
+                    holdTime = Integer.parseInt(args[i]);
+                } catch (Exception e) {
+                    System.out.println("Invalid hold time, " + e.getMessage());
                     return;
                 }
                 break;
@@ -316,7 +318,7 @@ public final class CmdLineHandler implements ICmdProgressListener {
             devMgr = new DeviceManager(new Locale("English", "EN"));
             uci = (UARTInterface) devMgr.getCommunicationIface(IFace.UART, "progstm32jqix7");
         } catch (Exception e) {
-            System.out.println("Failed: " + e.getMessage());
+            System.out.println("Can't get device mgr & communication interface: " + e.getMessage());
             return;
         }
 
@@ -330,23 +332,52 @@ public final class CmdLineHandler implements ICmdProgressListener {
             return;
         }
 
+        /* Make stm32 enter bootloader mode by applying sequence as specified by user */
+        if ((action & ACT_BL_ENTRY) == ACT_BL_ENTRY) {
+            System.out.println("Executing bootmode entry seq...");
+            try {
+                if (firstSignalToSet == 1) {
+                    uci.setDTR(entryDTRstate1);
+                    uci.setRTS(entryRTSstate1);
+                } else {
+                    uci.setRTS(entryRTSstate1);
+                    uci.setDTR(entryDTRstate1);
+                }
+                try {
+                    time = System.currentTimeMillis() + holdTime;
+                    Thread.sleep(holdTime);
+                } catch (InterruptedException e) {
+                    long y = time - System.currentTimeMillis();
+                    System.out.println("Wokeup " + y + " milliseconds early during entry sequence");
+                }
+                if (firstSignalToSet == 1) {
+                    if (entryDTRstate2 != entryDTRstate1) {
+                        uci.setDTR(entryDTRstate2);
+                    }
+                    if (entryRTSstate2 != entryRTSstate1) {
+                        uci.setRTS(entryRTSstate2);
+                    }
+                } else {
+                    if (entryRTSstate2 != entryRTSstate1) {
+                        uci.setRTS(entryRTSstate2);
+                    }
+                    if (entryDTRstate2 != entryDTRstate1) {
+                        uci.setDTR(entryDTRstate2);
+                    }
+                }
+                System.out.println("Sequence done.");
+            } catch (Exception e) {
+                System.out.println("Can't execute bootloader mode sequence: " + e.getMessage());
+                closeDevice();
+            }
+        }
+
         try {
             dev = uci.initAndIdentifyDevice();
         } catch (Exception e) {
             System.out.println("Can't init device: " + e.getMessage());
             closeDevice();
             return;
-        }
-
-        /* Make stm32 enter bootloader mode by applying sequence as specified by user */
-        if ((action & ACT_BL_ENTRY) == ACT_BL_ENTRY) {
-            System.out.println("Enter bootloader mode...");
-            try {
-                System.out.println("Entered bootloader mode.");
-            } catch (Exception e) {
-                System.out.println("Can't enter bootloader mode: " + e.getMessage());
-                closeDevice();
-            }
         }
 
         /* Disable read protection */
@@ -737,6 +768,63 @@ public final class CmdLineHandler implements ICmdProgressListener {
         } catch (Exception e) {
             System.out.println("Closing serial port failed: " + e.getMessage());
         }
+    }
+
+    /*
+     * Extract DTR and RTS signal values and timings.
+     */
+    int extractEntrySequence(String[] args, int firstCall) {
+
+        if (args[i].equals("-dtr")) {
+            if (firstCall == 1) {
+                firstSignalToSet = 1;
+            }
+            i++;
+            if (args[i].equals("1")) {
+                entryDTRstate1 = true;
+            } else if (args[i].equals("0")) {
+                entryDTRstate1 = false;
+            } else {
+                System.out.println("Invalid dtr value: " + args[i]);
+                return -1;
+            }
+            i++;
+            if (args[i].equals("1")) {
+                entryDTRstate2 = true;
+            } else if (args[i].equals("0")) {
+                entryDTRstate2 = false;
+            } else {
+                System.out.println("Invalid dtr value: " + args[i]);
+                return -1;
+            }
+        } else if (args[i].equals("-rts")) {
+            if (firstCall == 1) {
+                firstSignalToSet = 2;
+            }
+            i++;
+            if (args[i].equals("1")) {
+                entryRTSstate1 = true;
+            } else if (args[i].equals("0")) {
+                entryRTSstate1 = false;
+            } else {
+                System.out.println("Invalid rts value: " + args[i]);
+                return -1;
+            }
+            i++;
+            if (args[i].equals("1")) {
+                entryRTSstate2 = true;
+            } else if (args[i].equals("0")) {
+                entryRTSstate2 = false;
+            } else {
+                System.out.println("Invalid rts value: " + args[i]);
+                return -1;
+            }
+        } else {
+            System.out.println("-er given but dtr/rts not specified: " + args[i]);
+            return -1;
+        }
+
+        return 0;
     }
 
     /*
