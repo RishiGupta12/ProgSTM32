@@ -16,43 +16,43 @@ an option in menu to let user upgrade firmware in their product.
 .SH OPTIONS
 .TP
 .B \-d   port
-Serial port to which stm32 is connected (/dev/ttyUSB0 or COM9)
+Serial port to which stm32 is connected (/dev/ttyUSB0 or COM9).
 
 .TP
 .B \-br  baudrate
-Serial port speed (default 115200, supported 2400, 4800, 9600, 14400, 19200, 28800, 38400, 56000, 57600, 115200)
+Serial port speed (default 115200, supported 2400, 4800, 9600, 14400, 19200, 28800, 38400, 56000, 57600, 115200).
 
 .TP
 .B \-r   filename|stdout
-Reads length bytes specified by -l from the address specified by -s and stores in file or stdout
+Reads length bytes specified by -l from the address specified by -s and stores in file or stdout.
 
 .TP
 .B \-w   filename
-Firmware file to be flashed into memory
+Firmware file to be flashed into memory.
 
 .TP
 .B \-bn
-Indicates file specified with -w is in plain binary format
+Indicates file specified with -w is in plain binary format.
 
 .TP
 .B \-ih
-Indicates file specified with -w is in intel hex format and needs conversion into binary format
+Indicates file specified with -w is in intel hex format and needs conversion into binary format.
 
 .TP
 .B \-v
-Verify after flashing firmware in memory
+Verify after flashing firmware in memory.
 
 .TP
 .B \-e   m		       
-Do mass erase of user flash memory
+Do mass erase of user flash memory.
 
 .TP
 .B \-e   start total
-Erase total pages given by 'total', starting with 'start' page number
+Erase total pages given by 'total', starting with 'start' page number.
 
 .TP
 .B \-s   address
-Address in hexadecimal format of stm32 memory (address from where flashing will start or from where data will be read)
+Address in hexadecimal format of stm32 memory (address from where flashing will start or from where data will be read).
 
 .TP
 .B \-l   length
@@ -60,43 +60,43 @@ Number of bytes
 
 .TP
 .B \-i
-Get bootloader ID
+Get bootloader ID.
 
 .TP
 .B \-p
-Get stm32product ID
+Get stm32product ID.
 
 .TP
 .B \-k
-Disable memory read protection 
+Disable memory read protection. Application with re-init communication with bootloader automatically after finishing executing this command.
 
 .TP
 .B \-j
-Enable memory read protection
+Enable memory read protection. Application with re-init communication with bootloader automatically after finishing executing this command.
 
 .TP
 .B \-o
-Disable memory write protection
+Disable memory write protection. Application with re-init communication with bootloader automatically after finishing executing this command.
 
 .TP
 .B \-n  start total
-Enable memory write protection on total 'pages' starting from 'start' page
+Enable memory write protection on total 'pages' starting from 'start' page. Application with re-init communication with bootloader automatically after finishing executing this command.
 
 .TP
 .B \-R
-Do software based system reset
+Do software based system reset.
 
 .TP
 .B \-g   address
-Make program counter jump to the given address
+Make program counter jump to the given address.
 
 .TP
 .B \-er \-dtr a b \-rts c d
-Sequence that should be executed to make stm32 enter bootloader mode. The a,b,c,d can be 1 or 0. If dtr is given before rts, DTR siganl will be set 1st otherwise RTS signal will be set first. A signal line is toggled only if its previous value was different. There is no restriction as to whether DTR or RTS is connected to BOOT0 or NRST pin.
+Sequence that should be executed to make stm32 enter bootloader mode. The a,b,c,d can be 1 or 0. If dtr is given before rts, DTR signal will be set 1st otherwise RTS signal will be set first. A signal line is toggled only if its previous value was different. There is no restriction as to whether DTR or RTS is connected to BOOT0 or NRST pin.
 
 .TP
 .B \-ex \-dtr a b \-rts c d
-Sequence that should be executed to make stm32 exit bootloader mode. The a,b,c,d can be 1 or 0. If dtr is given before rts, DTR siganl will be set 1st otherwise RTS signal will be set first. A signal line is toggled only if its previous value was different. There is no restriction as to whether DTR or RTS is connected to BOOT0 or NRST pin.
+Sequence that should be executed to make stm32 exit bootloader mode. The a,b,c,d can be 1 or 0. If dtr is given before rts, DTR signal will be set 1st otherwise RTS signal will be set first. A signal line is toggled only if its previous value was different. There is no restriction as to whether DTR or RTS is connected to BOOT0 or NRST pin. Exit sequence is also executed whenever an error occurs while executing some command and application is going to return due to this.
 
 .TP
 .B \-t hold time
@@ -107,7 +107,7 @@ Time in milli-seconds for which the DTR and RTS line will be kept in previous st
 Show this help
 
 .SH EXAMPLES
-1. Get stm32 product ID
+1. Get stm32 product ID.
 .RS
 .PD 0
 .P
@@ -115,7 +115,7 @@ progstm32 \-d /dev/ttyS0 \-p
 .PD
 .RE
 
-2. Get stm32 bootloader ID
+2. Get stm32 bootloader ID.
 .RS
 .PD 0
 .P
@@ -139,7 +139,7 @@ progstm32 \-d /dev/ttyS0 \-o
 .PD
 .RE
 
-5. Mass erase user flash
+5. Mass erase user flash.
 .RS
 .PD 0
 .P
@@ -179,7 +179,7 @@ progstm32 \-d /dev/ttyS0 \-w fw.bin -s 08000000 \-bn \-v
 .PD
 .RE
 
-10. Fisr erase, than flash firmware file fw.hex and than verify
+10. Fisr erase, than flash firmware file fw.hex and than verify.
 .RS
 .PD 0
 .P
@@ -187,7 +187,7 @@ progstm32 \-d /dev/ttyS0 \-e m \-w fw.hex \-s 08000000 \-ih \-v
 .PD
 .RE
 
-11. Read 1024 bytes from hexadecimal address 08000000 and print on stdout
+11. Read 1024 bytes from hexadecimal address 08000000 and print on stdout.
 .RS
 .PD 0
 .P
@@ -195,7 +195,7 @@ progstm32 \-d /dev/ttyS0 \-r stdout \-s 08000000 \-l 1024
 .PD
 .RE
 
-12. Read 1024 bytes from hexadecimal address 08000000 and save in file readfw.bin in file system
+12. Read 1024 bytes from hexadecimal address 08000000 and save in file readfw.bin in file system.
 .RS
 .PD 0
 .P
@@ -203,7 +203,7 @@ progstm32 \-d /dev/ttyS0 \-r readfw.bin \-s 08000000 \-l 1024
 .PD
 .RE
 
-13. Enable memory read protection of stm32
+13. Enable memory read protection of stm32.
 .RS
 .PD 0
 .P
@@ -211,7 +211,7 @@ progstm32 \-d /dev/ttyS0 \-k
 .PD
 .RE
 
-14. Enable memory write protection of stm32
+14. Enable memory write protection of stm32.
 .RS
 .PD 0
 .P
@@ -219,7 +219,7 @@ progstm32 \-d /dev/ttyS0 \-o
 .PD
 .RE
 
-15. Make program counter jump to hexadecimal address 08000000 through go command
+15. Make program counter jump to hexadecimal address 08000000 through go command.
 .RS
 .PD 0
 .P
@@ -227,7 +227,7 @@ progstm32 \-d /dev/ttyS0 \-g 08000000
 .PD
 .RE
 
-16. Trigger system reset through software ARM instruction
+16. Trigger system reset through software ARM instruction.
 .RS
 .PD 0
 .P
