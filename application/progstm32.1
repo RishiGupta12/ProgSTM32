@@ -4,7 +4,7 @@ progstm32 \- flashes firmware in stm32 memory through serial port
 
 .SH SYNOPSIS
 .B progstm32
--d port [\-{r|w} filename] [\-{bn|ih}] [\-e {m | start total}] [\-s address] [\-l length] [\-kopjnivhR] [\-br baudrate] [\-g address] [\-{er|ex} \-{dtr|rts} a b \-{dtr|rts} c d] 
+-d port [\-{r|w} filename] [\-{bn|ih}] [\-e {m | start total}] [\-s address] [\-l length] [\-kopjnizvhR] [\-br baudrate] [\-g address] [\-{er|ex} \-{dtr|rts} a b \-{dtr|rts} c d] 
 
 .SH DESCRIPTION
 .B progstm32
@@ -60,7 +60,11 @@ Number of bytes (used mainly with read command).
 
 .TP
 .B \-i
-Get bootloader ID.
+Get bootloader ID (version of the STM32 device bootloader).
+
+.TP
+.B \-z
+Get bootloader protocol version (version of the serial peripheral communication protocol used in the bootloader).
 
 .TP
 .B \-p
@@ -232,6 +236,14 @@ progstm32 \-d /dev/ttyS0 \-g 08000000
 .PD 0
 .P
 progstm32 \-d /dev/ttyS0 \-R
+.PD
+.RE
+
+17. Get stm32 bootloader communication protocol version.
+.RS
+.PD 0
+.P
+progstm32 \-d /dev/ttyS0 \-z
 .PD
 .RE
 
