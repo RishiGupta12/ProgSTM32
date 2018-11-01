@@ -83,12 +83,14 @@ public final class CmdLineHandler implements ICmdProgressListener {
     private boolean exitDTRstate2 = false;
     private boolean exitRTSstate2 = false;
     private int i;
+    private long time = 0;
+    private int holdTime = 5;
+    private int action = 0;
 
     public void process(String[] args) {
 
         int numArgs = args.length;
 
-        int action = 0;
         int startPageNum = 0;
         int totalPageNum = 0;
         int baudrate = 0;
@@ -112,8 +114,6 @@ public final class CmdLineHandler implements ICmdProgressListener {
         byte[] readBuf = null;
         int lengthOfFileContents = 0;
         String readFile = null;
-        long time = 0;
-        int holdTime = 5;
 
         if (numArgs == 0) {
             System.out.println(
@@ -395,6 +395,7 @@ public final class CmdLineHandler implements ICmdProgressListener {
                 dev.readoutUnprotectMemoryRegion();
                 System.out.println("Disabled read protection");
                 if ((action > ACT_READ_UNPROTECT) && (reinit() == -1)) {
+                    executeExitSequenceIfGiven();
                     return;
                 }
             } catch (Exception e) {
@@ -412,6 +413,8 @@ public final class CmdLineHandler implements ICmdProgressListener {
         } catch (Exception e) {
             System.out.println("Can't get commands supported by bootloader: " + e.getMessage());
             closeDevice();
+            executeExitSequenceIfGiven();
+            return;
         }
 
         /* Disable write protection */
@@ -421,6 +424,7 @@ public final class CmdLineHandler implements ICmdProgressListener {
                     dev.writeUnprotectMemoryRegion();
                     System.out.println("Disabled write protection");
                     if ((action > ACT_WRITE_UNPROTECT) && (reinit() == -1)) {
+                        executeExitSequenceIfGiven();
                         return;
                     }
                 } catch (Exception e) {
@@ -632,6 +636,7 @@ public final class CmdLineHandler implements ICmdProgressListener {
                     dev.writeProtectMemoryRegion(startPageNum, totalPageNum);
                     System.out.println("Enabled write protection");
                     if ((action > ACT_WRITE_PROTECT) && (reinit() == -1)) {
+                        executeExitSequenceIfGiven();
                         return;
                     }
                 } catch (Exception e) {
@@ -654,6 +659,7 @@ public final class CmdLineHandler implements ICmdProgressListener {
                     dev.readoutprotectMemoryRegion();
                     System.out.println("Enabled read protection");
                     if ((action > ACT_READ_PROTECT) && (reinit() == -1)) {
+                        executeExitSequenceIfGiven();
                         return;
                     }
                 } catch (Exception e) {
@@ -700,6 +706,15 @@ public final class CmdLineHandler implements ICmdProgressListener {
         }
 
         /* Make stm32 exit bootloader mode by applying sequence as specified by user */
+        executeExitSequenceIfGiven();
+
+        /* Processing completed, let's go back home */
+        closeDevice();
+        return;
+    }
+
+    private void executeExitSequenceIfGiven() {
+
         if ((action & ACT_BL_EXIT) == ACT_BL_EXIT) {
             System.out.println("Executing bootmode exit seq...");
             try {
@@ -746,10 +761,6 @@ public final class CmdLineHandler implements ICmdProgressListener {
                 closeDevice();
             }
         }
-
-        /* Processing completed, let's go back home */
-        closeDevice();
-        return;
     }
 
     /*
