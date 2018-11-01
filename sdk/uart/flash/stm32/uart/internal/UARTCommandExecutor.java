@@ -208,8 +208,8 @@ public final class UARTCommandExecutor extends CommandExecutor {
             x = getChipID();
             curDev = dCreator.createDevFromPID(x, this);
 
-            /* get bootloader version so that quirks can be handled */
-            this.getBootloaderVersion();
+            /* get bootloader protocol version so that quirks can be handled */
+            this.getBootloaderProtocolVersion();
         } else {
             throw new TimeoutException(rb.getString("init.to"));
         }
@@ -414,7 +414,9 @@ public final class UARTCommandExecutor extends CommandExecutor {
     /**
      * <p>
      * Sends command 'Get' (0x00) to know commands supported by this bootloader and
-     * then extracts bootloader version for the received response.
+     * then extracts bootloader version for the received response. This represents
+     * version of the serial peripheral (USART, CAN, USB, etc.) communication
+     * protocol used in the bootloader.
      * </p>
      * 
      * @return bootloader version in human readable format
@@ -424,7 +426,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
      *             when bootloader declines this command, fails to execute this
      *             command or sends no response at all
      */
-    public String getBootloaderVersion() throws SerialComException, TimeoutException {
+    public String getBootloaderProtocolVersion() throws SerialComException, TimeoutException {
 
         int res;
         String bootloaderVersion = null;
@@ -2004,7 +2006,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
     /**
      * <p>
      * Reads bootloader ID programmed into last two byte of the device's system
-     * memory.
+     * memory. This ID represents version of the STM32 device bootloader.
      * </p>
      * 
      * @return bootloader ID

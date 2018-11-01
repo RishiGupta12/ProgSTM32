@@ -12,14 +12,14 @@ The progstm32 uses SerialPundit sdk for serial port communication, which is a se
 ## Features
 - Erase, read and write firmware or arbitrary data in memory
 - No restriction on addresses and address length
-- Read bootloader ID, ROM-programmed data, product ID and bootloader version
+- Read bootloader ID, protocol version, ROM-programmed data, product ID
 - Handle device specific quirks internally
 - Enter/exit bootloader mode using DTR/RTS signals
 - Robust error handling
 - Enable/disable read/write protection of memory
 - Resume communication with stm32 if required
 - Convert intel hex firmware to plain binary
-- Fully documented and tested
+- Fully documented (javadocs,manpage) and tested
 
 ## Build and Installation
 To build and install progstm32 sdk and application run the following commands.

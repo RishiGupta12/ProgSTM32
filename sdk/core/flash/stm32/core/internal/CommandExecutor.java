@@ -69,7 +69,9 @@ public abstract class CommandExecutor {
     /**
      * <p>
      * Sends command 'Get' (0x00) to know commands supported by this bootloader and
-     * then extracts bootloader version for the received response.
+     * then extracts bootloader version for the received response. This represents
+     * version of the serial peripheral (USART, CAN, USB, etc.) communication
+     * protocol used in the bootloader.
      * </p>
      * 
      * @return bootloader version in human readable format
@@ -79,7 +81,7 @@ public abstract class CommandExecutor {
      *             when bootloader declines this command, fails to execute this
      *             command or sends no response at all
      */
-    public abstract String getBootloaderVersion() throws SerialComException, TimeoutException;
+    public abstract String getBootloaderProtocolVersion() throws SerialComException, TimeoutException;
 
     /**
      * <p>
@@ -441,7 +443,7 @@ public abstract class CommandExecutor {
     /**
      * <p>
      * Reads bootloader ID programmed into last two byte of the device's system
-     * memory.
+     * memory. This ID represents version of the STM32 device bootloader.
      * </p>
      * 
      * @return bootloader ID

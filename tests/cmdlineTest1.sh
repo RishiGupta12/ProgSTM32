@@ -39,8 +39,12 @@ echo -e "\n---> get pid"
 java -cp .:sp-tty.jar:sp-core.jar:progstm32uart.jar:progstm32app.jar progstm32.ProgSTM32 -d $PORT -p
 
 # get blid
-echo -e "\n---> get blid"
+echo -e "\n---> get bootloader version"
 java -cp .:sp-tty.jar:sp-core.jar:progstm32uart.jar:progstm32app.jar progstm32.ProgSTM32 -d $PORT -i
+
+# get bootloader version
+echo -e "\n---> get protocol version"
+java -cp .:sp-tty.jar:sp-core.jar:progstm32uart.jar:progstm32app.jar progstm32.ProgSTM32 -d $PORT -z
 
 # mass erase
 echo -e "\n---> mass erase"

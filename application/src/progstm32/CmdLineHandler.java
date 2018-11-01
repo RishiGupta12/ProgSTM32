@@ -55,16 +55,17 @@ public final class CmdLineHandler implements ICmdProgressListener {
     final int ACT_WRITE_UNPROTECT = 0x04;
     final int ACT_GET_PID = 0x08;
     final int ACT_GET_BLID = 0x10;
-    final int ACT_MASS_ERASE = 0x20;
-    final int ACT_ERASE = 0x40;
-    final int ACT_WRITE = 0x80;
-    final int ACT_READ = 0x100;
-    final int ACT_WRITE_PROTECT = 0x200;
-    final int ACT_READ_PROTECT = 0x400;
-    final int ACT_SOFT_RESET = 0x800;
-    final int ACT_GO = 0x1000;
-    final int ACT_BL_EXIT = 0x2000;
-    final int ACT_SHOW_HELP = 0x4000;
+    final int ACT_GET_BLVER = 0x20;
+    final int ACT_MASS_ERASE = 0x40;
+    final int ACT_ERASE = 0x80;
+    final int ACT_WRITE = 0x100;
+    final int ACT_READ = 0x200;
+    final int ACT_WRITE_PROTECT = 0x400;
+    final int ACT_READ_PROTECT = 0x800;
+    final int ACT_SOFT_RESET = 0x1000;
+    final int ACT_GO = 0x2000;
+    final int ACT_BL_EXIT = 0x4000;
+    final int ACT_SHOW_HELP = 0x8000;
 
     private DeviceManager devMgr;
     private UARTInterface uci;
@@ -261,6 +262,10 @@ public final class CmdLineHandler implements ICmdProgressListener {
 
             case "-i":
                 action |= ACT_GET_BLID;
+                break;
+
+            case "-z":
+                action |= ACT_GET_BLVER;
                 break;
 
             case "-er":
@@ -465,6 +470,19 @@ public final class CmdLineHandler implements ICmdProgressListener {
                 closeDevice();
             }
             if (action <= ACT_GET_BLID) {
+                return;
+            }
+        }
+
+        /* Get bootloader protocol version of the stm32 device */
+        if ((action & ACT_GET_BLVER) == ACT_GET_BLVER) {
+            try {
+                System.out.println("Blver : " + dev.getBootloaderProtocolVersion());
+            } catch (Exception e) {
+                System.out.println("Can't get bootloader protocol version: " + e.getMessage());
+                closeDevice();
+            }
+            if (action <= ACT_GET_BLVER) {
                 return;
             }
         }
