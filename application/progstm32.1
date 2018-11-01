@@ -16,7 +16,7 @@ an option in menu to let user upgrade firmware in their product.
 .SH OPTIONS
 .TP
 .B \-d   port
-Serial port to which stm32 is connected (/dev/ttyUSB0 or COM9).
+Serial port to which stm32 is connected (/dev/ttyUSB0 or COM9). When this port is opened, both input and output buffers of serial port is cleared.
 
 .TP
 .B \-br  baudrate
@@ -52,11 +52,11 @@ Erase total pages given by 'total', starting with 'start' page number.
 
 .TP
 .B \-s   address
-Address in hexadecimal format of stm32 memory (address from where flashing will start or from where data will be read).
+Address in hexadecimal format without leading 0x (address in stm32 memory from where flashing will start or data will be read).
 
 .TP
 .B \-l   length
-Number of bytes
+Number of bytes (used mainly with read command).
 
 .TP
 .B \-i

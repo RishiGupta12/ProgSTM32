@@ -84,7 +84,11 @@ public final class UARTInterface extends CommunicationInterface {
      * Opens and configures serial port as per the given parameters. Although most
      * of the devices uses even parity, few devices may use no parity, therefore
      * proper documents should be referred for such devices. This also sets the
-     * minimum timeout to 500 milli seconds for reading data from serial port
+     * minimum timeout to 500 milliseconds for reading data from serial port
+     * </p>
+     * 
+     * <p>
+     * Data in input and output buffers is discarded (clear serial port buffers).
      * </p>
      * 
      * @param port
