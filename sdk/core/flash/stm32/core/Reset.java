@@ -22,7 +22,7 @@ package flash.stm32.core;
 
 /**
  * <p>
- * Contains behaviour and data required for triggering system reset using
+ * Contains behavior and data required for triggering system reset using
  * software.
  * </p>
  * 
@@ -36,24 +36,30 @@ public final class Reset {
     /**
      * <p>
      * Assemble code in plain binary format that can be sent to stm32 and executed
-     * to trigger system reset.
+     * to trigger system reset through ARM instruction.
      * </p>
      * 
      * @param RAMMemStartAddr
      *            location which will be sent to bootloader for go command
-     * @return assembled code
+     * @return assembled code with stack and vector
      */
     public byte[] getResetCode(int RAMMemStartAddr) {
 
-        int y = resetCode.length;
-        byte[] resetCodeWithStack = new byte[y + 8];
+        int rcl = resetCode.length;
+        byte[] resetCodeWithStack = new byte[rcl + 8];
 
+        /* Setup main stack pointer */
         int addr = 0x20002000;
         resetCodeWithStack[3] = (byte) ((addr >> 24) & 0x000000FF);
         resetCodeWithStack[2] = (byte) ((addr >> 16) & 0x000000FF);
         resetCodeWithStack[1] = (byte) ((addr >> 8) & 0x000000FF);
         resetCodeWithStack[0] = (byte) (addr & 0x000000FF);
 
+        /*
+         * 'Go' command will jump at this address, this must contain memory address
+         * where resetCode is put in memory. Set least significant in this address
+         * (hence + 1) as cortext m supports only thumb mode address
+         */
         int ta = RAMMemStartAddr + 8 + 1;
         resetCodeWithStack[7] = (byte) ((ta >> 24) & 0x000000FF);
         resetCodeWithStack[6] = (byte) ((ta >> 16) & 0x000000FF);
@@ -62,8 +68,8 @@ public final class Reset {
 
         int x;
         int z = 0;
-        y = y + 8;
-        for (x = 8; x < y; x++) {
+        rcl = rcl + 8;
+        for (x = 8; x < rcl; x++) {
             resetCodeWithStack[x] = resetCode[z];
             z++;
         }

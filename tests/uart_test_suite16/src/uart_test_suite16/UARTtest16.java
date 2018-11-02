@@ -36,7 +36,7 @@ import flash.stm32.core.DeviceManager.IFace;
 import flash.stm32.core.FileType;
 import flash.stm32.uart.UARTInterface;
 
-public final class UARTtest2 {
+public final class UARTtest16 {
 
 	private DeviceManager devMgr;
 	private UARTInterface uci;
@@ -107,7 +107,10 @@ public final class UARTtest2 {
 			try {
 				dev.writeMemory(FileType.BIN, new File("/home/a/exp/demo.bin"), 0x08000000, null);
 			} catch (Exception e) {
-				// MUST fail as write protection is enabled
+				// MUST fail as write protection is enabled "BUT" as per AN2606:
+				// No error is returned when performing write operations on write-protected
+				// sectors. No error is returned when the start address is invalid. Therefore
+				// this exception will not happen.
 				e.printStackTrace();
 			}
 

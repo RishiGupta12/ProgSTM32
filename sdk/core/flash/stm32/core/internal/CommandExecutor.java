@@ -442,7 +442,7 @@ public abstract class CommandExecutor {
 
     /**
      * <p>
-     * Reads bootloader ID programmed into last two byte of the device's system
+     * Reads bootloader ID programmed into the last two byte of the device's system
      * memory. This ID represents version of the STM32 device bootloader.
      * </p>
      * 

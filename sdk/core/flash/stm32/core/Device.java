@@ -72,15 +72,25 @@ public abstract class Device {
 
     /**
      * <p>
-     * Allocates an instance of setFlashMemSize.
+     * Sets the size of the user flash memory.
      * </p>
      * 
      * @param flashMemSize
      *            size of the user flash memory for the given stm32 device
      */
     public void setFlashMemSize(int flashMemSize) {
-        // TODO update applicable parameters from datasheet
         this.flashMemSize = flashMemSize;
+    }
+
+    /**
+     * <p>
+     * Gives the size of the user flash memory.
+     * </p>
+     * 
+     * @return size of user flash memory
+     */
+    public int getFlashMemSize() {
+        return this.flashMemSize;
     }
 
     /**
@@ -178,7 +188,7 @@ public abstract class Device {
 
     /**
      * <p>
-     * Reads bootloader ID programmed into last two byte of the device's system
+     * Reads bootloader ID programmed into the last two byte of the device's system
      * memory.
      * </p>
      * 

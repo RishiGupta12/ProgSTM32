@@ -97,12 +97,12 @@ public final class UARTCommandExecutor extends CommandExecutor {
     private final SerialComManager scm;
     private final ResourceBundle rb;
     private final FlashUtils flashUtils;
-    private final Reset rst;
     private final Debug dbg;
 
     private long comPortHandle;
     private Device curDev;
     private int blVer;
+    private Reset rst;
 
     /**
      * <p>
@@ -123,7 +123,6 @@ public final class UARTCommandExecutor extends CommandExecutor {
         this.scm = scm;
         this.rb = rb;
         this.flashUtils = flashUtils;
-        rst = new Reset();
         dbg = new Debug();
     }
 
@@ -2005,7 +2004,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
 
     /**
      * <p>
-     * Reads bootloader ID programmed into last two byte of the device's system
+     * Reads bootloader ID programmed into the last two byte of the device's system
      * memory. This ID represents version of the STM32 device bootloader.
      * </p>
      * 
@@ -2072,6 +2071,7 @@ public final class UARTCommandExecutor extends CommandExecutor {
         }
 
         if (resetCodeAddress != 0x00) {
+            rst = new Reset();
             byte[] resetCode = rst.getResetCode(resetCodeAddress);
             this.writeMemory(FileType.BIN, resetCode, resetCodeAddress, null);
             this.goJump(resetCodeAddress);

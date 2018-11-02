@@ -1,11 +1,10 @@
 #### Triggering system reset programatically
 --------------------------------------------
-ARM CPU provides a feature to trigger system reset programatically through its AIRCR (Application Interrupt and Reset Control Register). To trigger reset, we should write 0x5FA to the VECTKEY field (otherwise the processor ignores the write) and 1 to the SYSRESETREQ field. This feature combined with in-system programming (ISP) can be very useful.
+ARM CPU provides a feature to trigger system reset programatically through its AIRCR (Application Interrupt and Reset Control Register). To trigger reset, we should write 0x5FA to the VECTKEY field (otherwise the processor ignores the write) and 1 to the SYSRESETREQ field. This feature combined with in-system programming (ISP) can be very useful. Listing 1.0 shows a hand crafted code in assembly to trigger system reset.
 
-#### Using above concept
-------------------------
-Once the firmware has been flashed, we need to reset stm32 microcontroller. To do this, we load a small program in RAM and execute it by using 'GO' command of bootloader. This program actually updates fields in AIRCR as explained above. The program is as follows:
 ```assembly
+Listing 1.0
+------------------------------------
 .global _start
 _start:
 LDR R1,=0xE000ED0C
@@ -13,6 +12,19 @@ LDR R2,=0x05FA0004
 STR R2,[R1]
 loopforever: b loopforever
 ```
+
+#### Using above concept
+------------------------
+1. When ARM processor is powered on, CPU fetches main stack pointer value from 0x00000000 address and initialize R13 (SP) register with this value.
+
+2. CPU then reads value at address 0x00000004 and loads program counter with that value. Program counter always holds the address of the instruction to be executed next by the CPU. In normal boot sequence, this value is typically address where reset handler is stored in memory.
+
+3. The least significant bit of the address at 0x00000004 is always 1. This is because the CPU in ARM cortex-m processors always runs in thumb mode. Note that the absolute address at which reset handler is located does not have least significant bit set to 1. For example; if value at address 0x00000004 is 0x08000269, than reset handler should be located at 0x08000268 in memory.
+
+4. The 'go' command always make CPU jump to the given address + 4 memory location.
+
+Armed with the knowledge from points 1,2,3 and 4, we hand crafted a small code in assembly and write it in the RAM. Then we make cpu jump to the address which will point to the memory location where code shown in listing 1.0 is put in RAM.
+
 #### Steps to build and integrate in Java code
 ----------------------------------------------
 1. Create assembly source file reset.S with above code.

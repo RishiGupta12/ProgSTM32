@@ -44,6 +44,7 @@ public final class DevL0x457 extends Device {
         this.cmdExtr = cmdExtr;
         pid = 0x457;
         mcuSeries = "STM32L01xxx/02xxx";
+        /* RAM range is NA */
         RAMMemStartAddr = 0x00;
         RAMMemEndAddr = 0x00;
         IBSysMemStartAddr = 0x1FF00000;

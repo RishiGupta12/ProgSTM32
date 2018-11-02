@@ -44,10 +44,11 @@ public final class DevH7x450 extends Device {
         this.cmdExtr = cmdExtr;
         pid = 0x450;
         mcuSeries = "STM32H74xxx/75xxx";
-        RAMMemStartAddr = 0x00;
-        RAMMemEndAddr = 0x00;
+        /* 0x20004100 - 0x2001FFFF and 0x24034000 - 0x2407FFFF ranges are possible */
+        RAMMemStartAddr = 0x20004100;
+        RAMMemEndAddr = 0x2001FFFF;
         IBSysMemStartAddr = 0x1FF00000;
         IBSysMemEndAddr = 0x1FF1E7FF;
-        resetCodeAddress = 0x00;
+        resetCodeAddress = 0x20004100;
     }
 }
