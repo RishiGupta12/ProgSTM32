@@ -20,6 +20,7 @@ The progstm32 uses SerialPundit sdk for serial port communication, which is a se
 - Resume communication with stm32 if required
 - Convert intel hex firmware to plain binary
 - Fully documented (javadocs,manpage) and tested
+- Programmatically trigger system reset
 
 ## Build and Installation
 To build and install progstm32 sdk and application run the following commands.

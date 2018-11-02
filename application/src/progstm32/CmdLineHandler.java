@@ -382,7 +382,8 @@ public final class CmdLineHandler implements ICmdProgressListener {
                 System.out.println("Sequence done.");
             } catch (Exception e) {
                 System.out.println("Can't execute bootloader mode sequence: " + e.getMessage());
-                closeDevice();
+                cleanUpAndExitNow();
+                return;
             }
         }
 
@@ -390,7 +391,7 @@ public final class CmdLineHandler implements ICmdProgressListener {
             dev = uci.initAndIdentifyDevice();
         } catch (Exception e) {
             System.out.println("Can't init device: " + e.getMessage());
-            closeDevice();
+            cleanUpAndExitNow();
             return;
         }
 
@@ -400,14 +401,15 @@ public final class CmdLineHandler implements ICmdProgressListener {
                 dev.readoutUnprotectMemoryRegion();
                 System.out.println("Disabled read protection");
                 if ((action > ACT_READ_UNPROTECT) && (reinit() == -1)) {
-                    executeExitSequenceIfGiven();
+                    System.out.println("Can't re-init device");
+                    cleanUpAndExitNow();
                     return;
                 }
             } catch (Exception e) {
                 System.out.println("Can't disable read protection: " + e.getMessage());
-                closeDevice();
             }
             if (action <= ACT_READ_UNPROTECT) {
+                cleanUpAndExitNow();
                 return;
             }
         }
@@ -417,8 +419,7 @@ public final class CmdLineHandler implements ICmdProgressListener {
             allowedCmds = dev.getAllowedCommands();
         } catch (Exception e) {
             System.out.println("Can't get commands supported by bootloader: " + e.getMessage());
-            closeDevice();
-            executeExitSequenceIfGiven();
+            cleanUpAndExitNow();
             return;
         }
 
@@ -429,17 +430,18 @@ public final class CmdLineHandler implements ICmdProgressListener {
                     dev.writeUnprotectMemoryRegion();
                     System.out.println("Disabled write protection");
                     if ((action > ACT_WRITE_UNPROTECT) && (reinit() == -1)) {
+                        System.out.println("Can't re-init device");
                         executeExitSequenceIfGiven();
                         return;
                     }
                 } catch (Exception e) {
                     System.out.println("Can't disable write protection: " + e.getMessage());
-                    closeDevice();
                 }
             } else {
                 System.out.println("Bootloader doesn't support disabling write protection");
             }
             if (action <= ACT_WRITE_UNPROTECT) {
+                cleanUpAndExitNow();
                 return;
             }
         }
@@ -451,12 +453,14 @@ public final class CmdLineHandler implements ICmdProgressListener {
                     System.out.println("Pid : " + dev.getChipID());
                 } catch (Exception e) {
                     System.out.println("Can't get product ID: " + e.getMessage());
-                    closeDevice();
+                    cleanUpAndExitNow();
+                    return;
                 }
             } else {
                 System.out.println("Bootloader doesn't reading product id");
             }
             if (action <= ACT_GET_PID) {
+                cleanUpAndExitNow();
                 return;
             }
         }
@@ -467,9 +471,9 @@ public final class CmdLineHandler implements ICmdProgressListener {
                 System.out.println("Blid : " + dev.getBootloaderID());
             } catch (Exception e) {
                 System.out.println("Can't get bootloader ID: " + e.getMessage());
-                closeDevice();
             }
             if (action <= ACT_GET_BLID) {
+                cleanUpAndExitNow();
                 return;
             }
         }
@@ -480,9 +484,9 @@ public final class CmdLineHandler implements ICmdProgressListener {
                 System.out.println("Blver : " + dev.getBootloaderProtocolVersion());
             } catch (Exception e) {
                 System.out.println("Can't get bootloader protocol version: " + e.getMessage());
-                closeDevice();
             }
             if (action <= ACT_GET_BLVER) {
+                cleanUpAndExitNow();
                 return;
             }
         }
@@ -501,9 +505,9 @@ public final class CmdLineHandler implements ICmdProgressListener {
                 System.out.println("Mass erase done");
             } catch (Exception e) {
                 System.out.println("Can't do mass erase: " + e.getMessage());
-                closeDevice();
             }
             if (action <= ACT_MASS_ERASE) {
+                cleanUpAndExitNow();
                 return;
             }
         }
@@ -522,9 +526,9 @@ public final class CmdLineHandler implements ICmdProgressListener {
                 System.out.println("Erase done");
             } catch (Exception e) {
                 System.out.println("Can't erase: " + e.getMessage());
-                closeDevice();
             }
             if (action <= ACT_ERASE) {
+                cleanUpAndExitNow();
                 return;
             }
         }
@@ -538,10 +542,9 @@ public final class CmdLineHandler implements ICmdProgressListener {
                 }
                 System.out.println("Writing...");
                 dev.writeMemory(fileType, fwFile, startAddress, this);
-                System.out.println("Write done");
+                System.out.println("\nWrite done");
             } catch (Exception e) {
                 System.out.println("Can't write: " + e.getMessage());
-                closeDevice();
             }
 
             /* Verify data written if requested by user */
@@ -562,7 +565,6 @@ public final class CmdLineHandler implements ICmdProgressListener {
                     x = 1;
                 } catch (Exception e) {
                     System.out.println("Can't read fw file in host PC: " + e.getMessage());
-                    closeDevice();
                     try {
                         inStream.close();
                     } catch (Exception e1) {
@@ -582,7 +584,6 @@ public final class CmdLineHandler implements ICmdProgressListener {
                         x = 1;
                     } catch (Exception e) {
                         System.out.println("Can't convert from hex to bin format: " + e.getMessage());
-                        closeDevice();
                         x = 0;
                     }
                 }
@@ -596,7 +597,6 @@ public final class CmdLineHandler implements ICmdProgressListener {
                         x = 1;
                     } catch (Exception e) {
                         System.out.println("Can't read flash: " + e.getMessage());
-                        closeDevice();
                         x = 0;
                     }
                 }
@@ -608,14 +608,18 @@ public final class CmdLineHandler implements ICmdProgressListener {
                         if (wrtBuf[x] != readBuf[x]) {
                             System.out.println(
                                     "Mismatch at byte number " + x + " expected " + wrtBuf[x] + " found " + readBuf[x]);
-                            return;
+                            break;
                         }
                     }
-
-                    System.out.println("Verification done");
+                    if (x >= lengthOfFileContents) {
+                        System.out.println("Verification done");
+                    } else {
+                        System.out.println("Verification failed");
+                    }
                 }
             }
             if (action <= ACT_WRITE) {
+                cleanUpAndExitNow();
                 return;
             }
         }
@@ -633,15 +637,15 @@ public final class CmdLineHandler implements ICmdProgressListener {
                     } else {
                         dev.readMemory(readFile, startAddress, length, this);
                     }
-                    System.out.println("Read done");
+                    System.out.println("\nRead done");
                 } catch (Exception e) {
                     System.out.println("Can't read flash: " + e.getMessage());
-                    closeDevice();
                 }
             } else {
                 System.out.println("Bootloader doesn't support reading memory");
             }
             if (action <= ACT_READ) {
+                cleanUpAndExitNow();
                 return;
             }
         }
@@ -654,7 +658,8 @@ public final class CmdLineHandler implements ICmdProgressListener {
                     dev.writeProtectMemoryRegion(startPageNum, totalPageNum);
                     System.out.println("Enabled write protection");
                     if ((action > ACT_WRITE_PROTECT) && (reinit() == -1)) {
-                        executeExitSequenceIfGiven();
+                        System.out.println("Can't re-init device");
+                        cleanUpAndExitNow();
                         return;
                     }
                 } catch (Exception e) {
@@ -665,6 +670,7 @@ public final class CmdLineHandler implements ICmdProgressListener {
                 System.out.println("Bootloader doesn't support enabling write protection");
             }
             if (action <= ACT_WRITE_PROTECT) {
+                cleanUpAndExitNow();
                 return;
             }
         }
@@ -677,7 +683,8 @@ public final class CmdLineHandler implements ICmdProgressListener {
                     dev.readoutprotectMemoryRegion();
                     System.out.println("Enabled read protection");
                     if ((action > ACT_READ_PROTECT) && (reinit() == -1)) {
-                        executeExitSequenceIfGiven();
+                        System.out.println("Can't re-init device");
+                        cleanUpAndExitNow();
                         return;
                     }
                 } catch (Exception e) {
@@ -688,6 +695,7 @@ public final class CmdLineHandler implements ICmdProgressListener {
                 System.out.println("Bootloader doesn't support enabling read protection");
             }
             if (action <= ACT_READ_PROTECT) {
+                cleanUpAndExitNow();
                 return;
             }
         }
@@ -713,22 +721,26 @@ public final class CmdLineHandler implements ICmdProgressListener {
                     System.out.println("Started execution at address 0x" + Integer.toHexString(startAddress));
                 } catch (Exception e) {
                     System.out.println("Can't jump/execute: " + e.getMessage());
-                    closeDevice();
                 }
             } else {
                 System.out.println("Bootloader doesn't support go command");
             }
             if (action <= ACT_GO) {
+                cleanUpAndExitNow();
                 return;
             }
         }
 
+        cleanUpAndExitNow();
+        return;
+    }
+
+    private void cleanUpAndExitNow() {
         /* Make stm32 exit bootloader mode by applying sequence as specified by user */
         executeExitSequenceIfGiven();
 
         /* Processing completed, let's go back home */
         closeDevice();
-        return;
     }
 
     private void executeExitSequenceIfGiven() {
@@ -838,6 +850,7 @@ public final class CmdLineHandler implements ICmdProgressListener {
         try {
             if (opened == true) {
                 uci.close();
+                opened = false;
             }
         } catch (Exception e) {
             System.out.println("Closing serial port failed: " + e.getMessage());
@@ -974,11 +987,11 @@ public final class CmdLineHandler implements ICmdProgressListener {
 
     @Override
     public void onDataReadProgressUpdate(int totalBytesReadTillNow, int numBytesToRead) {
-        System.out.println("Total bytes read : " + totalBytesReadTillNow);
+        System.out.println("\r Total bytes read : " + totalBytesReadTillNow + " of " + numBytesToRead);
     }
 
     @Override
     public void onDataWriteProgressUpdate(int totalBytesWrittenTillNow, int numBytesToWrite) {
-        System.out.println("Total bytes written : " + totalBytesWrittenTillNow);
+        System.out.print("\r Total bytes written : " + totalBytesWrittenTillNow + " of " + numBytesToWrite);
     }
 }
