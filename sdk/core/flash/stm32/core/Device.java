@@ -54,14 +54,6 @@ public abstract class Device {
     public int pid;
     public String mcuSeries;
 
-    public int flashMemSize;
-    public int mainMemStartAddr;
-    public int mainMemEndAddr;
-
-    public int numBanks;
-    public int numPagesInABank;
-    public int pageSize;
-
     public int IBSysMemStartAddr;
     public int IBSysMemEndAddr;
 
@@ -69,29 +61,6 @@ public abstract class Device {
     public int RAMMemEndAddr;
 
     public int resetCodeAddress;
-
-    /**
-     * <p>
-     * Sets the size of the user flash memory.
-     * </p>
-     * 
-     * @param flashMemSize
-     *            size of the user flash memory for the given stm32 device
-     */
-    public void setFlashMemSize(int flashMemSize) {
-        this.flashMemSize = flashMemSize;
-    }
-
-    /**
-     * <p>
-     * Gives the size of the user flash memory.
-     * </p>
-     * 
-     * @return size of user flash memory
-     */
-    public int getFlashMemSize() {
-        return this.flashMemSize;
-    }
 
     /**
      * <p>
@@ -107,27 +76,21 @@ public abstract class Device {
     /**
      * <p>
      * Provides memory related information of the given stm32 device in the
-     * Following order: pid, flash memory size, starting address of the main flash
-     * memory, ending address.
+     * Following order: stm32 pid, start address of system memory area, end address
+     * of system memory area, start address of RAM area, end address of RAM area.
      * </p>
      * 
      * @return information about the stm32 device
      */
     public int[] getMCUInformation() {
 
-        int[] info = new int[11];
+        int[] info = new int[5];
 
         info[0] = pid;
-        info[1] = flashMemSize;
-        info[2] = mainMemStartAddr;
-        info[3] = mainMemEndAddr;
-        info[4] = numBanks;
-        info[5] = numPagesInABank;
-        info[6] = pageSize;
-        info[7] = IBSysMemStartAddr;
-        info[8] = IBSysMemEndAddr;
-        info[9] = RAMMemStartAddr;
-        info[10] = RAMMemEndAddr;
+        info[1] = IBSysMemStartAddr;
+        info[2] = IBSysMemEndAddr;
+        info[3] = RAMMemStartAddr;
+        info[4] = RAMMemEndAddr;
 
         return info;
     }

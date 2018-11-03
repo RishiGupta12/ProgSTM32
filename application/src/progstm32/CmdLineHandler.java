@@ -514,7 +514,7 @@ public final class CmdLineHandler implements ICmdProgressListener {
 
         /* Do page by page erase */
         if ((action & ACT_ERASE) == ACT_ERASE) {
-            System.out.println("Doing erase...");
+            System.out.println("Doing page by page erase..." + startPageNum + "---" + totalPageNum);
             try {
                 if ((allowedCmds & BLCMDS.ERASE) == BLCMDS.ERASE) {
                     dev.eraseMemoryRegion(REGTYPE.MAIN, startPageNum, totalPageNum);
@@ -537,18 +537,20 @@ public final class CmdLineHandler implements ICmdProgressListener {
         if ((action & ACT_WRITE) == ACT_WRITE) {
             try {
                 if ((fileType != -1) && (fileType != FileType.HEX) && (fileType != FileType.BIN)) {
-                    System.out.println("Invalid file type");
-                    return;
+                    System.out.println("Invalid file type, can't write");
+                    x = 0;
+                } else {
+                    System.out.println("Writing...");
+                    dev.writeMemory(fileType, fwFile, startAddress, this);
+                    System.out.println("\nWrite done");
+                    x = 1;
                 }
-                System.out.println("Writing...");
-                dev.writeMemory(fileType, fwFile, startAddress, this);
-                System.out.println("\nWrite done");
             } catch (Exception e) {
-                System.out.println("Can't write: " + e.getMessage());
+                System.out.println("\nCan't write: " + e.getMessage());
             }
 
             /* Verify data written if requested by user */
-            if (verifyWrite == true) {
+            if ((verifyWrite == true) && (x == 1)) {
                 System.out.println("Verifying data written...");
                 try {
                     lengthOfFileContents = (int) fwFile.length();
@@ -579,7 +581,6 @@ public final class CmdLineHandler implements ICmdProgressListener {
                             FlashUtils fu = new FlashUtils();
                             HexFirmware hf = fu.hexToBinFwFormat(wrtBuf);
                             wrtBuf = hf.fwInBinFormat;
-                        } else {
                         }
                         x = 1;
                     } catch (Exception e) {
@@ -633,13 +634,13 @@ public final class CmdLineHandler implements ICmdProgressListener {
                         readBuf = new byte[length];
                         numBytesRead = dev.readMemory(readBuf, startAddress, length, this);
                         String str = SerialComUtil.byteArrayToHexString(readBuf, " ");
-                        System.out.println(str);
+                        System.out.println("\n" + str);
                     } else {
                         dev.readMemory(readFile, startAddress, length, this);
                     }
                     System.out.println("\nRead done");
                 } catch (Exception e) {
-                    System.out.println("Can't read flash: " + e.getMessage());
+                    System.out.println("\nCan't read flash: " + e.getMessage());
                 }
             } else {
                 System.out.println("Bootloader doesn't support reading memory");
@@ -987,11 +988,11 @@ public final class CmdLineHandler implements ICmdProgressListener {
 
     @Override
     public void onDataReadProgressUpdate(int totalBytesReadTillNow, int numBytesToRead) {
-        System.out.println("\r Total bytes read : " + totalBytesReadTillNow + " of " + numBytesToRead);
+        System.out.print("\r Total bytes read: " + totalBytesReadTillNow + " of " + numBytesToRead);
     }
 
     @Override
     public void onDataWriteProgressUpdate(int totalBytesWrittenTillNow, int numBytesToWrite) {
-        System.out.print("\r Total bytes written : " + totalBytesWrittenTillNow + " of " + numBytesToWrite);
+        System.out.print("\r Total bytes written: " + totalBytesWrittenTillNow + " of " + numBytesToWrite);
     }
 }

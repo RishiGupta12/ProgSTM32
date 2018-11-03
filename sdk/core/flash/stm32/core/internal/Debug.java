@@ -23,7 +23,7 @@ package flash.stm32.core.internal;
 /**
  * 
  * <p>
- * Switch to turn logging on and off during run time for debug purpose.
+ * Switch to turn extra logging on and off for debug purpose.
  * </p>
  * 
  * @author Rishi Gupta

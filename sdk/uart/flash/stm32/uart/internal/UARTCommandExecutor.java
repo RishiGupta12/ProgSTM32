@@ -241,12 +241,15 @@ public final class UARTCommandExecutor extends CommandExecutor {
         long curTime;
         long responseWaitTime;
 
+        if (dbg.state == true) {
+            System.out.println("sendCmdOrCmdData " + SerialComUtil.byteArrayToHexString(sndbuf, ":"));
+        }
+
         scm.writeBytes(comPortHandle, sndbuf);
 
         responseWaitTime = System.currentTimeMillis() + (1000 * timeOutDuration);
 
         while (true) {
-
             // TODO parity error handling
             x = scm.readBytes(comPortHandle, buf, 0, 1, -1, null);
 
@@ -259,7 +262,6 @@ public final class UARTCommandExecutor extends CommandExecutor {
                     throw new TimeoutException("Unexpected data: " + SerialComUtil.byteToHexString(buf[0]));
                 }
             }
-
             curTime = System.currentTimeMillis();
             if (curTime >= responseWaitTime) {
                 return -2;

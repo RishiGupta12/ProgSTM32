@@ -10,9 +10,9 @@ dbgfile = core/flash/stm32/core/internal/Debug.java
 define check_dbg
 	( if [ "x$(D)" == "x1" ]; \
 	  then \
-		sed -i -e '/static/s/false/true/' $(dbgfile); \
+		sed -i -e '/state/s/false/true/' $(dbgfile); \
 	  else \
-		sed -i -e '/static/s/true/false/' $(dbgfile); \
+		sed -i -e '/state/s/true/false/' $(dbgfile); \
 	  fi )
 endef
 

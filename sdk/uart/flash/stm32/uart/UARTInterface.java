@@ -119,7 +119,7 @@ public final class UARTInterface extends CommunicationInterface {
 
         scm.configureComPortData(comPortHandle, dataBits, stopBits, parity, baudRate, 0);
 
-        scm.configureComPortControl(comPortHandle, flowCtrl, 'x', 'x', true, false);
+        scm.configureComPortControl(comPortHandle, flowCtrl, 'x', 'x', false, false);
 
         /*
          * 500 milliseconds timeout on serial port read. Some methods have timeouts
