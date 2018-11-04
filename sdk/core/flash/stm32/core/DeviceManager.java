@@ -79,7 +79,7 @@ public final class DeviceManager {
      * </p>
      */
     public DeviceManager() {
-        rb = ResourceBundle.getBundle("flash.stm32.resources.MessagesBundle", new Locale("English", "EN"));
+        rb = ResourceBundle.getBundle("flash.stm32.resources.MessagesBundle", Locale.ENGLISH);
         flashUtils = new FlashUtils(rb);
     }
 
@@ -92,7 +92,32 @@ public final class DeviceManager {
      *            locale specifying language to use
      */
     public DeviceManager(Locale locale) {
-        rb = ResourceBundle.getBundle("flash.stm32.resources.MessagesBundle", locale);
+
+        String bundle = null;
+        if (locale == null) {
+            throw new IllegalArgumentException("Invalid locale");
+        }
+
+        String lang = locale.getLanguage();
+        if (lang.equals("en")) {
+            bundle = "flash.stm32.resources.MessagesBundle";
+        } else if (lang.equals("fr")) {
+            bundle = "flash.stm32.resources.MessagesBundle_fr_FR";
+        } else if (lang.equals("ko")) {
+            bundle = "flash.stm32.resources.MessagesBundle_ko_KR";
+        } else if (lang.equals("it")) {
+            bundle = "flash.stm32.resources.MessagesBundle_it_IT";
+        } else if (lang.equals("de")) {
+            bundle = "flash.stm32.resources.MessagesBundle_de_DE";
+        } else if (lang.equals("zh")) {
+            bundle = "flash.stm32.resources.MessagesBundle_zh_CN";
+        } else if (lang.equals("ja")) {
+            bundle = "flash.stm32.resources.MessagesBundle_ja_JP";
+        } else {
+            bundle = "flash.stm32.resources.MessagesBundle";
+        }
+
+        rb = ResourceBundle.getBundle(bundle, locale);
         flashUtils = new FlashUtils(rb);
     }
 
