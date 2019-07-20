@@ -1,11 +1,10 @@
-This folder will contain binaries generated when make command is run.
+This folder will contain binaries generated when make command is run during build.
 
 ### Application
-- progstm32app.jar  : progstm32 application
+The progstm32app.jar is progstm32 standalone application.
 
 ### SDK
-- progstm32uart.jar : serial port based progstm32 sdk (implements UART protocol as defined in AN2606 application note)
+The progstm32uart.jar is a serial port based progstm32 sdk which implements UART protocol as defined in AN2606 application note.
 
 ### External libraries
-- sp-tty.jar        : library from serialpundit project
-- sp-core.jar       : library from serialpundit project
+The sp-tty.jar and sp-core.jar are external libraries from the serialpundit project which enables communication with stm32 using serial port in Java.
