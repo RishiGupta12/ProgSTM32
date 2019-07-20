@@ -1,14 +1,13 @@
 ## Latest releases
-Date: 30/July/2017
+File progstm32.zip was last updated on 30/July/2017. Its contents are given below.
 
-- file progstm32.zip contents:
 | Jar file           | Functions/Features                    | Comments     |
 | :------------:     |:-------------:                        | :--------:   |
 | progstm32uart.jar  | UART based sdk                        |              |
 | sp-core.jar        | library from serialpundit project     |              |
 | sp-tty.jar         | library from serialpundit project     |              |
 
-- progstm32.zip md5sum : d9f7177d8ab0003dd59df89253231017
+- md5sum of progstm32.zip : d9f7177d8ab0003dd59df89253231017
 
 ## Platforms supported
 
