@@ -12,7 +12,7 @@ Usage: progstm32 -d port [-{r|w} filename] [-{bn|ih}] [-e {m | start total}] [-s
 -s   address          Address in hexadecimal format of stm32 memory (address from where flashing will start or from where data will be read)
 -l   length           Number of bytes
 -i                    Get bootloader ID
--p                    Get stm32product ID
+-p                    Get stm32 product ID
 -k                    Disable read protection 
 -j                    Enable read protection
 -o                    Disable write protection
