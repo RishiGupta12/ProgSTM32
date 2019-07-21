@@ -1,4 +1,4 @@
-Please feel free to suggest (via github issues), more test and use cases we should write and environments and settings etc.
+Please feel free to suggest more tests, use cases, environments and settings etc. by raising an issue in github which we can use for more comprehensive testing.
 
 ### Java based
 01. Sanity, manager, interface, pid, allowed commands, almost all.

@@ -1,33 +1,27 @@
 <?xml version="1.0"?>
-
 <!--
-  Copyright (C) 2018, Rishi Gupta. All rights reserved.
-
+  Copyright (C) 2018-2019, Rishi Gupta. All rights reserved.
   :build.xml:
   An Ant script to compile java source files, build jar and
   clean artifcats as required.
 -->
-
 <project name="progstm32" default="compile">
-
-    <target name="app">
-        <mkdir dir="bin"/>
-		<javac srcdir="src" destdir="bin" includeAntRuntime="no">
-			<classpath>
-				<pathelement path="${extlibpath}/sp-core.jar:${extlibpath}/sp-tty.jar:${extlibpath}/${uartsdk}"/>
-			</classpath>
-		</javac>
-		<jar destfile="${extlibpath}/${appjarname}" basedir="bin" >
-			<fileset dir="resources" />
-			<manifest>
-				<attribute name="Main-Class" value="progstm32.ProgSTM32"/>
-			</manifest>
-		</jar>
-    </target>
-
-	<target name="clean">
-		<delete dir="bin" />
-		<delete file="${appjarname}" />
-	</target>
-
+   <target name="app">
+      <mkdir dir="bin"/>
+      <javac srcdir="src" destdir="bin" includeAntRuntime="no">
+         <classpath>
+            <pathelement path="${extlibpath}/sp-core.jar:${extlibpath}/sp-tty.jar:${extlibpath}/${uartsdk}"/>
+         </classpath>
+      </javac>
+      <jar destfile="${extlibpath}/${appjarname}" basedir="bin" >
+         <fileset dir="resources" />
+         <manifest>
+            <attribute name="Main-Class" value="progstm32.ProgSTM32"/>
+         </manifest>
+      </jar>
+   </target>
+   <target name="clean">
+      <delete dir="bin" />
+         <delete file="${appjarname}" />
+   </target>
 </project>
