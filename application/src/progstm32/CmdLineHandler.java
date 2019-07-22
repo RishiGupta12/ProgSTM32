@@ -31,13 +31,13 @@ import java.util.ResourceBundle;
 
 import flash.stm32.core.BLCMDS;
 import flash.stm32.core.Device;
-import flash.stm32.core.DeviceManager;
-import flash.stm32.core.DeviceManager.IFace;
 import flash.stm32.core.FileType;
 import flash.stm32.core.FlashUtils;
 import flash.stm32.core.HexFirmware;
 import flash.stm32.core.ICmdProgressListener;
 import flash.stm32.core.REGTYPE;
+import flash.stm32.uart.UARTDeviceManager;
+import flash.stm32.uart.UARTDeviceManager.IFace;
 import flash.stm32.uart.UARTInterface;
 
 import com.serialpundit.core.util.SerialComUtil;
@@ -68,7 +68,7 @@ public final class CmdLineHandler implements ICmdProgressListener {
     final int ACT_BL_EXIT = 0x4000;
     final int ACT_SHOW_HELP = 0x8000;
 
-    private DeviceManager devMgr;
+    private UARTDeviceManager devMgr;
     private UARTInterface uci;
     private Device dev;
     private boolean opened = false;
@@ -374,7 +374,7 @@ public final class CmdLineHandler implements ICmdProgressListener {
          * the primary command.
          */
         try {
-            devMgr = new DeviceManager(curlocale);
+            devMgr = new UARTDeviceManager(curlocale);
             uci = (UARTInterface) devMgr.getCommunicationIface(IFace.UART, "progstm32jqix7");
         } catch (Exception e) {
             System.out.println(rb.getString("cant.devmgr") + ": " + e.getMessage());
@@ -652,7 +652,7 @@ public final class CmdLineHandler implements ICmdProgressListener {
                     lengthOfFileContents = wrtBuf.length;
                     for (x = 0; x < lengthOfFileContents; x++) {
                         if (wrtBuf[x] != readBuf[x]) {
-                            System.out.println(rb.getString("mismch") + " " + x + rb.getString("expc") + " " + wrtBuf[x]
+                            System.out.println(rb.getString("mismch") + " " + x + " " + rb.getString("expc") + " " + wrtBuf[x]
                                     + " " + rb.getString("fnd") + " " + readBuf[x]);
                             break;
                         }
