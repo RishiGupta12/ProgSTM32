@@ -1,5 +1,4 @@
 <?xml version="1.0"?>
-
 <!--
   Copyright (C) 2018, Rishi Gupta. All rights reserved.
 
@@ -7,9 +6,7 @@
   An Ant script to compile java source files, build jar and
   clean artifcats as required.
 -->
-
 <project name="progstm32" default="compile">
-
     <target name="uartsdk">
         <mkdir dir="bin"/>
 		<javac srcdir="core:uart" destdir="bin" includeAntRuntime="no">
@@ -21,8 +18,7 @@
 			<fileset dir="resources" />
 		</jar>
     </target>
-
-	<target name="doc" description="generate javdocs">
+	<target name="doc">
 		<mkdir dir="${docdir}"/>
 		<javadoc sourcepath="core:uart" destdir="${docdir}">
 			<classpath>
@@ -30,10 +26,8 @@
 			</classpath>
 		</javadoc>
 	</target>
-
 	<target name="clean">
 		<delete dir="bin" />
 		<delete file="${uartjarname}" />
 	</target>
-
 </project>

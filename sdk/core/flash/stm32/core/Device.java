@@ -24,8 +24,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
-import com.serialpundit.core.SerialComException;
-
 import flash.stm32.core.internal.CommandExecutor;
 
 /**
@@ -103,13 +101,13 @@ public abstract class Device {
      * 
      * @return 0 if operation fails or bit mask of commands supported by given
      *         bootloader
-     * @throws SerialComException
-     *             if an error happens when communicating through serial port
+     * @throws IOException
+     *             if an error happens when communicating with the device
      * @throws TimeoutException
      *             when bootloader declines this command, fails to execute this
      *             command or sends no response at all
      */
-    public int getAllowedCommands() throws SerialComException, TimeoutException {
+    public int getAllowedCommands() throws IOException, TimeoutException {
         return cmdExtr.getAllowedCommands();
     }
 
@@ -122,13 +120,13 @@ public abstract class Device {
      * </p>
      * 
      * @return bootloader version in human readable format
-     * @throws SerialComException
-     *             if an error happens when communicating through serial port
+     * @throws IOException
+     *             if an error happens when communicating with the device
      * @throws TimeoutException
      *             when bootloader declines this command, fails to execute this
      *             command or sends no response at all
      */
-    public String getBootloaderProtocolVersion() throws SerialComException, TimeoutException {
+    public String getBootloaderProtocolVersion() throws IOException, TimeoutException {
         return cmdExtr.getBootloaderProtocolVersion();
     }
 
@@ -139,13 +137,13 @@ public abstract class Device {
      * </p>
      * 
      * @return bootloader ID of the stm32
-     * @throws SerialComException
-     *             if an error happens when communicating through serial port
+     * @throws IOException
+     *             if an error happens when communicating with the device
      * @throws TimeoutException
      *             when bootloader declines this command, fails to execute this
      *             command or sends no response at all
      */
-    public int getChipID() throws SerialComException, TimeoutException {
+    public int getChipID() throws IOException, TimeoutException {
         return cmdExtr.getChipID();
     }
 
@@ -156,13 +154,13 @@ public abstract class Device {
      * </p>
      * 
      * @return bootloader ID
-     * @throws SerialComException
-     *             if an error happens when communicating through serial port
+     * @throws IOException
+     *             if an error happens when communicating with the device
      * @throws TimeoutException
      *             when bootloader declines this command, fails to execute this
      *             command or sends no response at all
      */
-    public int getBootloaderID() throws SerialComException, TimeoutException {
+    public int getBootloaderID() throws IOException, TimeoutException {
         return cmdExtr.getBootloaderID();
     }
 
@@ -173,13 +171,13 @@ public abstract class Device {
      * </p>
      * 
      * @return response data received from bootloader as is
-     * @throws SerialComException
-     *             if an error happens when communicating through serial port
+     * @throws IOException
+     *             if an error happens when communicating with the device
      * @throws TimeoutException
      *             when bootloader declines this command, fails to execute this
      *             command or sends no response at all
      */
-    public byte[] getReadProtectionStatus() throws SerialComException, TimeoutException {
+    public byte[] getReadProtectionStatus() throws IOException, TimeoutException {
         return cmdExtr.getReadProtectionStatus();
     }
 
@@ -207,14 +205,14 @@ public abstract class Device {
      *            progress or null if not required
      * 
      * @return number of bytes read from stm32
-     * @throws SerialComException
-     *             if an error happens when communicating through serial port
+     * @throws IOException
+     *             if an error happens when communicating with the device
      * @throws TimeoutException
      *             when bootloader declines this command, fails to execute this
      *             command or sends no response at all
      */
     public int readMemory(byte[] data, int startAddr, int numBytesToRead, ICmdProgressListener progressListener)
-            throws SerialComException, TimeoutException {
+            throws IOException, TimeoutException {
         return cmdExtr.readMemory(data, startAddr, numBytesToRead, progressListener);
     }
 
@@ -242,14 +240,14 @@ public abstract class Device {
      *            progress or null if not required
      * 
      * @return number of bytes read from stm32 device
-     * @throws SerialComException
-     *             if an error happens when communicating through serial port.
+     * @throws IOException
+     *             if an error happens when communicating with the device
      * @throws TimeoutException
      *             when bootloader declines this command, fails to execute this
      *             command or sends no response at all
      */
     public int readMemory(String file, int startAddr, final int numBytesToRead, ICmdProgressListener progressListener)
-            throws SerialComException, TimeoutException {
+            throws IOException, TimeoutException {
         return cmdExtr.readMemory(file, startAddr, numBytesToRead, progressListener);
     }
 
@@ -261,13 +259,13 @@ public abstract class Device {
      * 
      * @param addrToJumpTo
      *            address where program counter should jump
-     * @throws SerialComException
-     *             if an error happens when communicating through serial port
+     * @throws IOException
+     *             if an error happens when communicating with the device
      * @throws TimeoutException
      *             when bootloader declines this command, fails to execute this
      *             command or sends no response at all
      */
-    public void goJump(int addrToJumpTo) throws SerialComException, TimeoutException {
+    public void goJump(int addrToJumpTo) throws IOException, TimeoutException {
         cmdExtr.goJump(addrToJumpTo);
     }
 
@@ -296,8 +294,8 @@ public abstract class Device {
      *            instance of class which implements callback methods to know how
      *            many bytes have been sent till now or null if not required
      * @return 0 on success
-     * @throws SerialComException
-     *             if an error happens when communicating through serial port
+     * @throws IOException
+     *             if an error happens when communicating with the device
      * @throws TimeoutException
      *             when bootloader declines this command, fails to execute this
      *             command or sends no response at all
@@ -333,14 +331,14 @@ public abstract class Device {
      *            instance of class which implements callback methods to know how
      *            many bytes have been sent till now or null if not required
      * @return 0 on success
-     * @throws SerialComException
-     *             if an error happens when communicating through serial port
+     * @throws IOException
+     *             if an error happens when communicating with the device
      * @throws TimeoutException
      *             when bootloader declines this command, fails to execute this
      *             command or sends no response at all
      */
     public int writeMemory(final int fwType, final byte[] data, int startAddr, ICmdProgressListener progressListener)
-            throws SerialComException, TimeoutException {
+            throws IOException, TimeoutException {
         return cmdExtr.writeMemory(fwType, data, startAddr, progressListener);
     }
 
@@ -374,14 +372,14 @@ public abstract class Device {
      * @param totalNumOfPages
      *            total number of pages which should be erased starting from
      *            starting page number
-     * @throws SerialComException
-     *             if an error happens when communicating through serial port
+     * @throws IOException
+     *             if an error happens when communicating with the device
      * @throws TimeoutException
      *             when bootloader declines this command, fails to execute this
      *             command or sends no response at all
      */
     public void eraseMemoryRegion(final int memReg, final int startPageNum, final int totalNumOfPages)
-            throws SerialComException, TimeoutException {
+            throws IOException, TimeoutException {
         cmdExtr.eraseMemoryRegion(memReg, startPageNum, totalNumOfPages);
     }
 
@@ -415,14 +413,14 @@ public abstract class Device {
      * @param totalNumOfPages
      *            total number of pages which should be erased starting from
      *            starting page number
-     * @throws SerialComException
-     *             if an error happens when communicating through serial port
+     * @throws IOException
+     *             if an error happens when communicating with the device
      * @throws TimeoutException
      *             when bootloader declines this command, fails to execute this
      *             command or sends no response at all
      */
     public void extendedEraseMemoryRegion(final int memReg, final int startPageNum, final int totalNumOfPages)
-            throws SerialComException, TimeoutException {
+            throws IOException, TimeoutException {
         cmdExtr.extendedEraseMemoryRegion(memReg, startPageNum, totalNumOfPages);
     }
 
@@ -451,14 +449,14 @@ public abstract class Device {
      * @param totalNumOfPages
      *            total number of pages to be protected
      * 
-     * @throws SerialComException
-     *             if an error happens when communicating through serial port
+     * @throws IOException
+     *             if an error happens when communicating with the device
      * @throws TimeoutException
      *             when bootloader declines this command, fails to execute this
      *             command or sends no response at all
      */
     public void writeProtectMemoryRegion(final int startPageNum, final int totalNumOfPages)
-            throws SerialComException, TimeoutException {
+            throws IOException, TimeoutException {
         cmdExtr.writeProtectMemoryRegion(startPageNum, totalNumOfPages);
     }
 
@@ -470,13 +468,13 @@ public abstract class Device {
      * of the option byte.
      * </p>
      * 
-     * @throws SerialComException
-     *             if an error happens when communicating through serial port
+     * @throws IOException
+     *             if an error happens when communicating with the device
      * @throws TimeoutException
      *             when bootloader declines this command, fails to execute this
      *             command or sends no response at all
      */
-    public void writeUnprotectMemoryRegion() throws SerialComException, TimeoutException {
+    public void writeUnprotectMemoryRegion() throws IOException, TimeoutException {
         cmdExtr.writeUnprotectMemoryRegion();
     }
 
@@ -489,13 +487,13 @@ public abstract class Device {
      * commands may not be available to the host computer.
      * </p>
      * 
-     * @throws SerialComException
-     *             if an error happens when communicating through serial port
+     * @throws IOException
+     *             if an error happens when communicating with the device
      * @throws TimeoutException
      *             when bootloader declines this command, fails to execute this
      *             command or sends no response at all
      */
-    public void readoutprotectMemoryRegion() throws SerialComException, TimeoutException {
+    public void readoutprotectMemoryRegion() throws IOException, TimeoutException {
         cmdExtr.readoutprotectMemoryRegion();
     }
 
@@ -509,13 +507,13 @@ public abstract class Device {
      * set from bootloader is available to the host computer.
      * </p>
      * 
-     * @throws SerialComException
-     *             if an error happens when communicating through serial port
+     * @throws IOException
+     *             if an error happens when communicating with the device
      * @throws TimeoutException
      *             when bootloader declines this command, fails to execute this
      *             command or sends no response at all
      */
-    public void readoutUnprotectMemoryRegion() throws SerialComException, TimeoutException {
+    public void readoutUnprotectMemoryRegion() throws IOException, TimeoutException {
         cmdExtr.readoutUnprotectMemoryRegion();
     }
 
@@ -525,13 +523,13 @@ public abstract class Device {
      * reset stm32 programmatically.
      * </p>
      * 
-     * @throws SerialComException
-     *             if an error happens when communicating through serial port
+     * @throws IOException
+     *             if an error happens when communicating with the device
      * @throws TimeoutException
      *             when bootloader declines this command, fails to execute this
      *             command or sends no response at all
      */
-    public void triggerSystemReset() throws SerialComException, TimeoutException {
+    public void triggerSystemReset() throws IOException, TimeoutException {
         cmdExtr.triggerSystemReset(resetCodeAddress);
     }
 }
