@@ -41,10 +41,10 @@ public final class UARTDeviceManager {
 
     /**
      * <p>
-     * Production release version of prog32 SDK.
+     * Production release version of prog32 UART SDK.
      * </p>
      */
-    public static final String SDK_VERSION = "1.0";
+    public static final String SDK_VERSION_UART = "1.0";
 
     /**
      * <p>
@@ -172,12 +172,12 @@ public final class UARTDeviceManager {
 
     /**
      * <p>
-     * Gives version of the prog32 SDK.
+     * Gives version of the prog32 UART SDK.
      * </p>
      * 
-     * @return version of the prog32 SDK
+     * @return version of the prog32 UART SDK
      */
-    public String getSDKVersion() {
-        return SDK_VERSION;
+    public String getUARTSDKVersion() {
+        return SDK_VERSION_UART;
     }
 }
