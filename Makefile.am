@@ -15,7 +15,7 @@ app:
 	$(MAKE) -C $(top_srcdir)/application -$(MAKEFLAGS) $@
 
 javadoc:
-	$(MAKE) -C $(top_srcdir)/sdk
+	$(MAKE) -C $(top_srcdir)/sdk $@
 
 install-exec-am:
 	$(MAKE) install -C $(top_srcdir)/application
@@ -24,8 +24,8 @@ uninstall-local:
 	$(MAKE) uninstall -C $(top_srcdir)/application
 
 clean-local:
-	$(MAKE) -C $(top_srcdir)/sdk clean-local
-	$(MAKE) -C $(top_srcdir)/application clean-local
+	$(MAKE) -C $(top_srcdir)/sdk $@
+	$(MAKE) -C $(top_srcdir)/application $@
 
 AUTO_FILES_1 = INSTALL m4 configure Makefile.in depcomp config.guess config.sub missing aclocal.m4 install-sh ltmain.sh
 AUTO_FILES_2 = config.h config.h.in config.h.in~ configdata.pm autom4te.cache config.status config.log stamp-h1 compile
