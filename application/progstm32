@@ -54,4 +54,3 @@ clpath=$progstm32_home/share/progstm32
 exec $JAVACMD -cp $clpath:$clpath/sp-tty.jar:$clpath/sp-core.jar:$clpath/progstm32uart.jar:$clpath/progstm32app.jar progstm32.ProgSTM32 $@
 
 exit 0
-
