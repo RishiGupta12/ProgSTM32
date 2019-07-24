@@ -1,4 +1,4 @@
-Usage: progstm32 -d port [-{r|w} filename] [-{bn|ih}] [-e {m | start total}] [-s address] [-l length] [-kopjnivhR] [-br baudrate] [-g address]
+Usage: progstm32 -d port [-{r|w} filename] [-{bn|ih}] [-e {m | start total}] [-s address] [-l length] [-kopjnivhR] [-br baudrate] [-g address] [-{er|ex} -{dtr|rts} {0|1} {0|1} -{dtr|rts} {0|1} {0|1}] [-L {en|fr|ko|it|de|zh|ja}]
 
 -d   port             Serial port to which stm32 is connected (/dev/ttyUSB0 or COM9)
 -br  baudrate         Serial port speed (default 115200, supported 2400, 4800, 9600, 14400, 19200, 28800, 38400, 56000, 57600, 115200)

@@ -122,7 +122,7 @@ public final class CmdLineHandler implements ICmdProgressListener {
 
         if (numArgs == 0) {
             System.out.println(
-                    "Usage: progstm32 -d port [-{r|w} filename] [-{bn|ih}] [-e {m | start total}] [-s address] [-l length] [-kopjnivhR] [-br baudrate] [-g address] [-{er|ex} -{dtr|rts} a b -{dtr|rts} c d] [-L {en|fr|ko|it|de|zh|ja}]");
+                    "Usage: progstm32 -d port [-{r|w} filename] [-{bn|ih}] [-e {m | start total}] [-s address] [-l length] [-kopjnivhR] [-br baudrate] [-g address] [-{er|ex} -{dtr|rts} {0|1} {0|1} -{dtr|rts} {0|1} {0|1}] [-L {en|fr|ko|it|de|zh|ja}]");
             System.out.println("Try 'progstm32 --help' for more information.");
             return;
         }
