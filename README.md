@@ -71,7 +71,7 @@ $ man progstm32
 - Provide peer support on mailing lists, forums or newsgroups
 
 ## Author, License and Copyright
-- ProgSTM32 is designed, developed and maintained by Rishi Gupta. He does Linux device driver development, embedded systems design, firmware development, circuit designing, prototyping, board bring up and Linux middleware etc.     
+- ProgSTM32 is designed, developed and maintained by Rishi Gupta. He does Linux device driver/kernel/middleware development, board bring up, embedded systems design, firmware development, circuit designing and prototyping.     
   Linkdin profile : http://in.linkedin.com/pub/rishi-gupta/20/9b8/a10    
   
 - ProgSTM32 is made available under the terms of the GNU Lesser General Public License (LGPL) v2.1. Please see LICENSE file in repository for full license text for LGPL v2.1.
