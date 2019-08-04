@@ -387,10 +387,15 @@ info: info-am
 
 info-am:
 
+install-data-am:
+
 install-dvi: install-dvi-am
 
 install-dvi-am:
 
+install-exec-am:
+	@$(NORMAL_INSTALL)
+	$(MAKE) $(AM_MAKEFLAGS) install-exec-hook
 install-html: install-html-am
 
 install-html-am:
@@ -429,19 +434,19 @@ ps-am:
 
 uninstall-am: uninstall-local
 
-.MAKE: install-am install-strip
+.MAKE: install-am install-exec-am install-strip
 
 .PHONY: all all-am check check-am clean clean-generic clean-libtool \
 	clean-local cscopelist-am ctags-am distclean distclean-generic \
 	distclean-libtool distdir dvi dvi-am html html-am info info-am \
 	install install-am install-data install-data-am install-dvi \
-	install-dvi-am install-exec install-exec-am install-html \
-	install-html-am install-info install-info-am install-man \
-	install-pdf install-pdf-am install-ps install-ps-am \
-	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags-am uninstall uninstall-am uninstall-local
+	install-dvi-am install-exec install-exec-am install-exec-hook \
+	install-html install-html-am install-info install-info-am \
+	install-man install-pdf install-pdf-am install-ps \
+	install-ps-am install-strip installcheck installcheck-am \
+	installdirs maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-generic mostlyclean-libtool pdf pdf-am \
+	ps ps-am tags-am uninstall uninstall-am uninstall-local
 
 .PRECIOUS: Makefile
 
@@ -469,28 +474,26 @@ app:
 # Install progstm32 app and jars considerig the --prefix option given
 # by user to configure script. If the user does not gives --prefix option
 # default location which is typically /usr/local will be used.
-install-exec-am:
+install-exec-hook:
 	$(call pry,"Installing progstm32 application...")
-	$(INSTALL) -d $(bindir)
-	$(INSTALL) -m 755 $(top_srcdir)/application/progstm32 $(bindir)
-	$(INSTALL) -d $(datarootdir)/progstm32
-	$(INSTALL) -m 755 $(top_srcdir)/build/$(progstm32app_jar) $(datarootdir)/progstm32
-	$(INSTALL) -m 755 $(top_srcdir)/build/$(progstm32uart_jar) $(datarootdir)/progstm32
-	$(INSTALL) -m 755 $(top_srcdir)/build/$(extlib_spcore) $(datarootdir)/progstm32
-	$(INSTALL) -m 755 $(top_srcdir)/build/$(extlib_sptty) $(datarootdir)/progstm32
-
-install-data-am:
-	$(INSTALL) -d $(mandir)/man1
-	$(INSTALL) -m 644 $(top_srcdir)/application/progstm32.1 $(mandir)/man1
+	$(INSTALL) -d $(DESTDIR)$(bindir)
+	$(INSTALL) -d $(DESTDIR)$(mandir)/man1
+	$(INSTALL) -d $(DESTDIR)$(datarootdir)/progstm32
+	$(INSTALL) -m 755 $(top_srcdir)/application/progstm32 $(DESTDIR)$(bindir)
+	$(INSTALL) -m 755 $(top_srcdir)/build/$(progstm32app_jar) $(DESTDIR)$(datarootdir)/progstm32
+	$(INSTALL) -m 755 $(top_srcdir)/build/$(progstm32uart_jar) $(DESTDIR)$(datarootdir)/progstm32
+	$(INSTALL) -m 755 $(top_srcdir)/build/$(extlib_spcore) $(DESTDIR)$(datarootdir)/progstm32
+	$(INSTALL) -m 755 $(top_srcdir)/build/$(extlib_sptty) $(DESTDIR)$(datarootdir)/progstm32
+	$(INSTALL) -m 755 $(top_srcdir)/application/progstm32.1 $(DESTDIR)$(mandir)/man1
 
 # Remove the files installed from file system
 uninstall-local:
-	rm $(bindir)/progstm32
-	rm $(datarootdir)/progstm32/$(progstm32app_jar)
-	rm $(datarootdir)/progstm32/$(progstm32uart_jar)
-	rm $(datarootdir)/progstm32/$(extlib_spcore)
-	rm $(datarootdir)/progstm32/$(extlib_sptty)
-	rm $(mandir)/man1/progstm32.1
+	rm $(DESTDIR)$(bindir)/progstm32
+	rm $(DESTDIR)$(datarootdir)/progstm32/$(progstm32app_jar)
+	rm $(DESTDIR)$(datarootdir)/progstm32/$(progstm32uart_jar)
+	rm $(DESTDIR)$(datarootdir)/progstm32/$(extlib_spcore)
+	rm $(DESTDIR)$(datarootdir)/progstm32/$(extlib_sptty)
+	rm $(DESTDIR)$(mandir)/man1/progstm32.1
 
 # Let ant tool clean the generates class files
 clean-local:

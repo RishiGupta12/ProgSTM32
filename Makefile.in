@@ -659,6 +659,9 @@ install-dvi: install-dvi-am
 
 install-dvi-am:
 
+install-exec-am:
+	@$(NORMAL_INSTALL)
+	$(MAKE) $(AM_MAKEFLAGS) install-exec-hook
 install-html: install-html-am
 
 install-html-am:
@@ -700,7 +703,7 @@ ps-am:
 
 uninstall-am: uninstall-local
 
-.MAKE: all install-am install-strip
+.MAKE: all install-am install-exec-am install-strip
 
 .PHONY: CTAGS GTAGS TAGS all all-am am--refresh check check-am clean \
 	clean-cscope clean-generic clean-libtool clean-local cscope \
@@ -710,11 +713,11 @@ uninstall-am: uninstall-local
 	distclean-libtool distclean-tags distcleancheck distdir \
 	distuninstallcheck dvi dvi-am html html-am info info-am \
 	install install-am install-data install-data-am install-dvi \
-	install-dvi-am install-exec install-exec-am install-html \
-	install-html-am install-info install-info-am install-man \
-	install-pdf install-pdf-am install-ps install-ps-am \
-	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic \
+	install-dvi-am install-exec install-exec-am install-exec-hook \
+	install-html install-html-am install-info install-info-am \
+	install-man install-pdf install-pdf-am install-ps \
+	install-ps-am install-strip installcheck installcheck-am \
+	installdirs maintainer-clean maintainer-clean-generic \
 	maintainer-clean-local mostlyclean mostlyclean-generic \
 	mostlyclean-libtool pdf pdf-am ps ps-am tags tags-am uninstall \
 	uninstall-am uninstall-local
@@ -745,11 +748,11 @@ app:
 javadoc:
 	$(MAKE) -C $(top_srcdir)/sdk $@
 
-install-exec-am:
-	$(MAKE) install -C $(top_srcdir)/application
+install-exec-hook:
+	$(MAKE) -C $(top_srcdir)/application $@
 
 uninstall-local:
-	$(MAKE) uninstall -C $(top_srcdir)/application
+	$(MAKE) -C $(top_srcdir)/application $@
 
 clean-local:
 	$(MAKE) -C $(top_srcdir)/sdk $@

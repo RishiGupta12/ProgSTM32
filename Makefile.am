@@ -17,11 +17,11 @@ app:
 javadoc:
 	$(MAKE) -C $(top_srcdir)/sdk $@
 
-install-exec-am:
-	$(MAKE) install -C $(top_srcdir)/application
+install-exec-hook:
+	$(MAKE) -C $(top_srcdir)/application $@
 
 uninstall-local:
-	$(MAKE) uninstall -C $(top_srcdir)/application
+	$(MAKE) -C $(top_srcdir)/application $@
 
 clean-local:
 	$(MAKE) -C $(top_srcdir)/sdk $@
