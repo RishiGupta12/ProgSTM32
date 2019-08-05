@@ -10,13 +10,13 @@ In STM32 (ARM Cortex-M based) microcontrollers, a default bootloader is programm
 The progstm32 uses SerialPundit SDK for serial port communication, which is a separate project and can be [found here](https://github.com/RishiGupta12/SerialPundit).
 
 ## Features
-- Erase, read and write firmware or arbitrary data in memory
+- Erase, read and write firmware or arbitrary data in storage
 - No restriction on addresses and address length
 - Read bootloader ID, protocol version, ROM-programmed data, product ID
 - Handle device specific quirks internally
 - Enter/exit bootloader mode using DTR/RTS signals
 - Robust error handling
-- Enable/disable read/write protection of memory
+- Enable/disable read/write protection of storage
 - Resume communication with stm32 if required
 - Convert intel hex firmware to plain binary
 - Fully documented (javadocs,manpage) and tested
