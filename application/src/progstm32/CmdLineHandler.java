@@ -51,21 +51,35 @@ import com.serialpundit.serial.SerialComManager.STOPBITS;
  * and execute the user given command. */
 public final class CmdLineHandler implements ICmdProgressListener {
 
+    /* Enter/Exit bootloader mode */
     final int ACT_BL_ENTRY = 0x01;
-    final int ACT_READ_UNPROTECT = 0x02;
-    final int ACT_WRITE_UNPROTECT = 0x04;
+    final int ACT_BL_EXIT = 0x4000;
+
+    /* Get device or software information */
     final int ACT_GET_PID = 0x08;
     final int ACT_GET_BLID = 0x10;
     final int ACT_GET_BLVER = 0x20;
+
+    /* Partial or full erase the storage */
     final int ACT_MASS_ERASE = 0x40;
     final int ACT_ERASE = 0x80;
-    final int ACT_WRITE = 0x100;
-    final int ACT_READ = 0x200;
+
+    /* Enable/Disable Read/Write protection on storage */
+    final int ACT_READ_UNPROTECT = 0x02;
+    final int ACT_WRITE_UNPROTECT = 0x04;
     final int ACT_WRITE_PROTECT = 0x400;
     final int ACT_READ_PROTECT = 0x800;
+
+    /* Read/Write firmware or data into storage */
+    final int ACT_WRITE = 0x100;
+    final int ACT_READ = 0x200;
+
+    /* Generate soft reset programatically */
     final int ACT_SOFT_RESET = 0x1000;
+
+    /* Start code execution from given address */
     final int ACT_GO = 0x2000;
-    final int ACT_BL_EXIT = 0x4000;
+
     final int ACT_SHOW_HELP = 0x8000;
 
     private UARTDeviceManager devMgr;
