@@ -19,9 +19,9 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 PORT=/dev/ttyUSB0
-WRTBIN="$(dirname '$0')"/../../workspace/testhex/demo.bin
-WRTHEX="$(dirname '$0')"/../../workspace/testhex/demo.hex
-READFW="$(dirname '$0')"/../../workspace/testhex/rd.bin
+WRTBIN=$(dirname '$0')/../../../workspace/testhex/demo.bin
+WRTHEX=$(dirname '$0')/../../../workspace/testhex/demo.hex
+READFW=$(dirname '$0')/../../../workspace/testhex/rd.bin
 ENSEQ="-er -dtr 0 0 -rts 1 0"
 EXSEQ="-ex -dtr 0 0 -rts 0 0"
 

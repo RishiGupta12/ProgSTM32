@@ -19,9 +19,9 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 PORT=/dev/ttyACM0
-WRTBIN="$(dirname '$0')"/../../workspace/testhex/demo.bin
-WRTHEX="$(dirname '$0')"/../../workspace/testhex/demo.hex
-READFW="$(dirname '$0')"/../../workspace/testhex/rd.bin
+WRTBIN=$(dirname '$0')/../../../workspace/testhex/demo.bin
+WRTHEX=$(dirname '$0')/../../../workspace/testhex/demo.hex
+READFW=$(dirname '$0')/../../../workspace/testhex/rd.bin
 
 ### Don't modify anything after this line, run this test from tests folder only ###
 cd "$(dirname '$0')"/../build
