@@ -19,11 +19,11 @@ install-exec-hook:
 	$(INSTALL) -d $(DESTDIR)$(mandir)/man1
 	$(INSTALL) -d $(DESTDIR)$(datarootdir)/java
 	$(INSTALL) -m 755 $(top_srcdir)/application/progstm32 $(DESTDIR)$(bindir)
-	$(INSTALL) -m 755 $(top_srcdir)/build/$(progstm32app_jar) $(DESTDIR)$(datarootdir)/java
-	$(INSTALL) -m 755 $(top_srcdir)/build/$(progstm32uart_jar) $(DESTDIR)$(datarootdir)/java
-	$(INSTALL) -m 755 $(top_srcdir)/build/$(extlib_spcore) $(DESTDIR)$(datarootdir)/java
-	$(INSTALL) -m 755 $(top_srcdir)/build/$(extlib_sptty) $(DESTDIR)$(datarootdir)/java
-	$(INSTALL) -m 755 $(top_srcdir)/application/progstm32.1 $(DESTDIR)$(mandir)/man1
+	$(INSTALL) -m 644 $(top_srcdir)/build/$(progstm32app_jar) $(DESTDIR)$(datarootdir)/java
+	$(INSTALL) -m 644 $(top_srcdir)/build/$(progstm32uart_jar) $(DESTDIR)$(datarootdir)/java
+	$(INSTALL) -m 644 $(top_srcdir)/build/$(extlib_spcore) $(DESTDIR)$(datarootdir)/java
+	$(INSTALL) -m 644 $(top_srcdir)/build/$(extlib_sptty) $(DESTDIR)$(datarootdir)/java
+	$(INSTALL) -m 644 $(top_srcdir)/application/progstm32.1 $(DESTDIR)$(mandir)/man1
 
 # Remove the files installed from file system
 uninstall-local:
