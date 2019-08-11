@@ -11,7 +11,7 @@
         <mkdir dir="bin"/>
 		<javac srcdir="core:uart" destdir="bin" includeAntRuntime="no">
 			<classpath>
-				<pathelement path="sp-core.jar:sp-tty.jar"/>
+				<pathelement path="${spcore}:${sptty}"/>
 			</classpath>
 		</javac>
 		<jar destfile="${extlibpath}/${uartjarname}" basedir="bin" >
@@ -22,7 +22,7 @@
 		<mkdir dir="${docdir}"/>
 		<javadoc sourcepath="core:uart" destdir="${docdir}">
 			<classpath>
-				<pathelement path="sp-core.jar:sp-tty.jar"/>
+				<pathelement path="${spcore}:${sptty}"/>
 			</classpath>
 		</javadoc>
 	</target>

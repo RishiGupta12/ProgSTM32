@@ -10,7 +10,7 @@
       <mkdir dir="bin"/>
       <javac srcdir="src" destdir="bin" includeAntRuntime="no">
          <classpath>
-            <pathelement path="${extlibpath}/sp-core.jar:${extlibpath}/sp-tty.jar:${extlibpath}/${uartsdk}"/>
+            <pathelement path="${extlibpath}/${spcore}:${extlibpath}/${sptty}:${extlibpath}/${uartsdk}"/>
          </classpath>
       </javac>
       <jar destfile="${extlibpath}/${appjarname}" basedir="bin" >

@@ -21,7 +21,7 @@ uartsdk:
 	$(call pry,"Building UART SDK...............")
 	ant clean
 	$(call check_dbg)
-	ant uartsdk -Duartjarname=$(progstm32uart_jar) -Dextlibpath=$(top_srcdir)/build
+	ant uartsdk -Duartjarname=$(progstm32uart_jar) -Dextlibpath=$(top_srcdir)/build -Dspcore=$(extlib_spcore) -Dsptty=$(extlib_sptty)
 	cp $(top_srcdir)/sdk/$(extlib_spcore) $(top_srcdir)/build
 	cp $(top_srcdir)/sdk/$(extlib_sptty) $(top_srcdir)/build
 

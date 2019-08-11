@@ -50,7 +50,12 @@ y=$(($x-14))
 progstm32_home=$(echo $binexe_abspath | cut -c 1-$y)
 clpath=$progstm32_home/share/progstm32
 
+prapp=$clpath/progstm32-app-1.0.jar
+prurt=$clpath/progstm32-uart-1.0.jar
+spt=$clpath/progstm32-sp-tty-1.0.jar
+spc=$clpath/progstm32-sp-core-1.0.jar
+
 # Execute the command finally
-exec $JAVACMD -cp $clpath:$clpath/sp-tty.jar:$clpath/sp-core.jar:$clpath/progstm32uart.jar:$clpath/progstm32app.jar progstm32.ProgSTM32 $@
+exec $JAVACMD -cp $clpath:$spt:$spc:$prurt:$prapp progstm32.ProgSTM32 $@
 
 exit 0

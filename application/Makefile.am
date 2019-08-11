@@ -17,21 +17,21 @@ install-exec-hook:
 	$(call pry,"Installing progstm32 application...")
 	$(INSTALL) -d $(DESTDIR)$(bindir)
 	$(INSTALL) -d $(DESTDIR)$(mandir)/man1
-	$(INSTALL) -d $(DESTDIR)$(datarootdir)/progstm32
+	$(INSTALL) -d $(DESTDIR)$(datarootdir)/java
 	$(INSTALL) -m 755 $(top_srcdir)/application/progstm32 $(DESTDIR)$(bindir)
-	$(INSTALL) -m 755 $(top_srcdir)/build/$(progstm32app_jar) $(DESTDIR)$(datarootdir)/progstm32
-	$(INSTALL) -m 755 $(top_srcdir)/build/$(progstm32uart_jar) $(DESTDIR)$(datarootdir)/progstm32
-	$(INSTALL) -m 755 $(top_srcdir)/build/$(extlib_spcore) $(DESTDIR)$(datarootdir)/progstm32
-	$(INSTALL) -m 755 $(top_srcdir)/build/$(extlib_sptty) $(DESTDIR)$(datarootdir)/progstm32
+	$(INSTALL) -m 755 $(top_srcdir)/build/$(progstm32app_jar) $(DESTDIR)$(datarootdir)/java
+	$(INSTALL) -m 755 $(top_srcdir)/build/$(progstm32uart_jar) $(DESTDIR)$(datarootdir)/java
+	$(INSTALL) -m 755 $(top_srcdir)/build/$(extlib_spcore) $(DESTDIR)$(datarootdir)/java
+	$(INSTALL) -m 755 $(top_srcdir)/build/$(extlib_sptty) $(DESTDIR)$(datarootdir)/java
 	$(INSTALL) -m 755 $(top_srcdir)/application/progstm32.1 $(DESTDIR)$(mandir)/man1
 
 # Remove the files installed from file system
 uninstall-local:
 	rm $(DESTDIR)$(bindir)/progstm32
-	rm $(DESTDIR)$(datarootdir)/progstm32/$(progstm32app_jar)
-	rm $(DESTDIR)$(datarootdir)/progstm32/$(progstm32uart_jar)
-	rm $(DESTDIR)$(datarootdir)/progstm32/$(extlib_spcore)
-	rm $(DESTDIR)$(datarootdir)/progstm32/$(extlib_sptty)
+	rm $(DESTDIR)$(datarootdir)/java/$(progstm32app_jar)
+	rm $(DESTDIR)$(datarootdir)/java/$(progstm32uart_jar)
+	rm $(DESTDIR)$(datarootdir)/java/$(extlib_spcore)
+	rm $(DESTDIR)$(datarootdir)/java/$(extlib_sptty)
 	rm $(DESTDIR)$(mandir)/man1/progstm32.1
 
 # Let ant tool clean the generates class files
