@@ -48,7 +48,7 @@ binexe_abspath=$(readlink -f "$0")
 x=${#binexe_abspath}
 y=$(($x-14))
 progstm32_home=$(echo $binexe_abspath | cut -c 1-$y)
-clpath=$progstm32_home/share/progstm32
+clpath=$progstm32_home/share/java
 
 prapp=$clpath/progstm32-app-1.0.jar
 prurt=$clpath/progstm32-uart-1.0.jar
