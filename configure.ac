@@ -46,6 +46,10 @@ m4_define([CURRENT_VERSION],
 dnl Process any command-line arguments and perform initialization and verification
 AC_INIT([progstm32], [CURRENT_VERSION], [gupt21@gmail.com])
 
+dnl If the user does not supply any base location for installation, let us use
+dnl standard location /usr/share/*
+AC_PREFIX_DEFAULT(/usr)
+
 dnl Instantiating macro to generate config.h for passing #DEFINE
 dnl to source code
 AC_CONFIG_HEADERS([config.h])
