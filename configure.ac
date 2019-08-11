@@ -158,6 +158,7 @@ echo JVM........................... : $JAVA
 echo Java compiler................. : $JAVAC
 echo Jar tool...................... : $JAR
 echo Ant tool...................... : $ANT
+echo Installation prefix........... : ${prefix}
 echo " "
 echo Configure complete, please proceed with:
 echo " - 'make'           builds sdk and app"
