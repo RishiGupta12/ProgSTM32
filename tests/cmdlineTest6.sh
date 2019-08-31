@@ -18,6 +18,10 @@
 # along with this library; if not, write to the Free Software Foundation,Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+# Connect FTDI USB-UART converter and then run this test
+
+source jar_names.sh
+
 PORT=/dev/ttyUSB0
 WRTBIN=$(dirname '$0')/../../../workspace/testhex/demo.bin
 WRTHEX=$(dirname '$0')/../../../workspace/testhex/demo.hex
@@ -29,6 +33,7 @@ EXSEQ="-ex -dtr 0 0 -rts 0 0"
 cd "$(dirname '$0')"/../build
 
 x=0;
+jars_in_classpath=".:$spttyjar:$spcorejar:$progstm32uart:$progstm32app"
 
 # read unprotect
 echo -e "\n---> read unprotect"

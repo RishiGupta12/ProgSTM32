@@ -18,11 +18,15 @@
 # along with this library; if not, write to the Free Software Foundation,Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+source jar_names.sh
+
 PORT=/dev/ttyUSB0
 
 ### Don't modify anything after this line, run this test from tests folder only ###
 cd "$(dirname '$0')"/../build
 
+jars_in_classpath=".:$spttyjar:$spcorejar:$progstm32uart:$progstm32app"
+
 # read unprotect
 echo -e "\n---> enter/exit bootloader mode"
-java -cp .:sp-tty.jar:sp-core.jar:progstm32uart.jar:progstm32app.jar progstm32.ProgSTM32 -d $PORT -er -dtr 0 0 -rts 1 0 -k -p -i -t 5 -ex -dtr 0 0 -rts 0 0
+java -cp $jars_in_classpath progstm32.ProgSTM32 -d $PORT -er -dtr 0 0 -rts 1 0 -k -p -i -t 5 -ex -dtr 0 0 -rts 0 0

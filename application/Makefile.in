@@ -488,17 +488,20 @@ install-exec-hook:
 
 # Remove the files installed from file system
 uninstall-local:
-	rm $(DESTDIR)$(bindir)/progstm32
-	rm $(DESTDIR)$(datarootdir)/java/$(progstm32app_jar)
-	rm $(DESTDIR)$(datarootdir)/java/$(progstm32uart_jar)
-	rm $(DESTDIR)$(datarootdir)/java/$(extlib_spcore)
-	rm $(DESTDIR)$(datarootdir)/java/$(extlib_sptty)
-	rm $(DESTDIR)$(mandir)/man1/progstm32.1
+	rm -f $(DESTDIR)$(bindir)/progstm32
+	rm -f $(DESTDIR)$(datarootdir)/java/$(progstm32app_jar)
+	rm -f $(DESTDIR)$(datarootdir)/java/$(progstm32uart_jar)
+	rm -f $(DESTDIR)$(datarootdir)/java/$(extlib_spcore)
+	rm -f $(DESTDIR)$(datarootdir)/java/$(extlib_sptty)
+	rm -f $(DESTDIR)$(mandir)/man1/progstm32.1
 
 # Let ant tool clean the generates class files
 clean-local:
 	ant clean
-	[ -n "$(top_srcdir)" ] && rm -rf $(top_srcdir)/build/$(progstm32app_jar)
+	[ -n "$(top_srcdir)" ] && rm -f $(top_srcdir)/build/$(progstm32app_jar)
+	[ -n "$(top_srcdir)" ] && rm -f $(top_srcdir)/build/$(progstm32uart_jar)
+	[ -n "$(top_srcdir)" ] && rm -f $(top_srcdir)/build/$(extlib_spcore)
+	[ -n "$(top_srcdir)" ] && rm -f $(top_srcdir)/build/$(extlib_sptty)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

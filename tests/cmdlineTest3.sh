@@ -18,6 +18,8 @@
 # along with this library; if not, write to the Free Software Foundation,Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+source jar_names.sh
+
 PORT=/dev/ttyACM0
 WRTBIN=$(dirname '$0')/../../../workspace/testhex/demo.bin
 WRTHEX=$(dirname '$0')/../../../workspace/testhex/demo.hex
@@ -26,9 +28,11 @@ READFW=$(dirname '$0')/../../../workspace/testhex/rd.bin
 ### Don't modify anything after this line, run this test from tests folder only ###
 cd "$(dirname '$0')"/../build
 
+jars_in_classpath=".:$spttyjar:$spcorejar:$progstm32uart:$progstm32app"
+
 # jump to address
 echo -e "\n---> jump to address"
-java -cp .:sp-tty.jar:sp-core.jar:progstm32uart.jar:progstm32app.jar progstm32.ProgSTM32 -d $PORT -g 08000000
+java -cp $jars_in_classpath progstm32.ProgSTM32 -d $PORT -g 08000000
 
 echo -e "\n---All Test Done---"
 exit 0
